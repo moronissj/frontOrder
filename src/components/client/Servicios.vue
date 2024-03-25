@@ -27,12 +27,16 @@ export default {
     data() {
   return {
     service: {
-      nombre: ['Transporte', 'Comida', 'Utileria'],
-      descripción: ['TransporteDescripción', 'ComidaDescripción', 'UtileriaDescripción'],
+      nombre: ['Transporte', 'Comida', 'Utileria', 'Transporte', 'Comida', 'Utileria',],
+      descripción: ['TransporteDescripción', 'ComidaDescripción', 'UtileriaDescripción', 'Transporte', 'Comida', 'Utileria',],
       imagen: [
         "../assets/transporteIcon.png",
         "../assets/comidaIcon.png",
-        "../assets/utileriaIcon.png"
+        "../assets/utileriaIcon.png",
+        "../assets/transporteIcon.png",
+        "../assets/comidaIcon.png",
+        "../assets/utileriaIcon.png",
+      
       ]
     },
   };
