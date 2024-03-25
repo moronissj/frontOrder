@@ -1,7 +1,16 @@
 <script setup>
+<<<<<<< HEAD
+import NavbarLanding from './NavbarLanding.vue'
+import Footer from './Footer.vue';
+import Carousel from './Carousel.vue';
+import RatingTaquiza from './RatingTaquiza.vue';
+import FancyBoxLanding from './FancyBoxLanding.vue';
+import FancyBoxTaquizas from './FancyBoxTaquizas.vue';
+=======
 import NavbarLanding from "./NavbarLanding.vue";
 import Footer from "./Footer.vue";
 import Carousel from "./Carousel.vue";
+>>>>>>> c70a158451eaeacb0f16dd38530e33978e77697e
 </script>
 
 <template>
@@ -43,9 +52,46 @@ import Carousel from "./Carousel.vue";
         <div>
           <b-button @click="goToLogin" class="btn">Ver más</b-button>
         </div>
+<<<<<<< HEAD
+    </div>
+
+    <div class="quienes-somos-container">
+    <div class="header-section">
+      <h1>¿Quiénes somos?</h1>
+    </div>
+    <div class="content-section">
+      <p>
+        Somos un equipo apasionado por la gastronomía y el buen servicio, dedicado a
+        ofrecer experiencias culinarias únicas a través de nuestros buffets. Con una
+        amplia variedad de opciones que se adaptan a cualquier tipo de evento, nuestro
+        compromiso es garantizar la satisfacción y superar las expectativas de nuestros
+        clientes.
+      </p>
+      <p>
+        Fundada en [Año], nuestra misión ha sido siempre llevar a cada evento un toque
+        especial, combinando sabores tradicionales y contemporáneos para crear menús
+        memorables. Valoramos la calidad, la innovación y la excelencia en el servicio,
+        y estamos constantemente explorando nuevas formas de deleitar a nuestros comensales.
+      </p>
+    </div>
+    <div class="image-section">
+      <FancyBoxTaquizas></FancyBoxTaquizas>
+    </div>
+  </div>
+        <div>
+            <h1 color="#AE0505">Reseñas</h1>
+            <br>
+            <RatingTaquiza></RatingTaquiza>
+        </div>
+        <div>
+            <FancyBoxLanding></FancyBoxLanding>
+        </div>
+   
+=======
       </div>
     </div>
 
+>>>>>>> c70a158451eaeacb0f16dd38530e33978e77697e
     <Footer />
   </div>
 </template>

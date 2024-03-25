@@ -1,4 +1,5 @@
 <template>
+    
     <div class="footer">
         <div>
             <h2>ORDER.COM</h2>
@@ -11,26 +12,37 @@
             <h2>SIGUENOS</h2>
             <div>NUESTRAS REDES SOCIALES</div>
             <div>
-                <img src="../assets/facebookIcon.png" alt="" class="icons">
-                <img src="../assets/instagramIcon.png" alt="" class="icons">
-                <img src="../assets/xIcon.png" alt="" class="icons">
+                <a href="">
+                  <img src="../assets/facebookIcon.png" alt="" class="icons">
+                </a>
+                <a href="https://www.instagram.com/moronirb/">
+                  <img src="../assets/instagramIcon.png" alt="" class="icons">
+                </a>
+                <a href="">
+                  <img src="../assets/xIcon.png" alt="" class="icons">
+                </a>
+                
             </div>
         </div>
 
         <div class="copyright">
-            TODOS LOS DERECHOS RESERVADOS
+            TODOS LOS DERECHOS RESERVADOS<br>
+            <p>&copy; 2024 Order.com</p>
         </div>
+        
     </div>
 </template>
 
 <style scoped>
 .footer {
-  background-color: #d9d9d9;
-  font-family: 'Monserrat', sans-serif;
+  background-color: #333;
+  font-family: 'Montserrat', sans-serif; /* Corregido el nombre de la fuente */
   display: flex;
-  flex-wrap: wrap; /* Permite que los elementos se ajusten según el ancho */
-  justify-content: space-around;
+  flex-wrap: wrap; /* Permite que los elementos se ajusten al tamaño de pantalla */
+  justify-content: space-around; /* Distribuye el espacio alrededor de los elementos */
   padding: 2.5vh;
+  margin-bottom: 0%;
+  color:white
 }
 
 .icons {
@@ -39,38 +51,42 @@
   margin: 2.5vh;
 }
 
+/* Ajusta los íconos para pantallas más pequeñas */
 @media (max-width: 768px) {
-  .footer {
-    flex-direction: column; /* Apila los elementos verticalmente en pantallas pequeñas */
-    align-items: center; /* Centra el contenido */
-  }
-
   .icons {
-    width: 3vh; /* Ajusta el tamaño de los íconos si es necesario */
-    height: 3vh;
+    width: 6vh; /* Aumenta el tamaño para mejor visibilidad */
+    height: 6vh;
+    margin: 1vh; /* Reduce el margen para ahorrar espacio */
   }
-}
 
-@media (min-width: 769px) {
   .footer {
-    grid-template-columns: repeat(3, 1fr); /* Define tres columnas en pantallas grandes */
+    justify-content: center; /* Centra los elementos para una mejor visualización en pantallas pequeñas */
+    padding: 5vh 0; /* Aumenta el padding vertical para más espacio */
+  }
+
+  .footer > div {
+    margin-bottom: 4vh; /* Añade margen inferior entre los elementos */
   }
 }
 
-/* Ajuste opcional para mejorar la separación del contenido en dispositivos móviles */
-.footer > div:not(:last-child) {
-  margin-bottom: 2vh; /* Agrega un margen inferior a todos los divs excepto el último */
-}
-
-/* Estiliza el texto para mejor legibilidad en pantallas de diferentes tamaños */
-.footer div {
-  text-align: center; /* Asegura que el texto esté centrado, útil especialmente para el modo columna */
-}
-
-/* Ajusta el margen superior para dispositivos más pequeños y cuando el footer cambia a disposición en columna */
-@media (max-width: 768px) {
-  .copyright {
-    margin-top: 0 /* Reduce el margen superior en pantallas pequeñas */
+/* Maneja mejor el espacio y la distribución para dispositivos muy pequeños */
+@media (max-width: 480px) {
+  .footer {
+    flex-direction: column; /* Cambia la dirección a columna para una mejor visualización */
+    align-items: center; /* Alinea elementos al centro */
   }
+
+  .footer > div {
+    text-align: center; /* Centra el texto de cada sección */
+  }
+}
+
+/* Estilo específico para la sección de derechos de autor */
+/* Ajusta el margen superior para que siempre esté en la parte inferior */
+.copyright {
+  width: 100%; /* Asegura que ocupe todo el ancho disponible */
+  text-align: center; /* Centra el texto */
+  margin-top: auto; /* Mueve el texto hacia abajo */
+  padding-top: 2vh; /* Añade un poco de espacio en la parte superior */
 }
 </style>

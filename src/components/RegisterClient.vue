@@ -1,5 +1,6 @@
 <script  setup>
 import NavBar from './NavBar.vue';
+import "friendly-challenge/widget";
 </script>
 
 <template>
@@ -11,7 +12,7 @@ import NavBar from './NavBar.vue';
             <img src="../assets/buffe.PNG" alt="" class="buffet">
         </div>
 
-        <div class="forms">
+        <form class="forms">
             <h2>Registro</h2>
 
             <div class="nombre">
@@ -20,8 +21,11 @@ import NavBar from './NavBar.vue';
                     <div class="form">
                         <label>Nombre(s)</label>
                     </div>
-        
-                    <input type="text"> 
+                    <ValidationProvider rules="required" v-slot="{errors}">
+                      <input type="text"> 
+                      <span class="errors">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                    
                 </div>
 
                 <div>
@@ -75,20 +79,27 @@ import NavBar from './NavBar.vue';
                     <input type="password"> 
                 </div>
                
-            </div>
-            
-
+            </div>        
 
             <div class="button-container">
             <b-button>Registrar</b-button>
           </div>
             
-        </div>
+        </form>
     </div>
     </div>
   </template>
   
-  
+<script>
+  import{extend} from 'vee-validate';
+  import{required, min, ext} from 'vee-validate/dist/rules';
+
+  extend("required", {
+    ...required, 
+    message:"Campo obligatorio",
+  });
+</script>
+
   <style scoped>
   body, h1, h2, p, ul, li {
     margin: 0;
