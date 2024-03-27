@@ -1,6 +1,10 @@
 <template>
     <div style="margin-left: auto">
-        <b-button v-b-modal.modal-1 variant="outline-primary" style="width: 25%;">Hacer Pedido</b-button>
+        
+        <b-button v-b-modal.modal-1 @click="eliminar(data.item)" variant="danger">
+    <b-icon icon="trash" scale="1"></b-icon>
+  </b-button>
+      
         <b-modal id="modal-1" title="Información de Pedido" hide-footer @shown="clearErrors" >
             <template #modal-header="{ close }">
                 <h5 style="color: #AE0505; margin-left: 25%;">Información de Pedido</h5>
