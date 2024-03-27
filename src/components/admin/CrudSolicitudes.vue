@@ -3,7 +3,7 @@
     <div class="app">
       <NavbarAdmin/>
       <div class="head">
-        <h1>SOLICITUDES</h1>
+        <h1>SOLICITUDES </h1>
       </div>
 
         <div class="buscar">
@@ -88,7 +88,7 @@ export default {
   data() {
     return {
       checkedStates: {},
-      perPage: 10,
+      perPage: 5,
       currentPage: 1,
       fields: [
         { key: 'id', label: 'ID' },
@@ -101,6 +101,11 @@ export default {
       items: [
         { id: 1, nombre: 'Fred', creacion: '23/03/2024', servicio:'comida', aprobado: false },
         { id: 2, nombre: 'Wilma', creacion: '23/03/2024', servicio:'comida', aprobado: false },
+        { id: 3, nombre: 'Barney', creacion: '23/03/2024', servicio:'comida', aprobado: false },
+        { id: 3, nombre: 'Barney', creacion: '23/03/2024', servicio:'comida', aprobado: false },
+        { id: 3, nombre: 'Barney', creacion: '23/03/2024', servicio:'comida', aprobado: false },
+        { id: 3, nombre: 'Barney', creacion: '23/03/2024', servicio:'comida', aprobado: false },
+        { id: 3, nombre: 'Barney', creacion: '23/03/2024', servicio:'comida', aprobado: false },
         { id: 3, nombre: 'Barney', creacion: '23/03/2024', servicio:'comida', aprobado: false },
       ]
     };

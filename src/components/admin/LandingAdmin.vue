@@ -21,7 +21,7 @@ import Footer from '../../components/Footer.vue';
             <h3>Administradores</h3>
             <img src="../../assets/administradoresIcon.png" alt="" class="iconService">
             <div>
-                <b-button class="btn">Ver más</b-button>
+                <b-button @click="goToAdmins" class="btn">Ver más</b-button>
             </div>
         </div>
         <div class="card2">
@@ -35,21 +35,21 @@ import Footer from '../../components/Footer.vue';
             <h3>Paquetes</h3>
             <img src="../../assets/paquetesIcon.png" alt="" class="iconService">
             <div>
-                <b-button class="btn">Ver más</b-button>
+                <b-button @click="goToPaquetes"  class="btn">Ver más</b-button>
             </div>      
         </div>
         <div class="card2">
-            <h3>Comida</h3>
+            <h3>Trabajadores</h3>
             <img src="../../assets/trabajadoresIcon.png" alt="" class="iconService">
             <div>
-                <b-button  class="btn">Ver más</b-button>
+                <b-button @click="goToTrabajadores"  class="btn">Ver más</b-button>
             </div>
         </div>
 
     </div>
 
     <template>
-  <b-button variant="dark" class="notification-button">
+  <b-button @click="goToSolicitudes" variant="dark" class="notification-button">
     Solicitudes de servicios
     <div  class="notification-badge">6</div>
   </b-button>
@@ -74,11 +74,14 @@ export default {
     goToWorkers() {
       this.$router.push('/admin-workers');
     },
-    goToPackages() {
-      this.$router.push('/admin-packages');
+    goToPaquetes() {
+      this.$router.push('/admin-paquetes');
     },
-    goToRequest() {
-      this.$router.push('/admin-request');
+    goToSolicitudes() {
+      this.$router.push('/admin-solicitudes');
+    },
+    goToTrabajadores() {
+      this.$router.push('/admin-trabajadores');
     },
   },
 };

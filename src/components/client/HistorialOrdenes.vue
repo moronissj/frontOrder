@@ -28,7 +28,7 @@
           </span>
         </template>
         <template #cell(detalles)="row">
-          <b-button size="sm" @click="verDetalles(row.item)">Ver detalles</b-button>
+          <b-button size="sm" @click="verDetalles(row.item)" >Ver detalles</b-button>
         </template>
       </b-table>
     </div>
@@ -88,6 +88,9 @@
       verDetalles(item) {
         // Aquí la lógica para ver los detalles del item
         console.log('Detalles del item:', item);
+
+      this.$router.push('/detalles-pedido');
+
       }
     }
   }

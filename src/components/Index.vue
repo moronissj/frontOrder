@@ -1,16 +1,10 @@
 <script setup>
-<<<<<<< HEAD
 import NavbarLanding from './NavbarLanding.vue'
 import Footer from './Footer.vue';
 import Carousel from './Carousel.vue';
 import RatingTaquiza from './RatingTaquiza.vue';
 import FancyBoxLanding from './FancyBoxLanding.vue';
 import FancyBoxTaquizas from './FancyBoxTaquizas.vue';
-=======
-import NavbarLanding from "./NavbarLanding.vue";
-import Footer from "./Footer.vue";
-import Carousel from "./Carousel.vue";
->>>>>>> c70a158451eaeacb0f16dd38530e33978e77697e
 </script>
 
 <template>
@@ -23,7 +17,7 @@ import Carousel from "./Carousel.vue";
       <b-button @click="goToLogin" class="banner-button"
         >¡Empieza a order ahora!</b-button
       >
-      <h1>HOLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</h1>
+  
     </div>
 
     <Carousel />
@@ -52,7 +46,7 @@ import Carousel from "./Carousel.vue";
         <div>
           <b-button @click="goToLogin" class="btn">Ver más</b-button>
         </div>
-<<<<<<< HEAD
+
     </div>
 
     <div class="quienes-somos-container">
@@ -87,13 +81,14 @@ import Carousel from "./Carousel.vue";
             <FancyBoxLanding></FancyBoxLanding>
         </div>
    
-=======
+
       </div>
+
+      <Footer />
     </div>
 
->>>>>>> c70a158451eaeacb0f16dd38530e33978e77697e
-    <Footer />
-  </div>
+
+
 </template>
 
 <script>

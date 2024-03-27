@@ -17,7 +17,7 @@ import NavbarClient from './NavbarClient.vue';
         <br>
         <div class="title">
             <div id="taqui">
-                <h1>Comida</h1>
+                <h1>Taquizas</h1>
                 <p>Lorem ipsum dolor sit amet consectetur adipiscing elit magna ante, montes hac cras vivamus nascetur
                     sem odio suspendisse, maecenas viverra commodo ligula primis cum quisque faucibus. Consequat libero
                     convallis auctor taciti metus ligula rhoncus tellus iaculis posuere litora imperdiet id massa, ante

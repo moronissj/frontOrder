@@ -1,19 +1,25 @@
 <template>
-  <div>
+  <div >
     <b-navbar toggleable="lg" variant="dark" class="bg-dark">
-      <b-navbar-brand href="#"><img src="../../assets/logo.png" class="logo" alt="logo"></b-navbar-brand>
+      <b-navbar-brand href="#" @click="goToHome"><img src="../../assets/logo.png" class="logo" alt="logo"></b-navbar-brand>
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav class="my-1">
 
           <b-nav-item href="#" @click="goToServices" ><p class="itemsM">Servicios</p ></b-nav-item>
             <b-nav-item href="#" @click="goToHistory"><p class="itemsM">Historial de compras</p ></b-nav-item>
-
-          <b-nav-item-dropdown text="User" right class="ml-auto itemsM"> <!--HAZ QUE ESTE EL TEXT SEA BLNACO-->
-            <b-dropdown-item href="#" @click="goToLogin">Cerrar sesión</b-dropdown-item>
-          </b-nav-item-dropdown>
         </b-navbar-nav>
+
+        <b-nav-item-dropdown right class="ml-auto itemsM2">
+      <!-- Utiliza el slot "button-content" para personalizar el contenido del dropdown -->
+      <template #button-content style="height: 7.5vh; width: 7.5vh; ">
+        <img src="../../assets/buffe.PNG" class="user-avatar" alt="User">
+      </template>
+      <b-dropdown-item @click="goToAccount">Cuenta</b-dropdown-item>
+      <b-dropdown-item @click="goToLogin">Cerrar sesión</b-dropdown-item>
+    </b-nav-item-dropdown>
       </b-collapse>
+      
     </b-navbar>
   </div>
 </template>
@@ -30,15 +36,31 @@ export default {
     goToHistory() {
       this.$router.push('/historial');
     },
+    goToAccount() {
+      this.$router.push('/cuenta-cliente');
+    },
+    goToHome() {
+      this.$router.push('/landing');
+    },
 
   },
 };
 </script>
 
 <style scoped>
+
+div{
+  width:100%
+}
 .logo {
   height: 7.5vh;
   width: 7.5vh;
+}
+.user-avatar {
+  height: 7.5vh; /* Ajusta esto según el tamaño que desees */
+  width: 7.5vh;
+  object-fit: cover;
+  border-radius: 50%; /* Esto creará una imagen redonda si es cuadrada */
 }
 
 /* Ensure all text in the navbar is white */
@@ -57,11 +79,27 @@ export default {
   font-weight: bold;
 }
 
+.itemsM2 {
+  margin-left: 66%;
+  margin-bottom: 2vh;
+}
+
+@media (max-width: 800px)  {
+  .itemsM2{
+    margin-left: 0
+  }
+}
+
+
+
 /* Other existing styles */
 /* ... */
 .bg-dark {
   background-color: #AE0505 !important;
+
 }
+
+
 
 </style>
 
