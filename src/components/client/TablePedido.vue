@@ -56,6 +56,24 @@
                 <td>Thornton</td>
                 <td><img src="../../assets/yop.jpg" alt="Foto de Mark" style="width: 70px; height: 50px;"/></td>
             </tr>
+            <tr>
+                <th scope="row">2</th>
+                <td>Jacob</td>
+                <td>Thornton</td>
+                <td><img src="../../assets/yop.jpg" alt="Foto de Mark" style="width: 70px; height: 50px;"/></td>
+            </tr>
+            <tr>
+                <th scope="row">2</th>
+                <td>Jacob</td>
+                <td>Thornton</td>
+                <td><img src="../../assets/yop.jpg" alt="Foto de Mark" style="width: 70px; height: 50px;"/></td>
+            </tr>
+            <tr>
+                <th scope="row">2</th>
+                <td>Jacob</td>
+                <td>Thornton</td>
+                <td><img src="../../assets/yop.jpg" alt="Foto de Mark" style="width: 70px; height: 50px;"/></td>
+            </tr>
             
         </tbody>
     </table>

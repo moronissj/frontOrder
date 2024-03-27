@@ -2,6 +2,7 @@
 import Footer from '../../components/Footer.vue';
 import TablePedido from '../client/TablePedido.vue';
 import ModalReseña from '../client/ModalReseña.vue';
+import NavbarClient from './NavbarClient.vue';
 
 
 
@@ -10,6 +11,7 @@ import ModalReseña from '../client/ModalReseña.vue';
 <template>
     <div>
         <div class="app">
+            <NavbarClient/>
            
         </div>
         <br>

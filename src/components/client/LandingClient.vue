@@ -98,6 +98,7 @@ export default {
     goToUtileria() {
       this.$router.push('/utileria');
     },
+    
 
   },
 };
