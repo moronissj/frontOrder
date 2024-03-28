@@ -1,6 +1,3 @@
-<script setup>
-import NavBar from "./NavBar.vue";
-</script>
 <template>
   <div class="app">
     <NavBar />
@@ -11,46 +8,84 @@ import NavBar from "./NavBar.vue";
       </div>
 
       <div class="forms">
-        <h2>Iniciar sesión</h2>
+        <div class="login-container">
+          <h1>Inicio de sesión</h1>
+          <b-form @submit.prevent="onSubmit">
+            <b-form-group
+              id="input-group-1"
+              label="Usuario:"
+              label-for="input-1"
+            >
+              <b-form-input
+                id="input-1"
+                v-model="form.username"
+                required
+              ></b-form-input>
+            </b-form-group>
 
-        <div class="form">
-          <label for="email">Correo Electrónico</label>
-          <input id="email" type="text" placeholder="Correo electrónico" />
-        </div>
-
-        <div class="form">
-          <label for="password">Contraseña</label>
-          <input id="password" type="password" placeholder="Contraseña" />
-        </div>
-
-        <b-button @click="goToLanding">Iniciar sesión</b-button>
-
-        <div class="message">
-          <label
-            >¿No eres usuario?
-            <router-link to="/register" class="msg">registrate</router-link>
-          </label>
+            <b-form-group
+              id="input-group-2"
+              label="Contraseña:"
+              label-for="input-2"
+            >
+              <b-form-input
+                id="input-2"
+                v-model="form.password"
+                type="password"
+                required
+              ></b-form-input>
+            </b-form-group>
+            <br />
+            <b-button type="submit" variant="primary">Ingresar</b-button>
+          </b-form>
+          <br />
+          <p>No tienes cuenta? Crea una <a href="/signup">aqui</a></p>
         </div>
       </div>
     </div>
   </div>
 </template>
 
-<script setup>
-import NavBar from "./NavBar.vue";
-</script>
-
 <script>
+import NavBar from "./NavBar.vue";
+import { jwtDecode } from "jwt-decode";
+
 export default {
+  name: "Login",
+  components: {
+    NavBar,
+  },
   data() {
     return {
-      types: ["email", "password"],
+      form: {
+        username: "",
+        password: "",
+      },
     };
   },
-
   methods: {
-    goToLanding() {
-      this.$router.push("/landing");
+    onSubmit() {
+      const apiUrl = "/api/auth/signin";
+      this.$http
+        .post(apiUrl, this.form)
+        .then((response) => {
+          localStorage.setItem("token", response.data.data);
+          const decoded = jwtDecode(response.data.data);
+          const role = decoded.roles[0].authority;
+          this.redirectUser(role);
+        })
+        .catch((error) => {
+          console.error("Error en el inicio de sesión: ", error);
+        });
+    },
+    redirectUser(role) {
+      if (role === "ADMIN") {
+        this.$router.push("/administrator-home");
+      } else if (role === "COMMON_USER") {
+        this.$router.push("/client-home");
+      } else if (role === "WORKER") {
+        this.$router.push("/worker-home");
+      }
     },
   },
 };

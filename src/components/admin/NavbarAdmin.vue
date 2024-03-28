@@ -1,36 +1,25 @@
 <template>
   <div>
     <b-navbar toggleable="lg" variant="dark" class="bg-dark">
-      <b-navbar-brand href="#" @click="goToHome"
+      <b-navbar-brand href="/administrator-home"
         ><img src="../../assets/logo.png" class="logo" alt="logo"
       /></b-navbar-brand>
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav class="my-1">
-          <b-nav-item href="#" @click="goToServices"
-            ><p class="itemsM">Servicios</p></b-nav-item
-          >
-          <b-nav-item href="#" @click="goToAdmins"
-            ><p class="itemsM">Administradores</p></b-nav-item
-          >
-          <b-nav-item href="#" @click="goToWorkers"
-            ><p class="itemsM">Trabajadores</p></b-nav-item
-          >
-          <b-nav-item href="#" @click="goToPaquetes"
-            ><p class="itemsM">Paquetes</p></b-nav-item
-          >
-          <b-nav-item href="#" @click="goToSolicitudes"
-            ><p class="itemsM">Solicitudes</p></b-nav-item
-          >
+          <b-nav-item href="/admin-services">Servicios</b-nav-item>
+          <b-nav-item href="/admin-administrators">Administradores</b-nav-item>
+          <b-nav-item href="/admin-workers">Trabajadores</b-nav-item>
+          <b-nav-item href="/admin-packages">Paquetes</b-nav-item>
+          <b-nav-item href="/admin-combos">Combos</b-nav-item>
+          <b-nav-item href="/admin-orders">Pedidos</b-nav-item>
         </b-navbar-nav>
-
         <b-nav-item-dropdown right class="ml-auto itemsM2">
-          <!-- Utiliza el slot "button-content" para personalizar el contenido del dropdown -->
           <template #button-content>
             <img src="../../assets/buffe.PNG" class="user-avatar" alt="User" />
           </template>
-          <b-dropdown-item @click="goToAccount">Cuenta</b-dropdown-item>
-          <b-dropdown-item @click="goToLogin">Cerrar sesión</b-dropdown-item>
+          <b-dropdown-item>Cuenta</b-dropdown-item>
+          <b-dropdown-item @click="cerrarSesion">Cerrar sesión</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-collapse>
     </b-navbar>
@@ -38,30 +27,11 @@
 </template>
 <script>
 export default {
+  name: "NavbarAdmin",
   methods: {
-    goToLogin() {
-      this.$router.push("/login");
-    },
-    goToServices() {
-      this.$router.push("/admin-servicios");
-    },
-    goToAdmins() {
-      this.$router.push("/admin-admins");
-    },
-    goToWorkers() {
-      this.$router.push("/admin-trabajadores");
-    },
-    goToPaquetes() {
-      this.$router.push("/admin-paquetes");
-    },
-    goToSolicitudes() {
-      this.$router.push("/admin-solicitudes");
-    },
-    goToHome() {
-      this.$router.push("/landingAdmin");
-    },
-    goToAccount() {
-      this.$router.push("/cuenta-admin");
+    cerrarSesion() {
+      localStorage.removeItem("token");
+      this.$router.push("/");
     },
   },
 };

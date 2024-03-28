@@ -20,10 +20,6 @@ import "friendly-challenge/widget";
             <div class="form">
               <label>Nombre(s)</label>
             </div>
-            <ValidationProvider rules="required" v-slot="{ errors }">
-              <input type="text" />
-              <span class="errors">{{ errors[0] }}</span>
-            </ValidationProvider>
           </div>
 
           <div>

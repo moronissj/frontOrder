@@ -1,7 +1,7 @@
 <script setup>
 import Footer from "../../components/Footer.vue";
 import ModalTaquizas from "../client/ModalTaquizas.vue";
-import RatingTaquiza from "../RatingTaquiza.vue";
+import Rating from "../Ratings.vue";
 import FancyBoxUtileria from "./FancyBoxUtileria.vue";
 import NavbarClient from "./NavbarClient.vue";
 </script>
@@ -38,7 +38,7 @@ import NavbarClient from "./NavbarClient.vue";
     <br />
     <h1>RESEÑAS</h1>
     <br />
-    <RatingTaquiza />
+    <Rating />
     <Footer />
   </div>
 </template>
