@@ -1,23 +1,32 @@
 <template>
-  <div id="navbar">
-    <img src="../assets/logo.png" class="logo" />
-    <b-button @click="goToLogin">Iniciar sesión</b-button>
+  <div>
+    <b-navbar id="navbar" toggleable="lg" type="dark" variant="dark">
+      <div class="container">
+        <b-navbar-brand href="/">
+          <img src="../assets/logo.png" class="logo" />
+        </b-navbar-brand>
+        <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+        <b-collapse id="nav-collapse" is-nav style="justify-content: end">
+          <b-navbar-nav>
+            <b-nav-item href="/login"
+              ><b-button class="banner-button"
+                >Iniciar Sesión</b-button
+              ></b-nav-item
+            >
+          </b-navbar-nav>
+        </b-collapse>
+      </div>
+    </b-navbar>
   </div>
 </template>
 
 <script>
-export default {
-  methods: {
-    goToLogin() {
-      this.$router.push("/login");
-    },
-  },
-};
+export default {};
 </script>
 
 <style scoped>
 #navbar {
-  background-color: #ae0505;
+  background-color: #ae0505 !important;
   height: 10vh;
   width: 100%;
   margin: 0;
@@ -42,6 +51,7 @@ export default {
   border: none;
   transition: all 0.2s ease;
   font-weight: 700;
+  width: 80%;
 }
 
 .btn:hover {

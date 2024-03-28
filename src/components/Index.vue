@@ -2,7 +2,7 @@
 import NavbarLanding from "./NavbarLanding.vue";
 import Footer from "./Footer.vue";
 import Carousel from "./Carousel.vue";
-import RatingTaquiza from "./RatingTaquiza.vue";
+import Rating from "./Ratings.vue";
 </script>
 
 <template>
@@ -15,9 +15,11 @@ import RatingTaquiza from "./RatingTaquiza.vue";
           <h1 id="bannerText">ORDER.COM</h1>
         </div>
         <div class="button-wrapper">
-          <b-button @click="goToLogin" class="banner-button">
-            ¡Empieza a ordenar ahora!
-          </b-button>
+          <a href="/signup">
+            <b-button class="banner-button">
+              ¡Empieza a ordenar ahora!
+            </b-button>
+          </a>
         </div>
       </div>
     </div>
@@ -39,42 +41,17 @@ import RatingTaquiza from "./RatingTaquiza.vue";
               />
             </div>
             <div>
-              <b-button @click="goToLogin" class="btn">Ver más</b-button>
-            </div>
-          </div>
-        </div>
-        <div class="col">
-          <div class="card black-card">
-            <h3>Comida</h3>
-            <div class="img-container">
-              <img src="../assets/comidaIcon.png" alt="" class="iconService" />
-            </div>
-            <div>
-              <b-button @click="goToLogin" class="btn">Ver más</b-button>
-            </div>
-          </div>
-        </div>
-        <div class="col">
-          <div class="card">
-            <h3>Utileria</h3>
-            <div class="img-container">
-              <img
-                src="../assets/utileriaIcon.png"
-                alt=""
-                class="iconService"
-              />
-            </div>
-            <div>
-              <b-button @click="goToLogin" class="btn">Ver más</b-button>
+              <a href="/signup">
+                <b-button class="btn">Ver más</b-button>
+              </a>
             </div>
           </div>
         </div>
       </div>
-
       <div class="servicios">
         <div>
           <h1 style="margin-bottom: 50px">Opiniones</h1>
-          <RatingTaquiza></RatingTaquiza>
+          <Rating></Rating>
         </div>
       </div>
     </div>
@@ -160,6 +137,7 @@ export default {
   background-color: white;
   font-weight: 700;
   color: #2d2a2a;
+  width: 70%;
 }
 
 .card h3 {
@@ -213,8 +191,8 @@ export default {
   }
 
   #bannerText {
-  color: white;
-  font-size: 4rem;
-}
+    color: white;
+    font-size: 4rem;
+  }
 }
 </style>

@@ -1,7 +1,7 @@
 <script setup>
 import Footer from "./Footer.vue";
 import Carousel from "./Carousel.vue";
-import RatingTaquiza from "./RatingTaquiza.vue";
+import Rating from "./Ratings.vue";
 import FancyBoxLanding from "./FancyBoxLanding.vue";
 import NavbarLanding from "./NavbarLanding.vue";
 import FancyBoxTaquizas from "./FancyBoxTaquizas.vue";
@@ -74,7 +74,7 @@ import FancyBoxTaquizas from "./FancyBoxTaquizas.vue";
     <div>
       <h1 color="#AE0505">Reseñas</h1>
       <br />
-      <RatingTaquiza></RatingTaquiza>
+      <Rating></Rating>
     </div>
     <div>
       <FancyBoxLanding></FancyBoxLanding>
