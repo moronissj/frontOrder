@@ -1,5 +1,5 @@
-import VueRouter from "vue-router";
 import Vue from "vue";
+import VueRouter from "vue-router";
 
 Vue.use(VueRouter);
 
@@ -52,7 +52,7 @@ const routes = [
         name: "register-paquete",
         component: () => import("../components/admin/RegisterPaquete.vue"),
       },
-      
+
       {
         path: "/landing",
         name: "landing",
@@ -106,7 +106,6 @@ const routes = [
         name: "admin-solicitudes",
         component: () => import("../components/admin/CrudSolicitudes.vue"),
       },
-
 
       {
         path: "/historial",
@@ -184,7 +183,6 @@ const routes = [
         name: "detalles-paquete",
         component: () => import("../components/client/DetallesPaquete.vue"),
       },
-
     ],
   },
 ];
