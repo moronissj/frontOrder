@@ -184,6 +184,11 @@ const routes = [
         name: "detalles-paquete",
         component: () => import("../components/client/DetallesPaquete.vue"),
       },
+      {
+        path: "/token",
+        name: "token",
+        component: () => import("../components/VistaToken.vue"),
+      },
 
     ],
   },
