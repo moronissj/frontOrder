@@ -126,6 +126,65 @@ const routes = [
         component: () => import("../components/worker/SolicitudesWorker.vue"),
       },
 
+      {
+        path: "/landings",
+        name: "landings",
+        component: () => import("../components/LandingS.vue"),
+      },
+
+      {
+        path: "/taquizas",
+        name: "taquizas",
+        component: () => import("../components/client/Taquizas.vue"),
+      },
+
+      {
+        path: "/comida",
+        name: "comida",
+        component: () => import("../components/client/Comida.vue"),
+      },
+
+      {
+        path: "/transporte",
+        name: "transporte",
+        component: () => import("../components/client/Transporte.vue"),
+      },
+
+      {
+        path: "/utileria",
+        name: "utileria",
+        component: () => import("../components/client/Utileria.vue"),
+      },
+
+      {
+        path: "/cuenta-cliente",
+        name: "cuenta-cliente",
+        component: () => import("../components/client/UpdateClient.vue"),
+      },
+
+      {
+        path: "/taquizas",
+        name: "taquizas",
+        component: () => import("../components/client/Taquizas.vue"),
+      },
+
+      {
+        path: "/cuenta-trabajador",
+        name: "cuenta-trabajador",
+        component: () => import("../components/worker/UpdateTrabajador.vue"),
+      },
+
+      {
+        path: "/cuenta-admin",
+        name: "cuenta-admin",
+        component: () => import("../components/admin/UpdateAdmin.vue"),
+      },
+      {
+        path: "/detalles-paquete",
+        name: "detalles-paquete",
+        component: () => import("../components/client/DetallesPaquete.vue"),
+      },
+
     ],
   },
 ];
