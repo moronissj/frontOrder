@@ -1,13 +1,13 @@
 <script>
-import { Fancybox } from '@fancyapps/ui';
-import '@fancyapps/ui/dist/fancybox/fancybox.css';
+import { Fancybox } from "@fancyapps/ui";
+import "@fancyapps/ui/dist/fancybox/fancybox.css";
 
 export default {
   props: {
     options: Object,
   },
   mounted() {
-    Fancybox.bind(this.$refs.container, '[data-fancybox]', {
+    Fancybox.bind(this.$refs.container, "[data-fancybox]", {
       ...(this.options || {}),
     });
   },
@@ -15,7 +15,7 @@ export default {
     Fancybox.unbind(this.$refs.container);
     Fancybox.close();
 
-    Fancybox.bind(this.$refs.container, '[data-fancybox]', {
+    Fancybox.bind(this.$refs.container, "[data-fancybox]", {
       ...(this.options || {}),
     });
   },

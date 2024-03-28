@@ -1,48 +1,44 @@
 <template>
-    
-    <div class="footer">
-        <div>
-            <h2>ORDER.COM</h2>
-            <div>SERVICIOS DE BUFFETS, TRANSPORTE, UTILERIA Y MÁS...</div>
-            <div>CONTACTO: 777888999</div>
-
-        </div>
-
-        <div>
-            <h2>SIGUENOS</h2>
-            <div>NUESTRAS REDES SOCIALES</div>
-            <div>
-                <a href="">
-                  <img src="../assets/facebookIcon.png" alt="" class="icons">
-                </a>
-                <a href="https://www.instagram.com/moronirb/">
-                  <img src="../assets/instagramIcon.png" alt="" class="icons">
-                </a>
-                <a href="">
-                  <img src="../assets/xIcon.png" alt="" class="icons">
-                </a>
-                
-            </div>
-        </div>
-
-        <div class="copyright">
-            TODOS LOS DERECHOS RESERVADOS<br>
-            <p>&copy; 2024 Order.com</p>
-        </div>
-        
+  <div class="footer">
+    <div>
+      <h2>ORDER.COM</h2>
+      <div>SERVICIOS DE BUFFETS, TRANSPORTE, UTILERIA Y MÁS...</div>
+      <div>CONTACTO: 777888999</div>
     </div>
+
+    <div>
+      <h2>SIGUENOS</h2>
+      <div>NUESTRAS REDES SOCIALES</div>
+      <div>
+        <a href="">
+          <img src="../assets/facebookIcon.png" alt="" class="icons" />
+        </a>
+        <a href="https://www.instagram.com/moronirb/">
+          <img src="../assets/instagramIcon.png" alt="" class="icons" />
+        </a>
+        <a href="">
+          <img src="../assets/xIcon.png" alt="" class="icons" />
+        </a>
+      </div>
+    </div>
+
+    <div class="copyright">
+      TODOS LOS DERECHOS RESERVADOS<br />
+      <p>&copy; 2024 Order.com</p>
+    </div>
+  </div>
 </template>
 
 <style scoped>
 .footer {
   background-color: #333;
-  font-family: 'Montserrat', sans-serif; /* Corregido el nombre de la fuente */
+  font-family: "Montserrat", sans-serif; /* Corregido el nombre de la fuente */
   display: flex;
   flex-wrap: wrap; /* Permite que los elementos se ajusten al tamaño de pantalla */
   justify-content: space-around; /* Distribuye el espacio alrededor de los elementos */
   padding: 2.5vh;
   margin-bottom: 0%;
-  color:white
+  color: white;
 }
 
 .icons {

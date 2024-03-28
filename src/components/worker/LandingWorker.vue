@@ -1,37 +1,35 @@
 <script setup>
-import NavbarWorker from './NavbarWorker.vue'
-import Footer from '../../components/Footer.vue';
-
+import NavbarWorker from "./NavbarWorker.vue";
+import Footer from "../../components/Footer.vue";
 </script>
 
 <template>
-    <div>
-      <div class="app">
-        <NavbarWorker/>
-      </div>
-  
-      <div class="banner-container">
-      <img src="../../assets/bannerWorker.png" alt="" class="banner-image">
-      <h1 class="banner-head">BIENVENIDO ${USUARIO}</h1>
-      <b-button @click="goToLogin" class="banner-button">Solicitudes de servicios</b-button>
+  <div>
+    <div class="app">
+      <NavbarWorker />
     </div>
 
-   
-    <Footer />
+    <div class="banner-container">
+      <img src="../../assets/bannerWorker.png" alt="" class="banner-image" />
+      <h1 class="banner-head">BIENVENIDO ${USUARIO}</h1>
+      <b-button @click="goToLogin" class="banner-button"
+        >Solicitudes de servicios</b-button
+      >
     </div>
-  </template>
-  
-  <script>
+
+    <Footer />
+  </div>
+</template>
+
+<script>
 export default {
   data() {
-    return {
-
-    };
+    return {};
   },
 
   methods: {
     goToLogin() {
-      this.$router.push('/login');
+      this.$router.push("/login");
     },
   },
 };
@@ -47,35 +45,34 @@ li {
   padding: 0;
 }
 
-h1{
-    margin: 10vh;
+h1 {
+  margin: 10vh;
 }
 
-h3{
-    margin-top: 2.5vh;
+h3 {
+  margin-top: 2.5vh;
 }
-.card1{
-    background-color: #AE0505;
-    height: auto;
-    width: auto;
-    border-radius: 16px;
-    color: white;
-    font-family: 'Montserrat', sans-serif;
-    padding:2.5vh;
-    margin-bottom: 5vh;
-}
-
-.card2{
-    background-color: #2D2A2A;
-    height: auto;
-    width: auto;
-    border-radius: 16px;
-    color:white;
-    font-family: 'Montserrat', sans-serif;
-    padding: 2.5vh;
-    margin-bottom: 5vh;
+.card1 {
+  background-color: #ae0505;
+  height: auto;
+  width: auto;
+  border-radius: 16px;
+  color: white;
+  font-family: "Montserrat", sans-serif;
+  padding: 2.5vh;
+  margin-bottom: 5vh;
 }
 
+.card2 {
+  background-color: #2d2a2a;
+  height: auto;
+  width: auto;
+  border-radius: 16px;
+  color: white;
+  font-family: "Montserrat", sans-serif;
+  padding: 2.5vh;
+  margin-bottom: 5vh;
+}
 
 img {
   width: 100%;
@@ -83,24 +80,26 @@ img {
   margin-bottom: 5vh;
 }
 
-.title{margin-top: 1vh;}
-
-.iconService{
-    height: 15vh;
-    width: 15vh;
+.title {
+  margin-top: 1vh;
 }
 
-.servicios{
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    margin: 5vh;
-    grid-gap: 5vh;
+.iconService {
+  height: 15vh;
+  width: 15vh;
 }
 
-.btn{
-    background-color: #d9d9d9;
-    color:#2D2A2A;
-    margin: 2.5vh;
+.servicios {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  margin: 5vh;
+  grid-gap: 5vh;
+}
+
+.btn {
+  background-color: #d9d9d9;
+  color: #2d2a2a;
+  margin: 2.5vh;
 }
 
 .banner-container {
@@ -118,8 +117,11 @@ img {
   position: absolute;
   top: 60%; /* Ajusta estos valores para posicionar el botón como desees */
   left: 25%;
-  transform: translate(-50%, -50%); /* Centra el botón exactamente en el medio del banner */
-  font-family: 'Montserrat', sans-serif; /* Tipografía */
+  transform: translate(
+    -50%,
+    -50%
+  ); /* Centra el botón exactamente en el medio del banner */
+  font-family: "Montserrat", sans-serif; /* Tipografía */
   width: 50vh;
   border-radius: 16px;
   font-weight: bold;
@@ -129,14 +131,16 @@ img {
   position: absolute;
   top: 45%; /* Ajusta estos valores para posicionar el botón como desees */
   left: 25%;
-  transform: translate(-50%, -50%); /* Centra el botón exactamente en el medio del banner */
-  font-family: 'Montserrat', sans-serif; /* Tipografía */
+  transform: translate(
+    -50%,
+    -50%
+  ); /* Centra el botón exactamente en el medio del banner */
+  font-family: "Montserrat", sans-serif; /* Tipografía */
   width: 100vh;
   color: white;
-
 }
 
-@media (max-width: 800px) { 
+@media (max-width: 800px) {
   .servicios {
     display: grid;
     grid-template-columns: 1fr; /* Cambia a una sola columna */
@@ -144,13 +148,17 @@ img {
     width: 90%;
   }
 
-  h1, h2, h3, h4 {
+  h1,
+  h2,
+  h3,
+  h4 {
     text-align: center; /* Centra los títulos */
     margin: 5vh; /* Ajusta el margen superior */
     font-size: 1.5rem; /* Reduce el tamaño del texto para pantallas pequeñas */
   }
 
-  .card1, .card2 {
+  .card1,
+  .card2 {
     width: 90%; /* Aumenta el ancho de las tarjetas para llenar más espacio */
     margin-left: 5%; /* Ajusta los márgenes para centrar las tarjetas */
     margin-right: 5%; /* Asegura que el margen derecho también esté ajustado */
@@ -173,9 +181,8 @@ img {
     margin: 1vh auto; /* Centra el botón horizontalmente y ajusta el margen vertical */
   }
 
-  .banner-button{
+  .banner-button {
     margin-left: 5vh;
   }
 }
-
 </style>

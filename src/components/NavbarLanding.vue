@@ -1,6 +1,6 @@
 <template>
   <div id="navbar">
-    <img src="../assets/logo.png" class="logo">
+    <img src="../assets/logo.png" class="logo" />
     <b-button @click="goToLogin">Iniciar sesión</b-button>
   </div>
 </template>
@@ -9,17 +9,16 @@
 export default {
   methods: {
     goToLogin() {
-      this.$router.push('/login');
+      this.$router.push("/login");
     },
-
   },
 };
 </script>
 
 <style scoped>
-#navbar{
-  background-color:  #AE0505;
-  height: 13vh;
+#navbar {
+  background-color: #ae0505;
+  height: 10vh;
   width: 100%;
   margin: 0;
   padding: 5vh;
@@ -28,12 +27,12 @@ export default {
   align-items: center;
 }
 
-.logo{
+.logo {
   height: 7.5vh;
   width: 7.5vh;
 }
 
-.btn{
+.btn {
   width: 25vh;
 }
 </style>

@@ -1,74 +1,64 @@
-
 <template>
-    <div class="app">
-      <NavbarAdmin/>
-      <div class="head">
-        <h1>TRABAJADORES</h1>
-        <b-button @click="goToRegister" variant="success">
-          AGREGAR TRABAJADOR<b-icon icon="plus" scale="1"></b-icon>
-        </b-button>
-      </div>
-
-        <div class="buscar">
-          <b-form-input  class="mr-sm-2" placeholder="Buscar"></b-form-input>
-          <b-button size="sm" class="my-2 my-sm-0" type="submit">Buscar</b-button>
-        </div>
-
-
-
-      <div class="overflow-auto">
-        <b-pagination
-          v-model="currentPage"
-          :total-rows="rows"
-          :per-page="perPage"
-          aria-controls="my-table"
-        ></b-pagination>
-  
-        <p class="mt-3">Current Page: {{ currentPage }}</p>
-  
-        <b-table
-          id="my-table"
-          :items="items"
-          :fields="fields"
-          :per-page="perPage"
-          :current-page="currentPage"
-          small
-        >
-
-        <template #cell(creacion)="data">
-  {{ data.item.creacion }}
-
-</template>
-
-
-
-<template #cell(acciones)="data">
-  {{ data.item.acciones }}
-
-  <b-button @click="modificar(data.item)" variant="warning">
-    <b-icon icon="pen" scale="1"></b-icon>
-  </b-button>
-  <b-button @click="eliminar(data.item)" variant="danger">
-    <b-icon icon="trash" scale="1"></b-icon>
-  </b-button>
-  <b-button @click="ver(data.item)" variant="info">
-    <b-icon icon="eye" scale="1"></b-icon>
-  </b-button>
-</template>
-
-
-        </b-table>
-      </div>
-      
+  <div class="app">
+    <NavbarAdmin />
+    <div class="head">
+      <h1>TRABAJADORES</h1>
+      <b-button @click="goToRegister" variant="success">
+        AGREGAR TRABAJADOR<b-icon icon="plus" scale="1"></b-icon>
+      </b-button>
     </div>
-  </template>
-  
-  <script>
-import NavbarAdmin from './NavbarAdmin.vue';
+
+    <div class="buscar">
+      <b-form-input class="mr-sm-2" placeholder="Buscar"></b-form-input>
+      <b-button size="sm" class="my-2 my-sm-0" type="submit">Buscar</b-button>
+    </div>
+
+    <div class="overflow-auto">
+      <b-pagination
+        v-model="currentPage"
+        :total-rows="rows"
+        :per-page="perPage"
+        aria-controls="my-table"
+      ></b-pagination>
+
+      <p class="mt-3">Current Page: {{ currentPage }}</p>
+
+      <b-table
+        id="my-table"
+        :items="items"
+        :fields="fields"
+        :per-page="perPage"
+        :current-page="currentPage"
+        small
+      >
+        <template #cell(creacion)="data">
+          {{ data.item.creacion }}
+        </template>
+
+        <template #cell(acciones)="data">
+          {{ data.item.acciones }}
+
+          <b-button @click="modificar(data.item)" variant="warning">
+            <b-icon icon="pen" scale="1"></b-icon>
+          </b-button>
+          <b-button @click="eliminar(data.item)" variant="danger">
+            <b-icon icon="trash" scale="1"></b-icon>
+          </b-button>
+          <b-button @click="ver(data.item)" variant="info">
+            <b-icon icon="eye" scale="1"></b-icon>
+          </b-button>
+        </template>
+      </b-table>
+    </div>
+  </div>
+</template>
+
+<script>
+import NavbarAdmin from "./NavbarAdmin.vue";
 
 export default {
   components: {
-    NavbarAdmin
+    NavbarAdmin,
   },
   data() {
     return {
@@ -76,22 +66,22 @@ export default {
       perPage: 10,
       currentPage: 1,
       fields: [
-        { key: 'id', label: 'ID' },
-        { key: 'nombre', label: 'Nombre' },
-        { key: 'creacion', label: 'Creacion' },
-        { key: 'acciones', label: 'Acciones' }
+        { key: "id", label: "ID" },
+        { key: "nombre", label: "Nombre" },
+        { key: "creacion", label: "Creacion" },
+        { key: "acciones", label: "Acciones" },
       ],
       items: [
-        { id: 1, nombre: 'Fred', creacion: '23/03/2024', aprobado: false },
-        { id: 2, nombre: 'Wilma', creacion: '23/03/2024', aprobado: false },
-        { id: 3, nombre: 'Barney', creacion: '23/03/2024', aprobado: false },
-      ]
+        { id: 1, nombre: "Fred", creacion: "23/03/2024", aprobado: false },
+        { id: 2, nombre: "Wilma", creacion: "23/03/2024", aprobado: false },
+        { id: 3, nombre: "Barney", creacion: "23/03/2024", aprobado: false },
+      ],
     };
   },
   computed: {
     rows() {
       return this.items.length;
-    }
+    },
   },
   methods: {
     ver(item) {
@@ -108,28 +98,26 @@ export default {
     },
 
     goToRegister() {
-      this.$router.push('/register-trabajador');
+      this.$router.push("/register-trabajador");
     },
-
-  }
-}
+  },
+};
 </script>
 
 <style scoped>
-.head{
+.head {
   margin: 5vh;
-  color:#ae0505;
+  color: #ae0505;
   display: flex;
   justify-content: space-between;
 }
 
-input{
+input {
   width: 50vh;
 }
 
-.buscar{
+.buscar {
   display: flex;
   justify-content: center;
 }
 </style>
-

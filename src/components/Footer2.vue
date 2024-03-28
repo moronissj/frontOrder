@@ -1,32 +1,29 @@
 <template>
-    <div class="footer">
-        <div>
-            <h2>ORDER.COM</h2>
-            <div>SERVICIOS DE BUFFETS, TRANSPORTE, UTILERIA Y MÁS...</div>
-            <div>CONTACTO: 777888999</div>
-
-        </div>
-
-        <div>
-            <h2>SIGUENOS</h2>
-            <div>NUESTRAS REDES SOCIALES</div>
-            <div>
-                <img src="../assets/facebookIcon.png" alt="" class="icons">
-                <img src="../assets/instagramIcon.png" alt="" class="icons">
-                <img src="../assets/xIcon.png" alt="" class="icons">
-            </div>
-        </div>
-
-        <div class="copyright">
-            TODOS LOS DERECHOS RESERVADOS
-        </div>
+  <div class="footer">
+    <div>
+      <h2>ORDER.COM</h2>
+      <div>SERVICIOS DE BUFFETS, TRANSPORTE, UTILERIA Y MÁS...</div>
+      <div>CONTACTO: 777888999</div>
     </div>
+
+    <div>
+      <h2>SIGUENOS</h2>
+      <div>NUESTRAS REDES SOCIALES</div>
+      <div>
+        <img src="../assets/facebookIcon.png" alt="" class="icons" />
+        <img src="../assets/instagramIcon.png" alt="" class="icons" />
+        <img src="../assets/xIcon.png" alt="" class="icons" />
+      </div>
+    </div>
+
+    <div class="copyright">TODOS LOS DERECHOS RESERVADOS</div>
+  </div>
 </template>
 
 <style scoped>
 .footer {
   background-color: #d9d9d9;
-  font-family: 'Monserrat', sans-serif;
+  font-family: "Monserrat", sans-serif;
   display: flex;
   flex-wrap: wrap; /* Permite que los elementos se ajusten según el ancho */
   justify-content: space-around;
@@ -53,7 +50,10 @@
 
 @media (min-width: 769px) {
   .footer {
-    grid-template-columns: repeat(3, 1fr); /* Define tres columnas en pantallas grandes */
+    grid-template-columns: repeat(
+      3,
+      1fr
+    ); /* Define tres columnas en pantallas grandes */
   }
 }
 
@@ -70,7 +70,7 @@
 /* Ajusta el margen superior para dispositivos más pequeños y cuando el footer cambia a disposición en columna */
 @media (max-width: 768px) {
   .copyright {
-    margin-top: 0 /* Reduce el margen superior en pantallas pequeñas */
+    margin-top: 0; /* Reduce el margen superior en pantallas pequeñas */
   }
 }
 </style>
