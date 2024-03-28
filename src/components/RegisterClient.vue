@@ -82,7 +82,7 @@ import "friendly-challenge/widget";
             </div>        
 
             <div class="button-container">
-            <b-button>Registrar</b-button>
+            <b-button @click="goToToken">Registrar</b-button>
           </div>
             
         </form>
@@ -93,6 +93,18 @@ import "friendly-challenge/widget";
 <script>
   import{extend} from 'vee-validate';
   import{required, min, ext} from 'vee-validate/dist/rules';
+
+  export default {
+  methods: {
+    goToToken() {
+      this.$router.push('/token');
+    },
+  },
+};
+
+
+
+
 
   extend("required", {
     ...required, 

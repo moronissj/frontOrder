@@ -5,14 +5,35 @@ import Carousel from '../../components/Carousel.vue';
 import RatingTaquiza from '../RatingTaquiza.vue';
 import FancyBoxLanding from '../FancyBoxLanding.vue';
 import FancyBoxTaquizas from '../FancyBoxTaquizas.vue';
+import { ref, onMounted } from 'vue';
+
+const isLoading = ref(true); // Estado para controlar la visualización del spinner
+
+onMounted(() => {
+  setTimeout(() => {
+    isLoading.value = false; // Oculta el spinner después de 1 segundo (ajusta según necesidad)
+  }, 5000);
+});
+
 </script>
 
 <template>
+   <div>
+
+    <div v-if="isLoading" class="spinner-fullscreen">
+      <div class="spinner-border text-primary" role="status" style="width: 20rem; height: 20rem;">
+      </div>
+    </div>
+
+  
+
     <div>
+      <div v-if="!isLoading">
       <div class="app">
         <NavbarClient/>
       </div>
-  
+    </div>
+
     <div class="banner-container">
       <img src="../../assets/Banner.png" alt="" class="banner-image">
 
@@ -29,21 +50,21 @@ import FancyBoxTaquizas from '../FancyBoxTaquizas.vue';
             <h3>Transporte</h3>
             <img src="../../assets/transporteIcon.png" alt="" class="iconService">
             <div>
-                <b-button class="btn" @click="goToTransporte">Ver más</b-button>
+              <b-button variant="primary" style="width: 30%;" @click="goToTransporte">Ver Más</b-button>
             </div>
         </div>
         <div class="card2">
             <h3>Comida</h3>
             <img src="../../assets/comidaIcon.png" alt="" class="iconService">
             <div>
-                <b-button class="btn" @click="goToComida">Ver más</b-button>
+              <b-button variant="primary" style="width: 30%;"@click="goToComida">Ver Más</b-button>
             </div>
         </div>
         <div class="card1">
             <h3>Utileria</h3>
             <img src="../../assets/utileriaIcon.png" alt="" class="iconService">
             <div>
-                <b-button class="btn" @click="goToUtileria">Ver más</b-button>
+              <b-button variant="primary" style="width: 30%;" @click="goToUtileria">Ver Más</b-button>
             </div>
             
         </div>
@@ -84,7 +105,8 @@ import FancyBoxTaquizas from '../FancyBoxTaquizas.vue';
    
     <Footer />
     </div>
-  </template>
+   </div>
+</template>
   
   <script>
 export default {
@@ -150,7 +172,16 @@ img {
   margin-bottom: 5vh;
 }
 
-.title{margin-top: 1vh;}
+
+
+.title {
+    margin-top: 5vh;
+    justify-content: center;
+    background-color: #AE0505;
+    color: #fff;
+    padding: 20px;
+    height: 25vh;
+}
 
 .iconService{
     height: 15vh;
@@ -164,11 +195,7 @@ img {
     grid-gap: 5vh;
 }
 
-.btn{
-    background-color: #d9d9d9;
-    color:#2D2A2A;
-    margin: 2.5vh;
-}
+
 
 @media (max-width: 800px) { 
   .servicios {
@@ -208,5 +235,54 @@ img {
   }
 }
 
+.quienes-somos-container {
+
+padding: 50px 20px;
+text-align: center;
+background-color: #AE0505;
+}
+
+.header-section h1 {
+font-size: 2.5rem;
+font-family: 'Montserrat', sans-serif;
+color: white;
+margin-bottom: 30px;
+}
+
+.content-section p {
+font-family: Georgia, 'Times New Roman', Times, serif;
+font-size: 1.2rem;
+line-height: 1.6;
+color: white;
+margin-bottom: 20px;
+}
+
+.spinner-fullscreen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw; /* Asegura que el contenedor del spinner ocupe toda la vista en ancho */
+  height: 100vh; /* Asegura que el contenedor del spinner ocupe toda la vista en alto */
+  position: fixed; /* Posicionamiento fijo para que el spinner no se mueva al hacer scroll */
+  top: 0;
+  left: 0;
+  z-index: 1050; /* Asegura que el spinner esté sobre otros elementos */
+  background-color: rgba(255, 255, 255, 0.9); /* Fondo ligeramente transparente para el spinner */
+  color: #ae0505;
+}
+.spinner-border {
+  width: 100px; /* Tamaño del spinner */
+  height: 100px;
+  border-width: 30px; /* Hace que el borde del spinner sea más grueso */
+}
+
+.loading-text {
+  margin-top: 2rem; /* Espacio entre el spinner y el texto */
+  font-size: 2rem; /* Tamaño del texto, ajusta según necesidad */
+  color: #0275d8; /* Color del texto, puedes ajustarlo para que coincida con el estilo de tu sitio */
+}
+
+
 
 </style>
+
