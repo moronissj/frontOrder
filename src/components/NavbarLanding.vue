@@ -25,14 +25,27 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative;
+  z-index: 2;
 }
 
 .logo {
-  height: 7.5vh;
-  width: 7.5vh;
+  width: 55px;
+  height: 55px;
 }
 
 .btn {
-  width: 25vh;
+  padding: 8px 25px;
+  background-color: white;
+  color: #2d2a2a;
+  border-radius: 10px;
+  border: none;
+  transition: all 0.2s ease;
+  font-weight: 700;
+}
+
+.btn:hover {
+  background-color: #2d2a2a;
+  color: white;
 }
 </style>

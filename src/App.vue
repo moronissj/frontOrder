@@ -1,25 +1,22 @@
 <script setup>
 // import HelloWorld from './components/HelloWorld.vue'
-
 </script>
 
 <template>
   <div id="app">
-   
-     <!--
+    <!--
   <router-link to="/">Inicio</router-link>
       <router-link to="/main">Formulario</router-link>
       <router-link to="/pagination">Paginación</router-link>
-     --> 
+     -->
 
-  <router-view />
+    <router-view />
   </div>
 </template>
 
 <style>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  text-align: center;
+  font-family: "Montserrat", sans-serif;
   color: #2c3e50;
 }
 
@@ -38,5 +35,4 @@ nav a {
 nav a.router-link-exact-active {
   color: #42b983;
 }
-
 </style>

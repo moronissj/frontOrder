@@ -1,13 +1,6 @@
 <template>
   <div id="app">
-    <Fancybox
-      :options="{
-        Carousel: {
-          infinite: false,
-          controls,
-        },
-      }"
-    >
+    <Fancybox>
       <a data-fancybox="gallery" href="https://lipsum.app/id/60/1600x1200">
         <img src="https://lipsum.app/id/60/200x150" width="300" height="200" />
       </a>

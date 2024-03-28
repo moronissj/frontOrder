@@ -1,100 +1,78 @@
 <!-- QUITE LOS V MODEL VALUE -->
 <template>
   <div id="container">
-    <div>
-      <b-card
-        header="Carrillo Puto"
-        header-text-variant="white"
-        header-tag="header"
-        header-bg-variant="dark"
-        footer="Card Footer"
-        footer-tag="footer"
-        footer-bg-variant="success"
-        footer-border-variant="dark"
-        title="Buena Experiencia"
-        style="max-width: 20rem"
-        id="card-1"
-      >
-        <b-card-text>
-          Number 9, Number 9, Number 9, Number 9, Number 9, Number 9, Number 9,
-          Number 9, Number 9, Number 9...
-        </b-card-text>
-        <b-form-rating variant="warning" class="mb-2"></b-form-rating>
-      </b-card>
-    </div>
-    <div>
-      <b-card
-        header="Jesús Ramírez"
-        header-text-variant="white"
-        header-tag="header"
-        header-bg-variant="dark"
-        footer="Card Footer"
-        footer-tag="footer"
-        footer-bg-variant="success"
-        footer-border-variant="dark"
-        title="Me gustó, pero no"
-        style="max-width: 20rem"
-        id="card-2"
-      >
-        <b-card-text>
-          Number 9, Number 9, Number 9, Number 9, Number 9, Number 9, Number 9,
-          Number 9, Number 9, Number 9...
-        </b-card-text>
-        <b-form-rating variant="warning" class="mb-2"></b-form-rating>
-      </b-card>
-    </div>
-
-    <div>
-      <b-card
-        header="Moroni Rodriguez"
-        header-text-variant="white"
-        header-tag="header"
-        header-bg-variant="dark"
-        footer="Card Footer"
-        footer-tag="footer"
-        footer-bg-variant="success"
-        footer-border-variant="dark"
-        title="Pésima Experiencia"
-        style="max-width: 20rem"
-        id="card-1"
-      >
-        <b-card-text>
-          Number 9, Number 9, Number 9, Number 9, Number 9, Number 9, Number 9,
-          Number 9, Number 9, Number 9...
-        </b-card-text>
-        <b-form-rating variant="warning" class="mb-2"></b-form-rating>
-      </b-card>
-    </div>
-    <div>
-      <b-card
-        header="Sergio Gómez"
-        header-text-variant="white"
-        header-tag="header"
-        header-bg-variant="dark"
-        footer="Card Footer"
-        footer-tag="footer"
-        footer-bg-variant="success"
-        footer-border-variant="dark"
-        title="Gran experiencia"
-        style="max-width: 20rem"
-        id="card-2"
-      >
-        <b-card-text>
-          Number 9, Number 9, Number 9, Number 9, Number 9, Number 9, Number 9,
-          Number 9, Number 9, Number 9...
-        </b-card-text>
-        <b-form-rating variant="warning" class="mb-2"></b-form-rating>
-      </b-card>
+    <div class="row">
+      <div class="col-3">
+        <b-card
+          header="Daniel Carrillo"
+          header-text-variant="white"
+          header-tag="header"
+          header-bg-variant="dark"
+          style="max-width: 20rem"
+          id="card-1"
+        >
+          <b-card-text>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque
+            nisi enim, posuere ornare ipsum non, ultricies condimentum ante.
+          </b-card-text>
+          <b-form-rating variant="warning" class="mb-2"></b-form-rating>
+        </b-card>
+      </div>
+      <div class="col-3">
+        <b-card
+          header="Jesús Ramírez"
+          header-text-variant="white"
+          header-tag="header"
+          header-bg-variant="dark"
+          style="max-width: 20rem"
+          id="card-2"
+        >
+          <b-card-text>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque
+            nisi enim, posuere ornare ipsum non, ultricies condimentum ante.
+          </b-card-text>
+          <b-form-rating variant="warning" class="mb-2"></b-form-rating>
+        </b-card>
+      </div>
+      <div class="col-3">
+        <b-card
+          header="Moroni Rodriguez"
+          header-text-variant="white"
+          header-tag="header"
+          header-bg-variant="dark"
+          style="max-width: 20rem"
+          id="card-1"
+        >
+          <b-card-text>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque
+            nisi enim, posuere ornare ipsum non, ultricies condimentum ante.
+          </b-card-text>
+          <b-form-rating variant="warning" class="mb-2"></b-form-rating>
+        </b-card>
+      </div>
+      <div class="col-3">
+        <b-card
+          header="UN PENDEJO"
+          header-text-variant="white"
+          header-tag="header"
+          header-bg-variant="dark"
+          style="max-width: 20rem"
+          id="card-2"
+        >
+          <b-card-text>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque
+            nisi enim, posuere ornare ipsum non, ultricies condimentum ante.
+          </b-card-text>
+          <b-form-rating variant="warning" class="mb-2"></b-form-rating>
+        </b-card>
+      </div>
     </div>
   </div>
 </template>
 
 <style>
 #container {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr); /* 4 columnas por defecto */
-  grid-gap: 20px; /* Espaciado entre tarjetas */
-  padding: 20px; /* Agrega algo de padding alrededor del contenedor */
+  margin-bottom: 50px;
 }
 
 /* Ajustes para tarjetas para manejar el ancho y el margen de manera más flexible */

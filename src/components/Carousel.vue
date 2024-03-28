@@ -1,5 +1,5 @@
 <template>
-  <div class="mine">
+  <div class="container-carousel">
     <b-carousel
       id="carousel-1"
       v-model="slide"
@@ -14,26 +14,18 @@
       @sliding-start="onSlideStart"
       @sliding-end="onSlideEnd"
     >
-      <b-carousel-slide>
+      <b-carousel-slide class="container-image">
         <template #img>
-          <img
-            class="d-block img-fluid w-100"
-            src="../assets/comida2.jpg"
-            alt="Imagen 1"
-          />
+          <img src="../assets/comida2.jpg" alt="Imagen 1" />
         </template>
         <div class="carousel-caption d-none d-md-block">
           <h5>¡Prueba nuestros buffetes!</h5>
         </div>
       </b-carousel-slide>
 
-      <b-carousel-slide>
+      <b-carousel-slide class="container-image">
         <template #img>
-          <img
-            class="d-block img-fluid w-100"
-            src="../assets/comida3.jpg"
-            alt="Imagen 1"
-          />
+          <img src="../assets/comida1.jpg" alt="Imagen 1" />
         </template>
         <div class="carousel-caption d-none d-md-block">
           <h5>¡Cónoce nuestros mejores paquetes!</h5>
@@ -63,14 +55,16 @@ export default {
 </script>
 
 <style>
-.mine {
-  width: 85%;
-  height: 20%;
-  margin-left: 7.5%;
-  margin-bottom: 0;
+.container-carousel {
+  height: 70vh;
 }
-h5 {
-  font-size: 2.5rem;
-  font-family: "Montserrat", sans-serif;
+.container-image {
+  height: 70vh;
+}
+img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  overflow: hidden;
 }
 </style>
