@@ -1,15 +1,7 @@
-<script setup>
-// import HelloWorld from './components/HelloWorld.vue'
-</script>
+<script setup></script>
 
 <template>
   <div id="app">
-    <!--
-  <router-link to="/">Inicio</router-link>
-      <router-link to="/main">Formulario</router-link>
-      <router-link to="/pagination">Paginación</router-link>
-     -->
-
     <router-view />
   </div>
 </template>
