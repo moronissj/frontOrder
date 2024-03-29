@@ -5,101 +5,101 @@ import Carousel from "../Carousel.vue";
 </script>
 
 <template>
-  <div >
+  <div>
     <NavbarAdmin />
-  
 
-<!-- Spinner de carga -->
-<div v-if="isLoading" class="spinner-fullscreen">
-  <div
-    class="spinner-border text-primary"
-    role="status"
-    style="width: 20rem; height: 20rem"
-  ></div>
-</div>
+    <!-- Spinner de carga -->
+    <div v-if="isLoading" class="spinner-fullscreen">
+      <div
+        class="spinner-border text-primary"
+        role="status"
+        style="width: 20rem; height: 20rem"
+      ></div>
+    </div>
 
-<!-- Contenido de la página -->
-<div v-if="!isLoading">
-  <div class="banner-container">
-    <div class="banner-background"></div>
-    <div class="container">
-      <div class="text-wrapper">
-        <h1 id="bannerText">ORDER.COM</h1>
+    <!-- Contenido de la página -->
+    <div v-if="!isLoading">
+      <div class="banner-container">
+        <div class="banner-background"></div>
+        <div class="container">
+          <div class="text-wrapper">
+            <h1 id="bannerText">ORDER.COM</h1>
+          </div>
+          <div class="button-wrapper">
+            <h1 class="bienvenido">Bienvenido</h1>
+          </div>
+        </div>
       </div>
-      <div class="button-wrapper">
-        <h1 class="bienvenido">Bienvenido</h1>
+
+      <div class="container">
+        <Carousel />
+        <div class="title">
+          <h1>Servicios</h1>
+        </div>
+        <div class="row" id="cards">
+          <div class="col">
+            <div class="card">
+              <h4>Administradores</h4>
+              <div class="img-container">
+                <img
+                  src="../../assets/administradoresIcon.png"
+                  alt=""
+                  class="iconService"
+                />
+              </div>
+              <div>
+                <b-button @click="goToLogin" class="btn">Ver más</b-button>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card black-card">
+              <h4>Servicios</h4>
+              <div class="img-container">
+                <img
+                  src="../../assets/comidaIcon.png"
+                  alt=""
+                  class="iconService"
+                />
+              </div>
+              <div>
+                <b-button @click="goToLogin" class="btn">Ver más</b-button>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card">
+              <h4>Paquetes</h4>
+              <div class="img-container">
+                <img
+                  src="../../assets/paquetesIcon.png"
+                  alt=""
+                  class="iconService"
+                />
+              </div>
+              <div>
+                <b-button @click="goToLogin" class="btn">Ver más</b-button>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card black-card">
+              <h4>Trabajadores</h4>
+              <div class="img-container">
+                <img
+                  src="../../assets/trabajadoresIcon.png"
+                  alt=""
+                  class="iconService"
+                />
+              </div>
+              <div>
+                <b-button @click="goToLogin" class="btn">Ver más</b-button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-
-    <div class="container">
-      <Carousel />
-      <div class="title">
-        <h1>Servicios</h1>
-      </div>
-      <div class="row" id="cards">
-        <div class="col">
-          <div class="card">
-            <h4>Administradores</h4>
-            <div class="img-container">
-              <img
-                src="../../assets/administradoresIcon.png"
-                alt=""
-                class="iconService"
-              />
-            </div>
-            <div>
-              <b-button @click="goToLogin" class="btn">Ver más</b-button>
-            </div>
-          </div>
-        </div>
-        <div class="col">
-          <div class="card black-card">
-            <h4>Servicios</h4>
-            <div class="img-container">
-              <img src="../../assets/comidaIcon.png" alt="" class="iconService" />
-            </div>
-            <div>
-              <b-button @click="goToLogin" class="btn">Ver más</b-button>
-            </div>
-          </div>
-        </div>
-        <div class="col">
-          <div class="card">
-            <h4>Paquetes</h4>
-            <div class="img-container">
-              <img
-                src="../../assets/paquetesIcon.png"
-                alt=""
-                class="iconService"
-              />
-            </div>
-            <div>
-              <b-button @click="goToLogin" class="btn">Ver más</b-button>
-            </div>
-          </div>
-        </div>
-        <div class="col">
-          <div class="card black-card">
-            <h4>Trabajadores</h4>
-            <div class="img-container">
-              <img
-                src="../../assets/trabajadoresIcon.png"
-                alt=""
-                class="iconService"
-              />
-            </div>
-            <div>
-              <b-button @click="goToLogin" class="btn">Ver más</b-button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-
-    </div> 
-
-  </div>
 
     <Footer />
   </div>
@@ -110,7 +110,6 @@ export default {
   data() {
     return {};
   },
-
   methods: {
     goToLogin() {
       this.$router.push("/login");
@@ -186,7 +185,6 @@ export default {
 
 .card h4 {
   margin-bottom: 20px;
-
 }
 
 .img-container {
@@ -208,18 +206,17 @@ export default {
   margin-bottom: 50px;
 }
 
-.bienvenido{
+.bienvenido {
   color: white;
   font-size: 4rem;
 }
 
-
 @media (max-width: 800px) {
   #app {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box; /* Esto asegura que el padding no afecte el ancho total de los elementos */
-}
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* Esto asegura que el padding no afecte el ancho total de los elementos */
+  }
   #cards {
     display: grid;
     grid-template-columns: 1fr; /* Todos los elementos se alinean en una sola columna */
@@ -248,11 +245,11 @@ export default {
   }
 
   #bannerText {
-  font-size: 4rem;
-}
+    font-size: 4rem;
+  }
 
-.bienvenido{
-  font-size: 3rem;
-}
+  .bienvenido {
+    font-size: 3rem;
+  }
 }
 </style>
