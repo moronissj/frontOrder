@@ -14,7 +14,7 @@ import LandingClient from "../components/client/LandingClient.vue";
 import LandingAdmin from "../components/admin/LandingAdmin.vue";
 import LandingWorker from "../components/worker/LandingWorker.vue";
 import Servicios from "../components/client/Servicios.vue";
-import CrudServicios from "../components/admin/CrudServicios.vue";
+import CrudServicios from "../components/admin/crudservices/CrudServicios.vue";
 import CrudAdmins from "../components/admin/CrudAdmins.vue";
 import CrudPaquetes from "../components/admin/CrudPaquetes.vue";
 import CrudTrabajadores from "../components/admin/CrudTrabajadores.vue";
