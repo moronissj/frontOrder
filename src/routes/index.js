@@ -7,33 +7,26 @@ Vue.use(VueRouter);
 import Index from "../components/Index.vue";
 import Login from "../components/Login.vue";
 import RegisterClient from "../components/RegisterClient.vue";
-import RegisterAdmin from "../components/admin/RegisterAdmin.vue";
-import RegisterTrabajador from "../components/admin/RegisterTrabajador.vue";
-import RegisterPaquete from "../components/admin/RegisterPaquete.vue";
 import LandingClient from "../components/client/LandingClient.vue";
 import LandingAdmin from "../components/admin/LandingAdmin.vue";
 import LandingWorker from "../components/worker/LandingWorker.vue";
 import Servicios from "../components/client/Servicios.vue";
 import CrudServicios from "../components/admin/crudservices/CrudServicios.vue";
-import CrudAdmins from "../components/admin/CrudAdmins.vue";
+import CrudAdmins from "../components/admin/crudadmins/CrudAdmins.vue";
 import CrudPaquetes from "../components/admin/crudpackages/CrudPaquetes.vue";
 import CrudTrabajadores from "../components/admin/crudworkers/CrudTrabajadores.vue";
-import CrudCombos from "../components/admin/CrudCombos.vue";
+import CrudCombos from "../components/admin/crudcombos/CrudCombos.vue";
 import CrudSolicitudes from "../components/admin/CrudSolicitudes.vue";
 import HistorialOrdenes from "../components/client/HistorialOrdenes.vue";
-import RegisterService from "../components/admin/RegisterService.vue";
 import SolicitudesWorker from "../components/worker/SolicitudesWorker.vue";
 import LandingS from "../components/LandingS.vue";
 import Taquizas from "../components/client/Taquizas.vue";
 import Comida from "../components/client/Comida.vue";
 import Transporte from "../components/client/Transporte.vue";
 import Utileria from "../components/client/Utileria.vue";
-import UpdateClient from "../components/client/UpdateClient.vue";
-import UpdateTrabajador from "../components/worker/UpdateTrabajador.vue";
-import UpdateAdmin from "../components/admin/UpdateAdmin.vue";
 import DetallesPaquete from "../components/client/DetallesPaquete.vue";
 import VistaToken from "../components/VistaToken.vue";
-import AdminProfile from "../components/admin/AdminProfile.vue";
+import AdminProfile from "../components/admin/profileadmin/AdminProfile.vue";
 
 const routes = [
   {

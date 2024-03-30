@@ -5,12 +5,10 @@
       <div class="head">
         <div class="row">
           <div class="col">
-            <h1>TRABAJADORES</h1>
+            <h1>ADMINISTRADORES</h1>
           </div>
           <div class="col" id="colButton">
-            <CreateWorkerModal
-              @registroExitoso="fetchWorkers"
-            ></CreateWorkerModal>
+            <CreateAdminModal @registroExitoso="fetchAdmins"></CreateAdminModal>
           </div>
         </div>
       </div>
@@ -76,7 +74,7 @@
             stacked="md"
             fixed
             show-empty
-            id="WorkersTable"
+            id="adminsTable"
             small
             @filtered="onFiltered"
             label-sort-asc="Click para ordenar ascendente"
@@ -99,23 +97,23 @@
                 >
                   <b-icon icon="plus" scale="1.5"></b-icon>
                 </b-button>
-                <EditWorkerModal
-                  :key="'modalEdicion_' + row.item.workerId"
-                  :worker="row.item"
-                  @actualizacionExitosa="fetchWorkers"
-                ></EditWorkerModal>
+                <EditAdminModal
+                  :key="'modalEdicion_' + row.item.adminId"
+                  :admin="row.item"
+                  @actualizacionExitosa="fetchAdmins"
+                ></EditAdminModal>
                 <b-button class="table-button" variant="warning" size="sm">
                   <b-icon icon="circle" scale=".7"></b-icon
                 ></b-button>
                 <b-button class="table-button" variant="secondary" size="sm"
                   ><b-icon icon="box" scale="1"></b-icon
                 ></b-button>
+
                 <b-button class="table-button" variant="danger" size="sm">
                   <b-icon icon="arrow-down-right" scale="1"></b-icon>
                 </b-button>
               </div>
             </template>
-
             <template #row-details="row">
               <b-card>
                 <ul>
@@ -124,14 +122,14 @@
                     :key="key"
                     style="margin: 10px 0"
                   >
-                    <template v-if="key === 'Foto del Trabajador'">
+                    <template v-if="key === 'Foto del Administrador'">
                       <div
                         class="item-image-container"
                         style="margin-top: 30px; border-radius: 10px"
                       >
                         <img
                           :src="value"
-                          alt="Worker Image"
+                          alt="Admin Image"
                           style="width: 100px; height: auto"
                         />
                       </div>
@@ -152,7 +150,7 @@
                 :per-page="perPage"
                 align="fill"
                 size="sm"
-                aria-controls="WorkersTable"
+                aria-controls="adminsTable"
               ></b-pagination>
             </div>
           </div>
@@ -183,34 +181,34 @@
 
 <script>
 import NavbarAdmin from "../NavbarAdmin.vue";
-import CreateWorkerModal from "./CreateWorkerModal.vue";
-import EditWorkerModal from "./EditWorkerModal.vue";
+import CreateAdminModal from "./CreateAdminModal.vue";
+import EditAdminModal from "./EditAdminModal.vue";
 export default {
-  name: "CrudTrabajador",
+  name: "CrudAdmins",
   components: {
     NavbarAdmin,
-    CreateWorkerModal,
-    EditWorkerModal,
+    CreateAdminModal,
+    EditAdminModal,
   },
   data() {
     return {
       items: [],
       fields: [
         {
-          key: "workerName",
-          label: "Nombre del Trabajador",
+          key: "adminName",
+          label: "Nombre del admin",
           sortable: true,
           sortDirection: "desc",
         },
         {
-          key: "workerFirstLastName",
-          label: "Apellido Paterno del Trabajador",
+          key: "adminFirstLastName",
+          label: "Nombre del admin",
           sortable: true,
           sortDirection: "desc",
         },
         {
-          key: "workerSecondLastName",
-          label: "Apellido Materno del Trabajador",
+          key: "adminSecondLastName",
+          label: "Nombre del admin",
           sortable: true,
           sortDirection: "desc",
         },
@@ -228,20 +226,19 @@ export default {
       return this.items.map((item) => {
         const processed = {};
         const keyMappings = {
-          workerName: "Nombre del trabajador",
-          workerFirsLastName: "Apellido paterno del trabajador",
-          workerSecondLastName: "Apellido materno del trabajador",
-          workerEmail: "Correo del trabajador",
-          workerCellphone: "Teléfono de trabajador",
-          workerSecurityNumber: "Número de seguridad del trabajador",
-          workerSalary: "Salario del trabajador",
-          workerRfc: "RFC del trabajador",
+          adminName: "Nombre del administrador",
+          adminFirstLastName: "Apelido parterno del trabajador",
+          adminSecondLastName: "Apellido materno del trabajador",
+          adminEmail: "Correo del trabajador",
+          adminCellphone: "Telefono",
+          adminSalary: "Salario",
+          adminSecurityNumber: "Numero de Seguridad",
         };
         Object.entries(item).forEach(([key, value]) => {
-          if (key !== "_showDetails" && key !== "workerState") {
+          if (key !== "_showDetails") {
             const friendlyKey = keyMappings[key] || key;
-            if (key === "workerProfilePicUrl") {
-              processed["Foto del Trabajador"] = value;
+            if (key === "adminProfilePicUrl") {
+              processed["Foto del Administrador"] = value;
             } else {
               processed[friendlyKey] = value;
             }
@@ -253,7 +250,7 @@ export default {
   },
   mounted() {
     this.totalRows = this.items.length;
-    this.fetchWorkers();
+    this.fetchAdmins();
   },
   methods: {
     onFiltered(filteredItems) {
@@ -261,10 +258,10 @@ export default {
       this.currentPage = 1;
     },
     // handleDragStart(e, item) {
-    //   console.log(item.workerId);
-    //   e.dataTransfer.setData("text/plain", item.WorkerId);
+    //   console.log(item.adminId);
+    //   e.dataTransfer.setData("text/plain", item.adminId);
     // },
-    // deleteWorkerOnDrop(id) {
+    // deleteAdminOnDrop(id) {
     //   this.$swal({
     //     title: "¿Estas seguro?",
     //     text: "No podras revertir este cambio",
@@ -277,14 +274,14 @@ export default {
     //   }).then((result) => {
     //     if (result.isConfirmed) {
     //       this.$http
-    //         .delete(`/api/accoutns/${id}`)
+    //         .delete(`/api/account/${id}`)
     //         .then((response) => {
     //           this.$swal({
     //             title: "Eliminado",
-    //             text: "El Trabajador ha sido eliminado con exito",
+    //             text: "El servicio ha sido eliminado con exito",
     //             icon: "success",
     //           });
-    //           this.fetchWorkers();
+    //           this.fetchAdmins();
     //         })
     //         .catch((error) => {
     //           console.error(error);
@@ -293,12 +290,12 @@ export default {
     //   });
     // },
     // handleDropOnTrash(e) {
-    //   const WorkerId = e.dataTransfer.getData("text/plain");
-    //   this.deleteWorkerOnDrop(WorkerId);
+    //   const adminId = e.dataTransfer.getData("text/plain");
+    //   this.deleteAdminOnDrop(adminId);
     // },
-    fetchWorkers() {
+    fetchAdmins() {
       this.$http
-        .get("/api/accounts/workers")
+        .get("/api/accounts/administrators")
         .then((response) => {
           this.items = response.data;
         })

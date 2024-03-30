@@ -5,12 +5,10 @@
       <div class="head">
         <div class="row">
           <div class="col">
-            <h1>TRABAJADORES</h1>
+            <h1>COMBOS</h1>
           </div>
           <div class="col" id="colButton">
-            <CreateWorkerModal
-              @registroExitoso="fetchWorkers"
-            ></CreateWorkerModal>
+            <CreateComboModal @registroExitoso="fetchCombo"></CreateComboModal>
           </div>
         </div>
       </div>
@@ -76,7 +74,7 @@
             stacked="md"
             fixed
             show-empty
-            id="WorkersTable"
+            id="comboTable"
             small
             @filtered="onFiltered"
             label-sort-asc="Click para ordenar ascendente"
@@ -99,18 +97,25 @@
                 >
                   <b-icon icon="plus" scale="1.5"></b-icon>
                 </b-button>
-                <EditWorkerModal
-                  :key="'modalEdicion_' + row.item.workerId"
-                  :worker="row.item"
-                  @actualizacionExitosa="fetchWorkers"
-                ></EditWorkerModal>
+                <EditComboModal
+                  :key="'modalEdicion_' + row.item.comboId"
+                  :combo="row.item"
+                  @actualizacionExitosa="fetchCombo"
+                ></EditComboModal>
                 <b-button class="table-button" variant="warning" size="sm">
                   <b-icon icon="circle" scale=".7"></b-icon
                 ></b-button>
                 <b-button class="table-button" variant="secondary" size="sm"
                   ><b-icon icon="box" scale="1"></b-icon
                 ></b-button>
-                <b-button class="table-button" variant="danger" size="sm">
+
+                <b-button
+                  draggable="true"
+                  @dragstart="handleDragStart($event, row.item)"
+                  class="table-button"
+                  variant="danger"
+                  size="sm"
+                >
                   <b-icon icon="arrow-down-right" scale="1"></b-icon>
                 </b-button>
               </div>
@@ -124,14 +129,14 @@
                     :key="key"
                     style="margin: 10px 0"
                   >
-                    <template v-if="key === 'Foto del Trabajador'">
+                    <template v-if="key === 'Imagen del Combo'">
                       <div
                         class="item-image-container"
                         style="margin-top: 30px; border-radius: 10px"
                       >
                         <img
                           :src="value"
-                          alt="Worker Image"
+                          alt="Combo Image"
                           style="width: 100px; height: auto"
                         />
                       </div>
@@ -152,7 +157,7 @@
                 :per-page="perPage"
                 align="fill"
                 size="sm"
-                aria-controls="WorkersTable"
+                aria-controls="comboTable"
               ></b-pagination>
             </div>
           </div>
@@ -164,6 +169,8 @@
       >
         <div
           class="bin-container-inner"
+          @dragover.prevent
+          @drop="handleDropOnTrash"
           style="
             background: red;
             width: 5%;
@@ -183,36 +190,34 @@
 
 <script>
 import NavbarAdmin from "../NavbarAdmin.vue";
-import CreateWorkerModal from "./CreateWorkerModal.vue";
-import EditWorkerModal from "./EditWorkerModal.vue";
+import CreateComboModal from "./CreateComboModal.vue";
+import EditComboModal from "./EditComboModal.vue";
 export default {
-  name: "CrudTrabajador",
+  name: "CrudCombos",
   components: {
     NavbarAdmin,
-    CreateWorkerModal,
-    EditWorkerModal,
+    CreateComboModal,
+    EditComboModal,
   },
   data() {
     return {
       items: [],
       fields: [
         {
-          key: "workerName",
-          label: "Nombre del Trabajador",
+          key: "comboName",
+          label: "Nombre del Combo",
           sortable: true,
           sortDirection: "desc",
         },
         {
-          key: "workerFirstLastName",
-          label: "Apellido Paterno del Trabajador",
+          key: "isActive",
+          label: "Estado del Combo",
+          formatter: (value, key, item) => {
+            return value ? "En servicio" : "Bloqueado";
+          },
           sortable: true,
-          sortDirection: "desc",
-        },
-        {
-          key: "workerSecondLastName",
-          label: "Apellido Materno del Trabajador",
-          sortable: true,
-          sortDirection: "desc",
+          sortByFormatted: true,
+          filterByFormatted: true,
         },
         { key: "actions", label: "Acciones" },
       ],
@@ -228,20 +233,17 @@ export default {
       return this.items.map((item) => {
         const processed = {};
         const keyMappings = {
-          workerName: "Nombre del trabajador",
-          workerFirsLastName: "Apellido paterno del trabajador",
-          workerSecondLastName: "Apellido materno del trabajador",
-          workerEmail: "Correo del trabajador",
-          workerCellphone: "Teléfono de trabajador",
-          workerSecurityNumber: "Número de seguridad del trabajador",
-          workerSalary: "Salario del trabajador",
-          workerRfc: "RFC del trabajador",
+          comboName: "Nombre del Combo",
+          comboDescription: "Descripción",
+          comboPrice: "Precio del Combo",
+          comboDesignatedHours: "Horas a Asignar",
+          comboWorkersNumber: "Número de Trabajadores a Asignar",
         };
         Object.entries(item).forEach(([key, value]) => {
-          if (key !== "_showDetails" && key !== "workerState") {
+          if (key !== "_showDetails" && key !== "comboState") {
             const friendlyKey = keyMappings[key] || key;
-            if (key === "workerProfilePicUrl") {
-              processed["Foto del Trabajador"] = value;
+            if (key === "comboImgUrl") {
+              processed["Imagen del Combo"] = value;
             } else {
               processed[friendlyKey] = value;
             }
@@ -253,52 +255,52 @@ export default {
   },
   mounted() {
     this.totalRows = this.items.length;
-    this.fetchWorkers();
+    this.fetchCombo();
   },
   methods: {
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length;
       this.currentPage = 1;
     },
-    // handleDragStart(e, item) {
-    //   console.log(item.workerId);
-    //   e.dataTransfer.setData("text/plain", item.WorkerId);
-    // },
-    // deleteWorkerOnDrop(id) {
-    //   this.$swal({
-    //     title: "¿Estas seguro?",
-    //     text: "No podras revertir este cambio",
-    //     icon: "warning",
-    //     showCancelButton: true,
-    //     confirmButtonColor: "#3085d6",
-    //     cancelButtonColor: "#d33",
-    //     cancelButtonText: "cancelar",
-    //     confirmButtonText: "Si, eliminar",
-    //   }).then((result) => {
-    //     if (result.isConfirmed) {
-    //       this.$http
-    //         .delete(`/api/accoutns/${id}`)
-    //         .then((response) => {
-    //           this.$swal({
-    //             title: "Eliminado",
-    //             text: "El Trabajador ha sido eliminado con exito",
-    //             icon: "success",
-    //           });
-    //           this.fetchWorkers();
-    //         })
-    //         .catch((error) => {
-    //           console.error(error);
-    //         });
-    //     }
-    //   });
-    // },
-    // handleDropOnTrash(e) {
-    //   const WorkerId = e.dataTransfer.getData("text/plain");
-    //   this.deleteWorkerOnDrop(WorkerId);
-    // },
-    fetchWorkers() {
+    handleDragStart(e, item) {
+      console.log(item.comboId);
+      e.dataTransfer.setData("text/plain", item.comboId);
+    },
+    deleteComboOnDrop(id) {
+      this.$swal({
+        title: "¿Estas seguro?",
+        text: "No podras revertir este cambio",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        cancelButtonText: "cancelar",
+        confirmButtonText: "Si, eliminar",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.$http
+            .delete(`/api/combos/${id}`)
+            .then((response) => {
+              this.$swal({
+                title: "Eliminado",
+                text: "El Combo ha sido eliminado con éxito",
+                icon: "success",
+              });
+              this.fetchCombo();
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        }
+      });
+    },
+    handleDropOnTrash(e) {
+      const comboId = e.dataTransfer.getData("text/plain");
+      this.deleteComboOnDrop(comboId);
+    },
+    fetchCombo() {
       this.$http
-        .get("/api/accounts/workers")
+        .get("/api/combos")
         .then((response) => {
           this.items = response.data;
         })
