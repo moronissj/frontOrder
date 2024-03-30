@@ -26,7 +26,7 @@ import Transporte from "../components/client/Transporte.vue";
 import Utileria from "../components/client/Utileria.vue";
 import DetallesPaquete from "../components/client/DetallesPaquete.vue";
 import VistaToken from "../components/VistaToken.vue";
-import AdminProfile from "../components/admin/AdminProfile.vue";
+import AdminProfile from "../components/admin/profileadmin/AdminProfile.vue";
 
 const routes = [
   {
