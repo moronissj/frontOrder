@@ -16,8 +16,8 @@ import LandingWorker from "../components/worker/LandingWorker.vue";
 import Servicios from "../components/client/Servicios.vue";
 import CrudServicios from "../components/admin/crudservices/CrudServicios.vue";
 import CrudAdmins from "../components/admin/CrudAdmins.vue";
-import CrudPaquetes from "../components/admin/CrudPaquetes.vue";
-import CrudTrabajadores from "../components/admin/CrudTrabajadores.vue";
+import CrudPaquetes from "../components/admin/crudpackages/CrudPaquetes.vue";
+import CrudTrabajadores from "../components/admin/crudworkers/CrudTrabajadores.vue";
 import CrudCombos from "../components/admin/CrudCombos.vue";
 import CrudSolicitudes from "../components/admin/CrudSolicitudes.vue";
 import HistorialOrdenes from "../components/client/HistorialOrdenes.vue";
@@ -33,6 +33,7 @@ import UpdateTrabajador from "../components/worker/UpdateTrabajador.vue";
 import UpdateAdmin from "../components/admin/UpdateAdmin.vue";
 import DetallesPaquete from "../components/client/DetallesPaquete.vue";
 import VistaToken from "../components/VistaToken.vue";
+import AdminProfile from "../components/admin/AdminProfile.vue";
 
 const routes = [
   {
@@ -107,6 +108,12 @@ const routes = [
     name: "admin-orders",
     path: "/admin-orders",
     component: CrudSolicitudes,
+    meta: { role: "ADMIN" },
+  },
+  {
+    name: "admin-profile",
+    path: "/admin-profile",
+    component: AdminProfile,
     meta: { role: "ADMIN" },
   },
   //rutas asociadas a los componentes
