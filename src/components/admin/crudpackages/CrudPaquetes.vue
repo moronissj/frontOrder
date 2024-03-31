@@ -107,10 +107,6 @@
                 <b-button class="table-button" variant="warning" size="sm">
                   <b-icon icon="circle" scale=".7"></b-icon
                 ></b-button>
-                <b-button class="table-button" variant="secondary" size="sm"
-                  ><b-icon icon="box" scale="1"></b-icon
-                ></b-button>
-
                 <b-button
                   draggable="true"
                   @dragstart="handleDragStart($event, row.item)"
@@ -131,18 +127,6 @@
                     :key="key"
                     style="margin: 10px 0"
                   >
-                    <!-- <template v-if="key === 'Imagen del Paquete'">
-                      <div
-                        class="item-image-container"
-                        style="margin-top: 30px; border-radius: 10px"
-                      >
-                        <img
-                          :src="value"
-                          alt="Service Image"
-                          style="width: 100px; height: auto"
-                        />
-                      </div>
-                    </template> v-else-->
                     <template
                       ><b>{{ key }}</b> : {{ value }}
                     </template>
@@ -351,7 +335,7 @@ export default {
 }
 
 .table-button {
-  width: 10%;
+  width: 14%;
   background-color: white;
   border: 1px solid black;
   color: black;
@@ -367,6 +351,7 @@ export default {
   border: none;
   border-radius: 10px;
   border: 1px solid black;
+  overflow: auto;
 }
 
 .outter-pagination-container {

@@ -262,7 +262,7 @@ export default {
 }
 
 .table-button {
-  width: 10%;
+  width: 14%;
   background-color: white;
   border: 1px solid black;
   color: black;
@@ -278,6 +278,7 @@ export default {
   border: none;
   border-radius: 10px;
   border: 1px solid black;
+  overflow: auto;
 }
 
 .outter-pagination-container {

@@ -359,6 +359,7 @@ export default {
   border: none;
   border-radius: 10px;
   border: 1px solid black;
+  overflow: auto;
 }
 
 .outter-pagination-container {
