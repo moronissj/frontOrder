@@ -1,58 +1,54 @@
-<script setup>
-import NavbarCliente from "./NavbarClient.vue";
-</script>
-
+<!-- VISTA Y EN USO -->
 <template>
   <div class="app">
     <NavbarCliente />
-    <h1>Servicios</h1>
-    <div class="servicios" id="services">
-      <div
-        v-for="(nombre, index) in service.nombre"
-        :key="index"
-        :class="index % 2 === 0 ? 'card2' : 'card1'"
-      >
-        <h3>{{ nombre }}</h3>
-        <img :src="service.imagen[index]" alt="" class="iconService" />
-        <div>
-          <b-button class="btn" :id="nombre.toLowerCase()">Ver más</b-button>
+    <div class="container">
+      <h1>Servicios</h1>
+      <TransitionGroup name="zoomDown" tag="div" class="row">
+        <div
+          class="col-4"
+          v-for="(service, index) in services"
+          :key="service.serviceId"
+          :class="index % 2 === 0 ? 'card2' : 'card1'"
+        >
+          <h3>{{ service.serviceName }}</h3>
+          <img :src="service.serviceImageUrl" alt="" class="iconService" />
+          <div>
+            <b-button class="btn">Ver más</b-button>
+          </div>
         </div>
-      </div>
+      </TransitionGroup>
     </div>
   </div>
 </template>
 
 <script>
+import NavbarCliente from "./NavbarClient.vue";
 export default {
+  name: "Servicios",
+  components: {
+    NavbarCliente,
+  },
   data() {
     return {
-      service: {
-        nombre: [
-          "Transporte",
-          "Comida",
-          "Utileria",
-          "Transporte",
-          "Comida",
-          "Utileria",
-        ],
-        descripción: [
-          "TransporteDescripción",
-          "ComidaDescripción",
-          "UtileriaDescripción",
-          "Transporte",
-          "Comida",
-          "Utileria",
-        ],
-        imagen: [
-          "../assets/transporteIcon.png",
-          "../assets/comidaIcon.png",
-          "../assets/utileriaIcon.png",
-          "../assets/transporteIcon.png",
-          "../assets/comidaIcon.png",
-          "../assets/utileriaIcon.png",
-        ],
-      },
+      services: [],
     };
+  },
+  methods: {
+    fetchServices() {
+      this.$http
+        .get("api/services")
+        .then((response) => {
+          this.services = response.data;
+          console.log(response.data);
+        })
+        .catch((e) => {
+          console.error("Error en la peticion: ", e);
+        });
+    },
+  },
+  mounted() {
+    this.fetchServices();
   },
 };
 </script>
@@ -90,10 +86,6 @@ export default {
   color: #2d2a2a;
   width: 15vh;
   margin: 7.5vh;
-}
-
-h1 {
-  margin: 5vh;
 }
 
 .servicios {

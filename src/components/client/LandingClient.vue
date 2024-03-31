@@ -1,3 +1,5 @@
+<!-- VISTA Y EN USO -->
+
 <script setup>
 import NavbarClient from "./NavbarClient.vue";
 import Footer from "../Footer.vue";

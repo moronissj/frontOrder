@@ -109,6 +109,12 @@ const routes = [
     component: AdminProfile,
     meta: { role: "ADMIN" },
   },
+  {
+    name: "user-services",
+    path: "/user-services",
+    component: Servicios,
+    meta: { role: "COMMON_USER" },
+  },
   //rutas asociadas a los componentes
   // {
   //   path: "/",
