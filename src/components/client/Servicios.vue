@@ -14,7 +14,11 @@
           <h3>{{ service.serviceName }}</h3>
           <img :src="service.serviceImageUrl" alt="" class="iconService" />
           <div>
-            <b-button class="btn">Ver más</b-button>
+            <b-button
+              @click="navigateToServicePackages(service.serviceId)"
+              class="btn"
+              >Ver más</b-button
+            >
           </div>
         </div>
       </TransitionGroup>
@@ -45,6 +49,12 @@ export default {
         .catch((e) => {
           console.error("Error en la peticion: ", e);
         });
+    },
+    navigateToServicePackages(serviceId) {
+      this.$router.push({
+        name: "user-service-packages",
+        query: { serviceId },
+      });
     },
   },
   mounted() {
