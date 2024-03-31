@@ -6,14 +6,17 @@
         <div class="col-6">
           <h1>{{ aPackage.packageName }}</h1>
           <p>Descripción: {{ aPackage.packageDescription }}</p>
-          <p>Servicio: {{ aPackage.category.serviceName }}</p>
+          <p>Servicio: {{ service }}</p>
           <p>Horas designadas: {{ aPackage.designatedHours }}</p>
           <p>
             Número de trabajadores del paquete: {{ aPackage.workersNumber }}
           </p>
           <h2>COSTO: $ {{ aPackage.packagePrice }}.00 MXN</h2>
           <br />
-          <MakeOrderModal></MakeOrderModal>
+          <MakeOrderModal
+            v-if="aPackage.packageId"
+            :packageId="aPackage.packageId"
+          ></MakeOrderModal>
         </div>
         <div class="col-6">
           <Fancybox
@@ -47,11 +50,11 @@
 </template>
 
 <script>
-import Footer from "../Footer.vue";
+import Footer from "../../Footer.vue";
 import MakeOrderModal from "./MakeOrderModal.vue";
-import Rating from "../Ratings.vue";
-import NavbarClient from "./NavbarClient.vue";
-import Fancybox from "../Fancybox.vue";
+import Rating from "../../Ratings.vue";
+import NavbarClient from "../NavbarClient.vue";
+import Fancybox from "../../Fancybox.vue";
 
 export default {
   name: "PackageInfo",
@@ -67,6 +70,7 @@ export default {
       aPackage: {},
       images: [],
       packageId: null,
+      service: null,
     };
   },
   methods: {
@@ -76,6 +80,7 @@ export default {
         .then((response) => {
           this.aPackage = response.data;
           this.images = [];
+          this.service = this.aPackage.category.serviceName;
           if (response.data.images && response.data.images.length > 0) {
             this.images = response.data.images.map((image) => image.imageUrl);
           }

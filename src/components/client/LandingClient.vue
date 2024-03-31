@@ -1,12 +1,3 @@
-<!-- VISTA Y EN USO -->
-
-<script setup>
-import NavbarClient from "./NavbarClient.vue";
-import Footer from "../Footer.vue";
-import Carousel from "../Carousel.vue";
-import Rating from "../Ratings.vue";
-</script>
-
 <template>
   <div>
     <NavbarClient />
@@ -20,7 +11,6 @@ import Rating from "../Ratings.vue";
       ></div>
     </div>
 
-    <!-- Contenido de la página -->
     <div v-if="!isLoading">
       <div class="banner-container">
         <div class="banner-background"></div>
@@ -35,44 +25,14 @@ import Rating from "../Ratings.vue";
       </div>
 
       <div class="container">
-        <Carousel />
+        <Carrousel />
         <div class="title">
           <h1>Servicios</h1>
         </div>
         <div class="row" id="cards">
-          <div class="col">
-            <div class="card">
-              <h3>Transporte</h3>
-              <div class="img-container">
-                <img
-                  src="../../assets/transporteIcon.png"
-                  alt=""
-                  class="iconService"
-                />
-              </div>
-              <div>
-                <b-button @click="goToLogin" class="btn">Ver más</b-button>
-              </div>
-            </div>
-          </div>
-          <div class="col">
-            <div class="card black-card">
-              <h3>Comida</h3>
-              <div class="img-container">
-                <img
-                  src="../../assets/comidaIcon.png"
-                  alt=""
-                  class="iconService"
-                />
-              </div>
-              <div>
-                <b-button @click="goToLogin" class="btn">Ver más</b-button>
-              </div>
-            </div>
-          </div>
-          <div class="col">
-            <div class="card">
-              <h3>Utileria</h3>
+          <div class="col-md-4 col-12">
+            <div class="card service-card">
+              <h3>Servicios</h3>
               <div class="img-container">
                 <img
                   src="../../assets/utileriaIcon.png"
@@ -81,16 +41,45 @@ import Rating from "../Ratings.vue";
                 />
               </div>
               <div>
-                <b-button @click="goToLogin" class="btn">Ver más</b-button>
+                <a href="/admin-services">
+                  <b-button size="lg">Ver más</b-button>
+                </a>
               </div>
             </div>
           </div>
-        </div>
-
-        <div class="servicios">
-          <div>
-            <h1 style="margin-bottom: 50px">Opiniones</h1>
-            <Rating></Rating>
+          <div class="col-md-4 col-12">
+            <div class="card service-card" id="black">
+              <h3>Administradores</h3>
+              <div class="img-container">
+                <img
+                  src="../../assets/administradoresIcon.png"
+                  alt=""
+                  class="iconService"
+                />
+              </div>
+              <div>
+                <a href="/admin-administrators">
+                  <b-button size="lg">Ver más</b-button>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4 col-12">
+            <div class="card service-card">
+              <h3>Trabajadores</h3>
+              <div class="img-container">
+                <img
+                  src="../../assets/trabajadoresIcon.png"
+                  alt=""
+                  class="iconService"
+                />
+              </div>
+              <div>
+                <a href="/admin-workers">
+                  <b-button size="lg">Ver más</b-button>
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -101,11 +90,18 @@ import Rating from "../Ratings.vue";
 </template>
 
 <script>
+import NavbarClient from "./NavbarClient.vue";
+import Footer from "../Footer.vue";
+import Rating from "../Ratings.vue";
 export default {
+  components: {
+    NavbarClient,
+    Footer,
+    Rating,
+  },
   data() {
     return {};
   },
-
   methods: {
     goToLogin() {
       this.$router.push("/login");
@@ -138,6 +134,9 @@ export default {
   font-size: 6rem;
 }
 
+#black {
+  background-color: #2d2a2a;
+}
 .banner-button {
   font-family: "Montserrat", sans-serif;
   width: 25%;
@@ -150,9 +149,13 @@ export default {
   border: none;
 }
 
-.banner-button:hover {
-  background-color: #2d2a2a !important;
-  color: white;
+.btn:hover {
+  padding-left: 2rem;
+  padding-right: 2rem;
+  background-color: white;
+  color: black;
+  border: solid 2px black;
+  font-weight: bold;
 }
 
 .card {
@@ -166,20 +169,18 @@ export default {
   align-items: center;
 }
 
-.black-card {
-  background-color: #2d2a2a;
+.service-card {
+  height: 100%;
+  border-radius: 16px;
+  color: white;
+  padding: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
 }
 
-.card .btn {
-  margin-top: 20px;
-  padding: 9px 50px;
-  border-radius: 10px;
-  background-color: white;
-  font-weight: 700;
-  color: #2d2a2a;
-}
-
-.card h3 {
+.card h4 {
   margin-bottom: 20px;
 }
 
@@ -207,37 +208,43 @@ export default {
   font-size: 4rem;
 }
 
+.btn {
+  background-color: white;
+  color: black;
+  border: solid 2.5px black;
+  transition: all.3s ease;
+  margin: 0;
+}
+
 @media (max-width: 800px) {
   #app {
     margin: 0;
     padding: 0;
-    box-sizing: border-box; /* Esto asegura que el padding no afecte el ancho total de los elementos */
+    box-sizing: border-box;
+  }
+  .col-12 {
+    margin-bottom: 15px;
   }
   #cards {
     display: grid;
-    grid-template-columns: 1fr; /* Todos los elementos se alinean en una sola columna */
-    grid-gap: 20px; /* Ajusta el espacio entre las tarjetas */
+    grid-template-columns: 1fr;
+    grid-gap: 20px;
   }
 
   .card {
-    justify-content: center; /* Centra el contenido en la tarjeta */
-    padding: 20px; /* Reduce el padding para ahorrar espacio */
-    text-align: center; /* Asegura que el texto esté centrado */
+    justify-content: center;
+    padding: 20px;
+    text-align: center;
   }
 
   .img-container {
-    height: auto; /* Ajusta la altura del contenedor de la imagen */
-    margin-bottom: 20px; /* Añade un margen abajo de la imagen */
+    height: auto;
+    margin-bottom: 20px;
   }
 
   .iconService {
-    height: 15vh; /* Ajusta el tamaño de la imagen */
-    width: auto; /* Asegura que la imagen mantenga su proporción */
-  }
-
-  .card .btn {
-    width: 100%; /* El botón ocupa todo el ancho disponible */
-    padding: 10px 0; /* Ajusta el padding verticalmente */
+    height: 15vh;
+    width: auto;
   }
 
   #bannerText {
@@ -246,6 +253,9 @@ export default {
 
   .bienvenido {
     font-size: 3rem;
+  }
+  .btn {
+    width: 5rem;
   }
 }
 </style>

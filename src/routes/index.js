@@ -20,7 +20,7 @@ import CrudCombos from "../components/admin/crudcombos/CrudCombos.vue";
 import CrudSolicitudes from "../components/admin/CrudSolicitudes.vue";
 import HistorialOrdenes from "../components/client/HistorialOrdenes.vue";
 import SolicitudesWorker from "../components/worker/SolicitudesWorker.vue";
-import PackageInfo from "../components/client/PackageInfo.vue";
+import PackageInfo from "../components/client/orders/PackageInfo.vue";
 import VistaToken from "../components/VistaToken.vue";
 import AdminProfile from "../components/admin/profileadmin/AdminProfile.vue";
 import NotFoundPage from "../components/NotFoundPage.vue";
