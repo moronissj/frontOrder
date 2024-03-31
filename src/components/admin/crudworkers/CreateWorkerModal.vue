@@ -129,10 +129,13 @@
 </template>
 
 <script>
+import { useSecret } from "@/stores/key";
+
 export default {
   name: "CreateWorkerModal",
   data() {
     return {
+      key: "",
       form: {
         workerName: "",
         workerFirstLastName: "",
@@ -149,27 +152,43 @@ export default {
   },
   methods: {
     sendPostCreateWorker() {
+      const serializedData = JSON.stringify({
+        workerName: this.form.workerName,
+        workerFirstLastName: this.form.workerFirstLastName,
+        workerSecondLastName: this.form.workerSecondLastName,
+        workerEmail: this.form.workerEmail,
+        workerCellphone: this.form.workerCellphone,
+        workerSecurityNumber: this.form.workerSecurityNumber,
+        workerSalary: this.form.workerSalary,
+        workerPassword: this.form.workerPassword,
+        workerRfc: this.form.workerRfc,
+      });
+      const encryptedData = this.$encryptionService.encryptData(
+        serializedData,
+        this.key
+      );
+      let formData = new FormData();
+      formData.append("data", encryptedData);
+      if (this.form.workerProfilePic) {
+        formData.append("workerProfilePic", this.form.workerProfilePic);
+      }
       this.$http
-        .post("/api/accounts/create-worker", this.form, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
+        .post("/api/accounts/create-worker", formData)
         .then((response) => {
           this.$emit("registroExitoso");
           this.$swal({
-            title: "Creacion exitosa",
-            text: "El trabajador ha sido agregado con exito",
+            title: "Creación exitosa",
+            text: "El trabajador ha sido agregado con éxito",
             icon: "success",
           });
           this.closeModal();
         })
         .catch((error) => {
-          console.log(error);
+          console.error("Error al crear el trabajador:", error);
         });
     },
     handleFiles(event) {
-      this.form.workerProfilePic = event.target.files;
+      this.form.workerProfilePic = event.target.files[0];
     },
     closeModal() {
       this.$root.$emit("bv::hide::modal", "modal-1");
@@ -187,6 +206,9 @@ export default {
       this.form.workerSalary = null;
       this.form.workerRfc = "";
     },
+  },
+  mounted() {
+    this.key = useSecret();
   },
 };
 </script>
