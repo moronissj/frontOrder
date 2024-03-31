@@ -198,7 +198,6 @@ export default {
       this.form.workerFirstLastName = "";
       this.form.workerSecondLastName = "";
       this.form.workerEmail = "";
-      this.form.workerPassword = "";
       this.form.workerCellphone = "";
       this.form.workerSecurityNumber = null;
       this.form.workerSalary = null;

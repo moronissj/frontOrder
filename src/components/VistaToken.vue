@@ -1,6 +1,3 @@
-<script setup>
-import NavBar from "./NavBar.vue";
-</script>
 <template>
   <div class="app">
     <NavBar />
@@ -10,52 +7,55 @@ import NavBar from "./NavBar.vue";
         <img src="../assets/buffe.PNG" alt="nose" />
       </div>
 
-      <div class="forms">
-        <h2>¡Te hemos enviado un token a tu correo!</h2>
+      <b-form @submit.prevent="sendPostConfirmAccountWithToken">
+        <b-form-group id="input-group-1" label="Token:" label-for="input-1">
+          <b-form-input
+            id="input-1"
+            type="text"
+            v-model="token"
+            required
+          ></b-form-input>
+        </b-form-group>
 
-        <div class="form">
-          <label for="token">Token</label>
-          <input id="token" type="text" placeholder="Escribe tu token" />
+        <div class="buttonsContainer">
+          <b-button type="submit" variant="primary">Confirmar Cuenta</b-button>
         </div>
-        <b-button @click="verifyToken">Verificar Token</b-button>
-        <div>
-          <b-alert
-            :show="showAlert"
-            variant="success"
-            ref="alertRef"
-            style="margin-top: 10px"
-          >
-            <h4 class="alert-heading">¡Cuenta Verificada!</h4>
-            <p>Tu cuenta ha sido verificada, puedes iniciar sesión.</p>
-            <hr />
-          </b-alert>
-        </div>
-      </div>
+      </b-form>
     </div>
   </div>
 </template>
 
-<script setup>
-import NavBar from "./NavBar.vue";
-</script>
-
 <script>
+import NavBar from "./NavBar.vue";
 export default {
+  name: "VistaToken",
+  components: {
+    NavBar,
+  },
   data() {
     return {
-      showAlert: false, // Controla la visibilidad de la alerta
+      token: "",
     };
   },
-
   methods: {
-    verifyToken() {
-      this.showAlert = true; // Muestra la alerta
+    sendPostConfirmAccountWithToken() {
+      // Crear un FormData y añadir el token a este objeto
+      let formData = new FormData();
+      formData.append("token", this.token);
 
-      // Espera 5 segundos antes de redirigir
-      setTimeout(() => {
-        this.showAlert = false; // Opcional: Oculta la alerta antes de redirigir
-        this.$router.push("/login"); // Cambia '/ruta-especifica' por tu ruta objetivo
-      }, 5000);
+      this.$http
+        .post("/api/accounts/confirm-account", formData)
+        .then((response) => {
+          this.$swal({
+            title: "Cuenta confirmada",
+            text: "La cuenta ha sido confirmada, puedes iniciar sesión",
+            icon: "success",
+          });
+          this.$router.push("/login");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
   },
 };

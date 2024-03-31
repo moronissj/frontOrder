@@ -11,22 +11,19 @@ import LandingClient from "../components/client/LandingClient.vue";
 import LandingAdmin from "../components/admin/LandingAdmin.vue";
 import LandingWorker from "../components/worker/LandingWorker.vue";
 import Servicios from "../components/client/Servicios.vue";
+import ServicePackages from "../components/client/ServicePackages.vue";
 import CrudServicios from "../components/admin/crudservices/CrudServicios.vue";
 import CrudAdmins from "../components/admin/crudadmins/CrudAdmins.vue";
 import CrudPaquetes from "../components/admin/crudpackages/CrudPaquetes.vue";
 import CrudTrabajadores from "../components/admin/crudworkers/CrudTrabajadores.vue";
 import CrudCombos from "../components/admin/crudcombos/CrudCombos.vue";
-import CrudSolicitudes from "../components/admin/CrudSolicitudes.vue";
+import CrudSolicitudes from "../components/admin/crudorders/CrudSolicitudes.vue";
 import HistorialOrdenes from "../components/client/HistorialOrdenes.vue";
 import SolicitudesWorker from "../components/worker/SolicitudesWorker.vue";
-import LandingS from "../components/LandingS.vue";
-import Taquizas from "../components/client/Taquizas.vue";
-import Comida from "../components/client/Comida.vue";
-import Transporte from "../components/client/Transporte.vue";
-import Utileria from "../components/client/Utileria.vue";
-import DetallesPaquete from "../components/client/DetallesPaquete.vue";
+import PackageInfo from "../components/client/orders/PackageInfo.vue";
 import VistaToken from "../components/VistaToken.vue";
 import AdminProfile from "../components/admin/profileadmin/AdminProfile.vue";
+import NotFoundPage from "../components/NotFoundPage.vue";
 
 const routes = [
   {
@@ -40,13 +37,18 @@ const routes = [
     component: RegisterClient,
   },
   {
+    name: "not-found",
+    path: "/not-found",
+    component: NotFoundPage,
+  },
+  {
     name: "login",
     path: "/login",
     component: Login,
   },
   {
-    name: "confirm-account",
-    path: "/comfirm-account",
+    name: "token-confirmation",
+    path: "/token-confirmation",
     component: VistaToken,
   },
   {
@@ -109,6 +111,37 @@ const routes = [
     component: AdminProfile,
     meta: { role: "ADMIN" },
   },
+  {
+    name: "user-services",
+    path: "/user-services",
+    component: Servicios,
+    meta: { role: "COMMON_USER" },
+  },
+  {
+    name: "user-service-packages",
+    path: "/user-service-packages",
+    component: ServicePackages,
+    meta: { role: "COMMON_USER" },
+  },
+  {
+    name: "user-package-info",
+    path: "/user-package-info",
+    component: PackageInfo,
+    meta: { role: "COMMON_USER" },
+    beforeEnter: (to, from, next) => {
+      if (!to.query.packageId) {
+        next({ path: "/not-found" });
+      } else {
+        next();
+      }
+    },
+  },
+  // {
+  //   name: "user-combos",
+  //   path: "/user-combos",
+  //   component: Com,
+  //   meta: { role: "COMMON_USER" },
+  // },
   //rutas asociadas a los componentes
   // {
   //   path: "/",
@@ -298,7 +331,14 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const publicPages = ["/login", "/", "/signup", "/unauthorized"];
+  const publicPages = [
+    "/login",
+    "/",
+    "/signup",
+    "/unauthorized",
+    "/token-confirmation",
+    "/not-found",
+  ];
   const authRequired = !publicPages.includes(to.path);
   const loggedIn = localStorage.getItem("token");
 
