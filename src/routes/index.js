@@ -17,7 +17,7 @@ import CrudAdmins from "../components/admin/crudadmins/CrudAdmins.vue";
 import CrudPaquetes from "../components/admin/crudpackages/CrudPaquetes.vue";
 import CrudTrabajadores from "../components/admin/crudworkers/CrudTrabajadores.vue";
 import CrudCombos from "../components/admin/crudcombos/CrudCombos.vue";
-import CrudSolicitudes from "../components/admin/CrudSolicitudes.vue";
+import CrudSolicitudes from "../components/admin/crudorders/CrudSolicitudes.vue";
 import HistorialOrdenes from "../components/client/HistorialOrdenes.vue";
 import SolicitudesWorker from "../components/worker/SolicitudesWorker.vue";
 import PackageInfo from "../components/client/orders/PackageInfo.vue";

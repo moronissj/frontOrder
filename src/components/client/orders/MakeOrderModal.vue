@@ -81,9 +81,17 @@ export default {
   methods: {
     onSubmit() {
       const token = localStorage.getItem("token");
+      const combinedDateTime = `${this.form.orderDate}T${this.form.orderTime}:00`;
+      const formData = {
+        orderDate: this.form.orderDate,
+        orderPlace: this.form.orderPlace,
+        orderTime: combinedDateTime,
+        packagesIds: [this.form.packageIds[0]],
+      };
+      console.log(formData);
       if (token) {
         this.$http
-          .post("api/orders", this.form, {
+          .post("api/orders", formData, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
