@@ -1,22 +1,49 @@
 <template>
-  <div>
-    <NabvarAdmin />
-    <div class="container my-5">
-      <div class="row">
+  <div style="height: 100%">
+    <NavbarAdmin></NavbarAdmin>
+    <div
+      class="container"
+      style="
+        height: 100vh;
+        width: 100%;
+        position: relative;
+        top: -77px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      "
+    >
+      <div class="row" style="height: 60%; width: 100%">
         <div class="col-md-6">
-          <div class="card profile-card">
-            <div class="card-body">
+          <div class="card profile-card" style="height: 100%">
+            <div
+              class="card-body"
+              style="
+                display: flex;
+                justify-content: center;
+                align-items: center;
+              "
+            >
               <div class="profile-header">
                 <img
-                  src="../../assets/buffe.PNG"
+                  :src="profileInfo.adminProfilePicUrl"
                   alt="pic"
                   class="profile-image"
                 />
                 <div>
-                  <b-button size="lg">Cambiar foto</b-button>
+                  <AdminPhotoModal
+                    :key="'modalEditPhoto_' + profileInfo.adminId"
+                    :admin="profileInfo"
+                    @photoUpdated="fetchUserProfileInfo"
+                    style="margin-bottom: 40px"
+                  />
                 </div>
 
-                <h3 class="profile-name">{{ "user.nombre" }}</h3>
+                <h3 class="profile-name">
+                  {{ profileInfo.adminName }}
+                  {{ profileInfo.adminFirstLastName }}
+                  {{ profileInfo.adminSecondLastName }}
+                </h3>
                 <p class="profile-title">Administrador</p>
               </div>
             </div>
@@ -24,15 +51,40 @@
         </div>
 
         <div class="col-md-6">
-          <div class="card info-card">
-            <div class="card-body">
-              <h1 class="info-title">Información</h1>
-              <p><strong>Email:</strong> info@example.com</p>
-              <p><strong>Teléfono:</strong> 123 456 789</p>
-              <p><strong>Número de seguridad:</strong> 123 456 789</p>
-              <div>
-                <AdminProfileModal />
-                <b-button variant="danger" size="lg">Eliminar cuenta</b-button>
+          <div class="card info-card" style="height: 100%">
+            <div
+              class="card-body"
+              style="
+                display: flex;
+                justify-content: center;
+                align-items: center;
+              "
+            >
+              <div class="content">
+                <h1 class="info-title">Información</h1>
+                <hr />
+                <p><strong>Email:</strong> {{ profileInfo.adminEmail }}</p>
+                <p>
+                  <strong>Teléfono:</strong> {{ profileInfo.adminCellphone }}
+                </p>
+                <p>
+                  <strong>Número de seguridad:</strong>
+                  {{ profileInfo.adminSecurityNumber }}
+                </p>
+                <p>
+                  <strong>Salario:</strong>
+                  {{ profileInfo.adminSalary }}
+                </p>
+                <div>
+                  <AdminEditProfileModal
+                    :key="'modalEdicion_' + profileInfo.adminId"
+                    :admin="profileInfo"
+                    @actualizacionExitosa="fetchUserProfileInfo"
+                  />
+                  <!-- <b-button variant="danger" size="sm"
+                    >Eliminar cuenta</b-button
+                  > -->
+                </div>
               </div>
             </div>
           </div>
@@ -42,9 +94,49 @@
   </div>
 </template>
 
-<script setup>
-import NabvarAdmin from "../NavbarAdmin.vue";
-import AdminProfileModal from "./AdminProfileModal.vue";
+<script>
+import NavbarAdmin from "../NavbarAdmin.vue";
+import AdminEditProfileModal from "./AdminEditProfileModal.vue";
+import AdminPhotoModal from "./AdminPhotoModal.vue";
+export default {
+  name: "AdminProfile",
+  components: {
+    NavbarAdmin,
+    AdminEditProfileModal,
+    AdminPhotoModal,
+  },
+  data() {
+    return {
+      profileInfo: {},
+    };
+  },
+  methods: {
+    fetchUserProfileInfo() {
+      const token = localStorage.getItem("token");
+      if (token) {
+        this.$http
+          .get("api/accounts/profile", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then((response) => {
+            this.profileInfo = response.data;
+            console.log(this.profileInfo.adminId);
+          })
+          .catch((error) => {
+            console.error(
+              "Hubo un error al obtener la informacion del usuario",
+              error
+            );
+          });
+      }
+    },
+  },
+  mounted() {
+    this.fetchUserProfileInfo();
+  },
+};
 </script>
 
 <style scoped>

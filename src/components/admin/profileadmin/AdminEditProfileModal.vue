@@ -2,14 +2,14 @@
   <div>
     <b-button
       class="table-button"
-      size="lg"
-      v-b-modal="`editAdminModal_${admin.adminId}`"
+      size="sm"
+      v-b-modal="`adminEditProfileModal_${admin.adminId}`"
       @click="fillForm"
       variant="warning"
       >Editar</b-button
     >
     <b-modal
-      :id="`editAdminModal_${admin.adminId}`"
+      :id="`adminEditProfileModal_${admin.adminId}`"
       title="Editar Administrador"
       hide-footer
     >
@@ -19,7 +19,7 @@
           X
         </b-button>
       </template>
-      <b-form @submit.prevent="sendPutEditadmin">
+      <b-form @submit.prevent="sendPutEditAdmin">
         <b-form-group
           id="input-group-1"
           label="Nombre del Administrador:"
@@ -60,42 +60,18 @@
         </b-form-group>
 
         <b-form-group
-          id="input-group-4"
-          label="Email del Administrador:"
-          label-for="input-4"
-        >
-          <b-form-input
-            id="input-4"
-            type="text"
-            v-model="form.adminEmail"
-            required
-          ></b-form-input>
-        </b-form-group>
-
-        <b-form-group
-          id="input-group-5"
-          label="Contraseña del Administrador:"
-          label-for="input-5"
-        >
-          <b-form-input
-            id="input-5"
-            type="password"
-            v-model="form.adminPassword"
-            required
-          ></b-form-input>
-        </b-form-group>
-        <b-form-group
           id="input-group-6"
           label="Teléfono del Administrador:"
           label-for="input-6"
         >
           <b-form-input
             id="input-6"
-            type="text"
+            type="tel"
             v-model="form.adminCellphone"
             required
           ></b-form-input>
         </b-form-group>
+
         <b-form-group
           id="input-group-7"
           label="Número de seguridad del Administrador:"
@@ -120,32 +96,6 @@
             required
           ></b-form-input>
         </b-form-group>
-        <b-form-group
-          id="input-group-9"
-          label="RFC del Administrador:"
-          label-for="input-9"
-        >
-          <b-form-input
-            id="input-9"
-            type="text"
-            v-model="form.adminRfc"
-            required
-          ></b-form-input>
-        </b-form-group>
-
-        <b-form-group
-          id="input-group-10"
-          label="Foto del Administrador:"
-          label-for="input-10"
-        >
-          <b-form-file
-            id="input-10"
-            v-model="form.adminProfilePic"
-            accept="image/*"
-            @change="handleFiles"
-            placeholder="Seleccione una imagen"
-          ></b-form-file>
-        </b-form-group>
 
         <div class="buttonsContainer">
           <b-button type="submit" variant="primary"
@@ -160,7 +110,7 @@
 
 <script>
 export default {
-  name: "AdminProfileModal",
+  name: "AdminEditProfileModal",
   props: {
     admin: {
       type: Object,
@@ -174,12 +124,10 @@ export default {
         adminFirstLastName: "",
         adminSecondLastName: "",
         adminEmail: "",
-        adminPassword: "",
         adminCellphone: "",
         adminSecurityNumber: null,
         adminSalary: null,
         adminRfc: "",
-        adminProfilePic: null,
       },
     };
   },
@@ -189,16 +137,14 @@ export default {
       this.form.adminFirstLastName = this.admin.adminFirstLastName;
       this.form.adminSecondLastName = this.admin.adminSecondLastName;
       this.form.adminEmail = this.admin.adminEmail;
-      this.form.adminPassword = this.admin.adminPassword;
       this.form.adminCellphone = this.admin.adminCellphone;
       this.form.adminSecurityNumber = this.admin.adminSecurityNumber;
       this.form.adminSalary = this.admin.adminSalary;
       this.form.adminRfc = this.admin.adminRfc;
-      this.form.adminProfilePic = this.admin.adminProfilePic;
     },
-    sendPutEditadmin() {
+    sendPutEditAdmin() {
       this.$http
-        .put(`/api/admins/${this.admin.adminId}`, this.form)
+        .put(`/api/accounts/update-admin/info/${this.admin.adminId}`, this.form)
         .then((response) => {
           this.$emit("actualizacionExitosa");
           this.$swal({
@@ -218,7 +164,7 @@ export default {
     closeModal() {
       this.$root.$emit(
         "bv::hide::modal",
-        `editAdminModal_${this.admin.adminId}`
+        `adminEditProfileModal_${this.admin.adminId}`
       );
       this.clearFields();
     },
@@ -227,12 +173,10 @@ export default {
       this.form.adminFirstLastName = "";
       this.form.adminSecondLastName = "";
       this.form.adminEmail = "";
-      this.form.adminPassword = "";
       this.form.adminCellphone = "";
       this.form.adminSecurityNumber = null;
       this.form.adminSalary = null;
       this.form.adminRfc = "";
-      this.form.adminProfilePic = null;
     },
   },
 };

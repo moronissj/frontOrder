@@ -45,8 +45,8 @@ const routes = [
     component: Login,
   },
   {
-    name: "confirm-account",
-    path: "/comfirm-account",
+    name: "token-confirmation",
+    path: "/token-confirmation",
     component: VistaToken,
   },
   {
@@ -298,7 +298,13 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const publicPages = ["/login", "/", "/signup", "/unauthorized"];
+  const publicPages = [
+    "/login",
+    "/",
+    "/signup",
+    "/unauthorized",
+    "/token-confirmation",
+  ];
   const authRequired = !publicPages.includes(to.path);
   const loggedIn = localStorage.getItem("token");
 

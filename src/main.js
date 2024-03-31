@@ -9,6 +9,7 @@ import "bootstrap-vue/dist/bootstrap-vue.css";
 import "@asika32764/vue-animate/dist/vue-animate.css";
 import "@asika32764/vue-animate/dist/vue-animate.css";
 import axios from "axios";
+import "./components/styles/main.css";
 
 axios.defaults.baseURL = "http://localhost:8080";
 Vue.prototype.$http = axios;
