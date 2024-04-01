@@ -163,29 +163,38 @@ export default {
         workerPassword: this.form.workerPassword,
         workerRfc: this.form.workerRfc,
       });
+
       const encryptedData = this.$encryptionService.encryptData(
         serializedData,
         this.key
       );
+
       let formData = new FormData();
       formData.append("data", encryptedData);
       if (this.form.workerProfilePic) {
         formData.append("workerProfilePic", this.form.workerProfilePic);
       }
-      this.$http
-        .post("/api/accounts/create-worker", formData)
-        .then((response) => {
-          this.$emit("registroExitoso");
-          this.$swal({
-            title: "Creación exitosa",
-            text: "El trabajador ha sido agregado con éxito",
-            icon: "success",
+      const token = localStorage.getItem("token");
+      if (token) {
+        this.$http
+          .post("/api/accounts/create-worker", formData, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then((response) => {
+            this.$emit("registroExitoso");
+            this.$swal({
+              title: "Creación exitosa",
+              text: "El trabajador ha sido agregado con éxito",
+              icon: "success",
+            });
+            this.closeModal();
+          })
+          .catch((error) => {
+            console.error("Error al crear el trabajador:", error);
           });
-          this.closeModal();
-        })
-        .catch((error) => {
-          console.error("Error al crear el trabajador:", error);
-        });
+      }
     },
     handleFiles(event) {
       this.form.workerProfilePic = event.target.files[0];

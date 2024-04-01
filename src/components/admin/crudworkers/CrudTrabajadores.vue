@@ -258,16 +258,23 @@ export default {
       this.currentPage = 1;
     },
     fetchWorkers() {
-      this.$http
-        .get("/api/accounts/workers")
-        .then((response) => {
-          this.items = response.data.map((item) =>
-            this.decryptWorkerData(item)
-          );
-        })
-        .catch((e) => {
-          console.error("Error en la petición: ", e);
-        });
+      const token = localStorage.getItem("token");
+      if (token) {
+        this.$http
+          .get("/api/accounts/workers", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then((response) => {
+            this.items = response.data.map((item) =>
+              this.decryptWorkerData(item)
+            );
+          })
+          .catch((e) => {
+            console.error("Error en la petición: ", e);
+          });
+      }
     },
 
     decryptWorkerData(item) {

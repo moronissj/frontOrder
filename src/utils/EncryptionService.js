@@ -27,4 +27,15 @@ export default class encryptionService {
     const encryptedString = encrypted.toString();
     return encryptedString;
   }
+
+  static encryptDataTwoXD(data, Akey) {
+    const key = CryptoJS.enc.Utf8.parse(Akey.secretKey);
+    const encrypted = CryptoJS.AES.encrypt(data, key, {
+      mode: CryptoJS.mode.ECB,
+      padding: CryptoJS.pad.Pkcs7,
+    });
+
+    const encryptedString = encrypted.toString();
+    return encryptedString;
+  }
 }
