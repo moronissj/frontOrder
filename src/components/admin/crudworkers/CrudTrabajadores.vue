@@ -183,6 +183,8 @@
 import NavbarAdmin from "../NavbarAdmin.vue";
 import CreateWorkerModal from "./CreateWorkerModal.vue";
 import EditWorkerModal from "./EditWorkerModal.vue";
+import { useSecret } from "@/stores/key";
+
 export default {
   name: "CrudTrabajador",
   components: {
@@ -193,6 +195,7 @@ export default {
   data() {
     return {
       items: [],
+      key: "",
       fields: [
         {
           key: "workerName",
@@ -249,61 +252,52 @@ export default {
       });
     },
   },
-  mounted() {
-    this.totalRows = this.items.length;
-    this.fetchWorkers();
-  },
   methods: {
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length;
       this.currentPage = 1;
     },
-    // handleDragStart(e, item) {
-    //   console.log(item.workerId);
-    //   e.dataTransfer.setData("text/plain", item.WorkerId);
-    // },
-    // deleteWorkerOnDrop(id) {
-    //   this.$swal({
-    //     title: "¿Estas seguro?",
-    //     text: "No podras revertir este cambio",
-    //     icon: "warning",
-    //     showCancelButton: true,
-    //     confirmButtonColor: "#3085d6",
-    //     cancelButtonColor: "#d33",
-    //     cancelButtonText: "cancelar",
-    //     confirmButtonText: "Si, eliminar",
-    //   }).then((result) => {
-    //     if (result.isConfirmed) {
-    //       this.$http
-    //         .delete(`/api/accoutns/${id}`)
-    //         .then((response) => {
-    //           this.$swal({
-    //             title: "Eliminado",
-    //             text: "El Trabajador ha sido eliminado con exito",
-    //             icon: "success",
-    //           });
-    //           this.fetchWorkers();
-    //         })
-    //         .catch((error) => {
-    //           console.error(error);
-    //         });
-    //     }
-    //   });
-    // },
-    // handleDropOnTrash(e) {
-    //   const WorkerId = e.dataTransfer.getData("text/plain");
-    //   this.deleteWorkerOnDrop(WorkerId);
-    // },
     fetchWorkers() {
       this.$http
         .get("/api/accounts/workers")
         .then((response) => {
-          this.items = response.data;
+          this.items = response.data.map((item) =>
+            this.decryptWorkerData(item)
+          );
         })
         .catch((e) => {
-          console.error("Error en la peticion: ", e);
+          console.error("Error en la petición: ", e);
         });
     },
+
+    decryptWorkerData(item) {
+      const fieldsToDecrypt = [
+        "workerId",
+        "workerName",
+        "workerFirstLastName",
+        "workerSecondLastName",
+        "workerRfc",
+        "workerCellphone",
+        "workerSecurityNumber",
+        "workerSalary",
+        "workerEmail",
+        "workerProfilePicUrl",
+      ];
+
+      fieldsToDecrypt.forEach((field) => {
+        item[field] = this.$encryptionService.decryptData(
+          item[field],
+          this.key
+        );
+      });
+
+      return item;
+    },
+  },
+  mounted() {
+    const secretStore = useSecret();
+    this.key = secretStore.secretKey;
+    this.fetchWorkers();
   },
 };
 </script>

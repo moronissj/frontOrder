@@ -6,7 +6,7 @@ import CryptoJS from "crypto-js";
 export default class encryptionService {
   static decryptData(encryptedString, Akey) {
     const ciphertext = CryptoJS.enc.Base64.parse(encryptedString);
-    const key = CryptoJS.enc.Utf8.parse(Akey.secretKey);
+    const key = CryptoJS.enc.Utf8.parse(Akey);
 
     const decrypted = CryptoJS.AES.decrypt({ ciphertext }, key, {
       mode: CryptoJS.mode.ECB,
