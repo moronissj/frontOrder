@@ -159,7 +159,7 @@
                 :per-page="perPage"
                 align="fill"
                 size="sm"
-                aria-controls="servicesTable"
+                class="my-0"
               ></b-pagination>
             </div>
           </div>
@@ -226,8 +226,12 @@ export default {
       totalRows: 1,
       currentPage: 1,
       perPage: 5,
-      pageOptions: [5, 10, 15, { value: 100, text: "ver varios" }],
+      pageOptions: [5, 10, 15, { value: 100, text: "Show a lot" }],
+      sortBy: "",
+      sortDesc: false,
+      sortDirection: "asc",
       filter: null,
+      filterOn: [],
     };
   },
   computed: {
@@ -252,9 +256,16 @@ export default {
         return processed;
       });
     },
+    sortOptions() {
+      // Create an options list from our fields
+      return this.fields
+        .filter((f) => f.sortable)
+        .map((f) => {
+          return { text: f.label, value: f.key };
+        });
+    },
   },
   mounted() {
-    this.totalRows = this.items.length;
     this.fetchServices();
   },
   methods: {
@@ -303,6 +314,7 @@ export default {
         .get("/api/services")
         .then((response) => {
           this.items = response.data;
+          this.totalRows = this.items.length;
         })
         .catch((e) => {
           console.error("Error en la peticion: ", e);
