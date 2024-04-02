@@ -120,7 +120,7 @@
         </b-form-group>
 
         <b-form-group id="input-group-9" label="RFC:" label-for="input-9">
-          <ValidationProvider rules="required|rfc" v-slot="{ errors }">
+          <ValidationProvider rules="required" v-slot="{ errors }">
             <b-form-input
               id="input-9"
               type="text"
@@ -163,6 +163,7 @@
 <script>
 import { extend, ValidationProvider } from "vee-validate";
 import { required, min, ext } from "vee-validate/dist/rules";
+import { useSecret } from "@/stores/key";
 
 extend("required", {
   ...required,
