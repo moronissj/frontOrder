@@ -60,19 +60,6 @@
         </b-form-group>
 
         <b-form-group
-          id="input-group-4"
-          label="Email del Trabajador:"
-          label-for="input-4"
-        >
-          <b-form-input
-            id="input-4"
-            type="email"
-            v-model="form.workerEmail"
-            required
-          ></b-form-input>
-        </b-form-group>
-
-        <b-form-group
           id="input-group-6"
           label="Teléfono del Trabajador:"
           label-for="input-6"
@@ -103,7 +90,7 @@
         >
           <b-form-input
             id="input-8"
-            type="text"
+            type="number"
             v-model="form.workerSalary"
             required
           ></b-form-input>
@@ -131,6 +118,8 @@
 </template>
 
 <script>
+import { useSecret } from "@/stores/key";
+
 export default {
   name: "EditWorkerModal",
   props: {
@@ -141,14 +130,14 @@ export default {
   },
   data() {
     return {
+      key: "",
       form: {
         workerName: "",
         workerFirstLastName: "",
         workerSecondLastName: "",
-        workerEmail: "",
         workerCellphone: "",
-        workerSecurityNumber: null,
-        workerSalary: null,
+        workerSecurityNumber: "",
+        workerSalary: "",
         workerRfc: "",
       },
     };
@@ -158,17 +147,37 @@ export default {
       this.form.workerName = this.worker.workerName;
       this.form.workerFirstLastName = this.worker.workerFirstLastName;
       this.form.workerSecondLastName = this.worker.workerSecondLastName;
-      this.form.workerEmail = this.worker.workerEmail;
       this.form.workerCellphone = this.worker.workerCellphone;
       this.form.workerSecurityNumber = this.worker.workerSecurityNumber;
       this.form.workerSalary = this.worker.workerSalary;
       this.form.workerRfc = this.worker.workerRfc;
     },
     sendPutEditWorker() {
+      const token = localStorage.getItem("token");
+      const serializedDataEdit = JSON.stringify({
+        workerName: this.form.workerName,
+        workerFirstLastName: this.form.workerFirstLastName,
+        workerSecondLastName: this.form.workerSecondLastName,
+        workerCellphone: this.form.workerCellphone,
+        workerSecurityNumber: this.form.workerSecurityNumber,
+        workerSalary: this.form.workerSalary,
+        workerRfc: this.form.workerRfc,
+      });
+      const encryptedDataEdited = this.$encryptionService.encryptDataTwoXD(
+        serializedDataEdit,
+        this.key
+      );
+      let formData = new FormData();
+      formData.append("data", encryptedDataEdited);
       this.$http
         .put(
           `/api/accounts/update-worker/info/${this.worker.workerId}`,
-          this.form
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         )
         .then((response) => {
           this.$emit("actualizacionExitosa");
@@ -183,27 +192,15 @@ export default {
           console.log(error);
         });
     },
-    handleFiles(event) {
-      this.form.WorkerImage = event.target.files;
-    },
     closeModal() {
       this.$root.$emit(
         "bv::hide::modal",
         `editWorkerModal_${this.worker.workerId}`
       );
-      this.clearFields();
     },
-    clearFields() {
-      this.form.workerName = "";
-      this.form.workerFirstLastName = "";
-      this.form.workerSecondLastName = "";
-      this.form.workerEmail = "";
-      this.form.workerCellphone = "";
-      this.form.workerSecurityNumber = null;
-      this.form.workerSalary = null;
-      this.form.workerRfc = "";
-      this.form.workerProfilePic = null;
-    },
+  },
+  mounted() {
+    this.key = useSecret();
   },
 };
 </script>

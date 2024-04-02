@@ -4,6 +4,7 @@
       v-b-modal="`acceptOrderModal_${id}`"
       id="acceptOrderModal"
       variant="success"
+      class="table-button"
       ><b-icon icon="check2" scale="1.2"></b-icon
     ></b-button>
     <b-modal
@@ -152,6 +153,14 @@ export default {
 }
 
 .inputContainer {
+  width: 100%;
+}
+
+.table-button {
+  margin: 0;
+  background-color: white;
+  border: 1px solid black;
+  color: black;
   width: 100%;
 }
 

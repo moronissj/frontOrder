@@ -193,6 +193,7 @@
 </template>
 
 <script>
+<<<<<<< HEAD
 
 import { extend, ValidationProvider   } from "vee-validate";
 import { required, min, ext } from "vee-validate/dist/rules";
@@ -244,6 +245,10 @@ extend('rfc', {
   },
   message: 'El RFC ingresado no es válido. Verifica que tenga el formato correcto.'
 });
+=======
+import { useSecret } from "@/stores/key";
+
+>>>>>>> b1a8c2b0fe09641d5abbc04402354b65b86d6cdc
 export default {
   components: {
     ValidationProvider
@@ -251,6 +256,7 @@ export default {
   name: "CreateWorkerModal",
   data() {
     return {
+      key: "",
       form: {
         workerName: "",
         workerFirstLastName: "",
@@ -267,27 +273,52 @@ export default {
   },
   methods: {
     sendPostCreateWorker() {
-      this.$http
-        .post("/api/accounts/create-worker", this.form, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then((response) => {
-          this.$emit("registroExitoso");
-          this.$swal({
-            title: "Creacion exitosa",
-            text: "El trabajador ha sido agregado con exito",
-            icon: "success",
+      const serializedData = JSON.stringify({
+        workerName: this.form.workerName,
+        workerFirstLastName: this.form.workerFirstLastName,
+        workerSecondLastName: this.form.workerSecondLastName,
+        workerEmail: this.form.workerEmail,
+        workerCellphone: this.form.workerCellphone,
+        workerSecurityNumber: this.form.workerSecurityNumber,
+        workerSalary: this.form.workerSalary,
+        workerPassword: this.form.workerPassword,
+        workerRfc: this.form.workerRfc,
+      });
+
+      const encryptedData = this.$encryptionService.encryptData(
+        serializedData,
+        this.key
+      );
+
+      let formData = new FormData();
+      formData.append("data", encryptedData);
+      if (this.form.workerProfilePic) {
+        formData.append("workerProfilePic", this.form.workerProfilePic);
+      }
+      const token = localStorage.getItem("token");
+      if (token) {
+        this.$http
+          .post("/api/accounts/create-worker", formData, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then((response) => {
+            this.$emit("registroExitoso");
+            this.$swal({
+              title: "Creación exitosa",
+              text: "El trabajador ha sido agregado con éxito",
+              icon: "success",
+            });
+            this.closeModal();
+          })
+          .catch((error) => {
+            console.error("Error al crear el trabajador:", error);
           });
-          this.closeModal();
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      }
     },
     handleFiles(event) {
-      this.form.workerProfilePic = event.target.files;
+      this.form.workerProfilePic = event.target.files[0];
     },
     closeModal() {
       this.$root.$emit("bv::hide::modal", "modal-1");
@@ -305,6 +336,9 @@ export default {
       this.form.workerSalary = null;
       this.form.workerRfc = "";
     },
+  },
+  mounted() {
+    this.key = useSecret();
   },
 };
 </script>
