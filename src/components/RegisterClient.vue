@@ -15,18 +15,25 @@
             <div class="card-body">
               <h1 class="info-title">Registro</h1>
               <b-form @submit.prevent="sendPostCreateAdmin">
+
                 <b-form-group
                   id="input-group-1"
                   class="b-group"
                   label="Nombre:"
                   label-for="input-1"
                 >
+                <ValidationProvider
+                rules="required"
+                v-slot="{ errors }"
+              >
                   <b-form-input
                     id="input-1"
                     type="text"
                     v-model="form.userName"
-                    required
+                    :class="{ invalid: errors[0] }"
                   ></b-form-input>
+                  <span class="errors">{{ errors[0] }}</span>
+              </ValidationProvider>
                 </b-form-group>
 
                 <b-form-group
@@ -35,12 +42,18 @@
                   label="Apellido paterno:"
                   label-for="input-2"
                 >
+                <ValidationProvider
+                rules="required"
+                v-slot="{ errors }"
+              >
                   <b-form-input
                     id="input-2"
                     v-model="form.userFirstLastName"
                     type="text"
-                    required
+                    :class="{ invalid: errors[0] }"
                   ></b-form-input>
+                  <span class="errors">{{ errors[0] }}</span>
+              </ValidationProvider>
                 </b-form-group>
 
                 <b-form-group
@@ -49,76 +62,100 @@
                   label="Apellido paterno:"
                   label-for="input-3"
                 >
+                <ValidationProvider
+                rules="required"
+                v-slot="{ errors }"
+              >
                   <b-form-input
                     id="input-3"
                     v-model="form.userSecondLastName"
                     type="text"
-                    required
+                    :class="{ invalid: errors[0] }"
                   ></b-form-input>
+                  <span class="errors">{{ errors[0] }}</span>
+              </ValidationProvider>
                 </b-form-group>
+
                 <b-form-group
                   id="input-group-4"
                   class="b-group"
                   label="Celular:"
                   label-for="input-4"
                 >
+                <ValidationProvider
+                rules="required|phone"
+                v-slot="{ errors }"
+              >
                   <b-form-input
                     id="input-4"
                     v-model="form.userCellphone"
                     type="tel"
-                    required
+                    :class="{ invalid: errors[0] }"
                   ></b-form-input>
+                  <span class="errors">{{ errors[0] }}</span>
+              </ValidationProvider>
                 </b-form-group>
+
                 <b-form-group
                   id="input-group-5"
                   class="b-group"
                   label="Correo Electronico:"
                   label-for="input-5"
                 >
+                <ValidationProvider
+                rules="required|email"
+                v-slot="{ errors }"
+              >
                   <b-form-input
                     id="input-5"
                     v-model="form.userEmail"
                     type="email"
-                    required
+                    :class="{ invalid: errors[0] }"
                   ></b-form-input>
+                  <span class="errors">{{ errors[0] }}</span>
+              </ValidationProvider>
                 </b-form-group>
+
                 <b-form-group
                   id="input-group-6"
                   class="b-group"
                   label="Contraseña:"
                   label-for="input-6"
                 >
+                <ValidationProvider
+                rules="required|password"
+                v-slot="{ errors }"
+              >
                   <b-form-input
                     id="input-6"
                     v-model="form.userPassword"
                     type="password"
-                    required
+                    :class="{ invalid: errors[0] }"
                   ></b-form-input>
-                </b-form-group>
-                <b-form-group
-                  id="input-group-7"
-                  label="Repetir Contraseña:"
-                  label-for="input-7"
-                >
-                  <b-form-input
-                    id="input-7"
-                    type="text"
-                    required
-                  ></b-form-input>
+                  <span class="errors">{{ errors[0] }}</span>
+              </ValidationProvider>
                 </b-form-group>
 
+                
                 <b-form-group
                   id="input-group-8"
                   label="Foto de perfil:"
                   label-for="input-8"
                 >
+                <ValidationProvider
+                rules="required|ext:png"
+                v-slot="{ errors }"
+              >
                   <b-form-file
                     id="input-8"
                     v-model="form.userProfilePic"
                     accept="image/*"
                     @change="handleFiles"
                     placeholder="Seleccione una imagen"
+                    :class="{ invalid: errors[0] }"
                   ></b-form-file>
+                  <span class="errors">{{ errors[0] }}</span>
+              </ValidationProvider>
                 </b-form-group>
 
                 <br />
@@ -136,10 +173,57 @@
 import NavBar from "./NavBar.vue";
 import "friendly-challenge/widget";
 
+import { extend, ValidationProvider   } from "vee-validate";
+import { required, min, ext } from "vee-validate/dist/rules";
+
+
+extend("required", {
+  ...required,
+  message: "Este campo es requerido",
+});
+
+//Esta regla valida la extension de la imagen
+extend("ext", {
+  ...ext,
+  message: "La imagen debe ser un png",
+});
+extend('email', {
+  validate: value => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  },
+  message: 'El campo debe ser una dirección de correo electrónico válida.'
+});
+
+extend('phone', {
+  validate: value => {
+    return /^\d{10}$/.test(value);
+  },
+  message: 'El número de celular debe tener exactamente 10 dígitos y no contener letras.',
+});
+
+extend('password', {
+  validate: value => {
+    return /^(?=.*[A-Z])(?=.*\d)(?!.*[^a-zA-Z0-9]).{8,}$/.test(value);
+  },
+  message: 'La contraseña debe contener al menos una letra mayúscula, un número y no debe contener caracteres especiales.',
+});
+extend('no-e', {
+  validate: value => {
+    if (typeof value === 'number') {
+      value = value.toString();
+    }
+    return !value.includes('e');
+  },
+  message: 'El campo no puede contener la letra "e".',
+});
+
+
+
 export default {
   name: "RegisterClient",
   components: {
     NavBar,
+    ValidationProvider,
   },
   data() {
     return {
@@ -273,5 +357,14 @@ input {
     margin: 2.5vh;
     width: fit-content;
   }
+}
+
+.invalid {
+  border-color: red !important;
+  background-color: rgb(255, 255, 255) !important;
+}
+
+.errors {
+  color: red;
 }
 </style>

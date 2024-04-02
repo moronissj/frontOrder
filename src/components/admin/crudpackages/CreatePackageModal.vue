@@ -11,17 +11,24 @@
         </b-button>
       </template>
       <b-form @submit.prevent="sendPostCreatePackage">
+
         <b-form-group
           id="input-group-1"
           label="Nombre del paquete:"
           label-for="input-1"
         >
+        <ValidationProvider
+                rules="required"
+                v-slot="{ errors }"
+              >
           <b-form-input
             id="input-1"
             type="text"
             v-model="form.packageName"
-            required
+            :class="{ invalid: errors[0] }"
           ></b-form-input>
+          <span class="errors">{{ errors[0] }}</span>
+              </ValidationProvider>
         </b-form-group>
 
         <b-form-group
@@ -29,12 +36,18 @@
           label="Descripcion del paquete:"
           label-for="input-2"
         >
+        <ValidationProvider
+                rules="required|minLength"
+                v-slot="{ errors }"
+              >
           <b-form-input
             id="input-2"
             type="text"
             v-model="form.packageDescription"
-            required
+            :class="{ invalid: errors[0] }"
           ></b-form-input>
+          <span class="errors">{{ errors[0] }}</span>
+              </ValidationProvider>
         </b-form-group>
 
         <b-form-group
@@ -42,12 +55,18 @@
           label="Precio del paquete:"
           label-for="input-3"
         >
+        <ValidationProvider
+                rules="required|no-e"
+                v-slot="{ errors }"
+              >
           <b-form-input
             id="input-3"
             type="number"
             v-model="form.packagePrice"
-            required
+            :class="{ invalid: errors[0] }"
           ></b-form-input>
+          <span class="errors">{{ errors[0] }}</span>
+              </ValidationProvider>
         </b-form-group>
 
         <b-form-group
@@ -55,12 +74,18 @@
           label="Horas de duracion del paquete:"
           label-for="input-4"
         >
+        <ValidationProvider
+                rules="required|no-e"
+                v-slot="{ errors }"
+              >
           <b-form-input
             id="input-4"
             type="number"
             v-model="form.designatedHours"
-            required
+            :class="{ invalid: errors[0] }"
           ></b-form-input>
+          <span class="errors">{{ errors[0] }}</span>
+              </ValidationProvider>
         </b-form-group>
 
         <b-form-group
@@ -68,12 +93,18 @@
           label="Numero de trabajadores a asignar al paquete:"
           label-for="input-5"
         >
+        <ValidationProvider
+                rules="required|no-e"
+                v-slot="{ errors }"
+              >
           <b-form-input
             id="input-5"
             type="number"
             v-model="form.workersNumber"
-            required
+            :class="{ invalid: errors[0] }"
           ></b-form-input>
+          <span class="errors">{{ errors[0] }}</span>
+              </ValidationProvider>
         </b-form-group>
 
         <b-form-group
@@ -97,6 +128,10 @@
           label="Cargar imágenes del paquete:"
           label-for="input-7"
         >
+        <ValidationProvider
+                rules="required|ext:png"
+                v-slot="{ errors }"
+              >
           <b-form-file
             id="input-7"
             v-model="form.images"
@@ -104,7 +139,10 @@
             accept="image/*"
             @change="handleFiles"
             placeholder="Seleccione una o varias imágenes..."
+            :class="{ invalid: errors[0] }"
           ></b-form-file>
+          <span class="errors">{{ errors[0] }}</span>
+              </ValidationProvider>
         </b-form-group>
 
         <div class="buttonsContainer">
@@ -117,7 +155,38 @@
 </template>
 
 <script>
+import { extend, ValidationProvider   } from "vee-validate";
+import { required, min, ext } from "vee-validate/dist/rules";
+extend("required", {
+  ...required,
+  message: "Este campo es requerido",
+});
+extend("ext", {
+  ...ext,
+  message: "La imagen debe ser un png",
+});
+extend('no-e', {
+  validate: value => {
+    if (typeof value === 'number') {
+      value = value.toString();
+    }
+    return !value.includes('e');
+  },
+  message: 'El campo no puede contener la letra "e".',
+});
+extend('minLength', {
+  validate: (value) => {
+    if (!value || value.length < 20) {
+      return 'La descripción debe contener al menos 20 caracteres.';
+    }
+    return true;
+  },
+  message: 'La descripción debe contener al menos 20 caracteres.',
+});
 export default {
+  components: {
+    ValidationProvider
+  },
   name: "CreatePackageModal",
   data() {
     return {
@@ -291,5 +360,13 @@ export default {
   margin: 0;
   font-size: 1rem;
   font-weight: 600;
+}
+.invalid {
+  border-color: red !important;
+  background-color: rgb(255, 255, 255) !important;
+}
+
+.errors {
+  color: red;
 }
 </style>

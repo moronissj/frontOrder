@@ -11,17 +11,24 @@
         </b-button>
       </template>
       <b-form @submit.prevent="sendPostCreateCombo">
+
         <b-form-group
           id="input-group-1"
           label="Nombre del Combo:"
           label-for="input-1"
         >
+        <ValidationProvider
+                rules="required"
+                v-slot="{ errors }"
+              >
           <b-form-input
             id="input-1"
             type="text"
             v-model="form.comboName"
-            required
+            :class="{ invalid: errors[0] }"
           ></b-form-input>
+          <span class="errors">{{ errors[0] }}</span>
+              </ValidationProvider>
         </b-form-group>
 
         <b-form-group
@@ -29,12 +36,18 @@
           label="Descripcion del Combo:"
           label-for="input-2"
         >
+        <ValidationProvider
+                rules="required|minLength"
+                v-slot="{ errors }"
+              >
           <b-form-input
             id="input-2"
             type="text"
             v-model="form.comboDescription"
-            required
+            :class="{ invalid: errors[0] }"
           ></b-form-input>
+          <span class="errors">{{ errors[0] }}</span>
+              </ValidationProvider>
         </b-form-group>
 
         <b-form-group
@@ -42,12 +55,18 @@
           label="Precio del Combo:"
           label-for="input-4"
         >
+        <ValidationProvider
+                rules="required"
+                v-slot="{ errors }"
+              >
           <b-form-input
             id="input-4"
             type="number"
             v-model="form.comboPrice"
-            required
+            :class="{ invalid: errors[0] }"
           ></b-form-input>
+          <span class="errors">{{ errors[0] }}</span>
+              </ValidationProvider>
         </b-form-group>
 
         <b-form-group
@@ -55,12 +74,18 @@
           label="Horas a Asignar:"
           label-for="input-5"
         >
+        <ValidationProvider
+                rules="required|no-e"
+                v-slot="{ errors }"
+              >
           <b-form-input
             id="input-5"
             v-model="form.comboDesignatedHours"
             type="number"
-            required
+            :class="{ invalid: errors[0] }"
           ></b-form-input>
+          <span class="errors">{{ errors[0] }}</span>
+              </ValidationProvider>
         </b-form-group>
 
         <b-form-group
@@ -68,12 +93,18 @@
           label="Número de Trabajadores a Asignar:"
           label-for="input-6"
         >
+        <ValidationProvider
+                rules="required|no-e"
+                v-slot="{ errors }"
+              >
           <b-form-input
             id="input-6"
             v-model="form.comboWorkersNumber"
             type="number"
-            required
+            :class="{ invalid: errors[0] }"
           ></b-form-input>
+          <span class="errors">{{ errors[0] }}</span>
+              </ValidationProvider>
         </b-form-group>
 
         <b-form-group
@@ -81,13 +112,20 @@
           label="Paquetes a asignar al combo:"
           label-for="input-6"
         >
+        <ValidationProvider
+                rules="required"
+                v-slot="{ errors }"
+              >
           <b-form-select
             id="input-6"
             v-model="form.packageIds"
             :options="packageOptions"
             multiple
             :select-size="5"
+            :class="{ invalid: errors[0] }"
           ></b-form-select>
+          <span class="errors">{{ errors[0] }}</span>
+              </ValidationProvider>
         </b-form-group>
 
         <b-form-group
@@ -95,13 +133,20 @@
           label="Foto del trabajador:"
           label-for="input-10"
         >
+        <ValidationProvider
+                rules="required|ext:png"
+                v-slot="{ errors }"
+              >
           <b-form-file
             id="input-10"
             v-model="form.comboImg"
             accept="image/*"
             @change="handleFiles"
             placeholder="Seleccione la imagen de portada del combo"
+            :class="{ invalid: errors[0] }"
           ></b-form-file>
+          <span class="errors">{{ errors[0] }}</span>
+              </ValidationProvider>
         </b-form-group>
 
         <div class="buttonsContainer">
@@ -114,7 +159,42 @@
 </template>
 
 <script>
+
+
+import { extend, ValidationProvider   } from "vee-validate";
+import { required, min, ext } from "vee-validate/dist/rules";
+
+
+extend("required", {
+  ...required,
+  message: "Este campo es requerido",
+});
+extend("ext", {
+  ...ext,
+  message: "La imagen debe ser un png",
+});
+extend('no-e', {
+  validate: value => {
+    if (typeof value === 'number') {
+      value = value.toString();
+    }
+    return !value.includes('e');
+  },
+  message: 'El campo no puede contener la letra "e".',
+});
+extend('minLength', {
+  validate: (value) => {
+    if (!value || value.length < 20) {
+      return 'La descripción debe contener al menos 20 caracteres.';
+    }
+    return true;
+  },
+  message: 'La descripción debe contener al menos 20 caracteres.',
+});
 export default {
+  components: {
+    ValidationProvider
+  },
   name: "CreateComboModal",
   data() {
     return {
@@ -280,5 +360,13 @@ export default {
   margin: 0;
   font-size: 1rem;
   font-weight: 600;
+}
+.invalid {
+  border-color: red !important;
+  background-color: rgb(255, 255, 255) !important;
+}
+
+.errors {
+  color: red;
 }
 </style>
