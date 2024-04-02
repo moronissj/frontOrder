@@ -107,9 +107,7 @@
                 <b-button class="table-button" variant="warning" size="sm">
                   <b-icon icon="circle" scale=".7"></b-icon
                 ></b-button>
-                <b-button class="table-button" variant="secondary" size="sm"
-                  ><b-icon icon="box" scale="1"></b-icon
-                ></b-button>
+
                 <b-button class="table-button" variant="danger" size="sm">
                   <b-icon icon="arrow-down-right" scale="1"></b-icon>
                 </b-button>
@@ -185,6 +183,8 @@
 import NavbarAdmin from "../NavbarAdmin.vue";
 import CreateWorkerModal from "./CreateWorkerModal.vue";
 import EditWorkerModal from "./EditWorkerModal.vue";
+import { useSecret } from "@/stores/key";
+
 export default {
   name: "CrudTrabajador",
   components: {
@@ -195,6 +195,7 @@ export default {
   data() {
     return {
       items: [],
+      key: "",
       fields: [
         {
           key: "workerName",
@@ -251,61 +252,59 @@ export default {
       });
     },
   },
-  mounted() {
-    this.totalRows = this.items.length;
-    this.fetchWorkers();
-  },
   methods: {
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length;
       this.currentPage = 1;
     },
-    // handleDragStart(e, item) {
-    //   console.log(item.workerId);
-    //   e.dataTransfer.setData("text/plain", item.WorkerId);
-    // },
-    // deleteWorkerOnDrop(id) {
-    //   this.$swal({
-    //     title: "¿Estas seguro?",
-    //     text: "No podras revertir este cambio",
-    //     icon: "warning",
-    //     showCancelButton: true,
-    //     confirmButtonColor: "#3085d6",
-    //     cancelButtonColor: "#d33",
-    //     cancelButtonText: "cancelar",
-    //     confirmButtonText: "Si, eliminar",
-    //   }).then((result) => {
-    //     if (result.isConfirmed) {
-    //       this.$http
-    //         .delete(`/api/accoutns/${id}`)
-    //         .then((response) => {
-    //           this.$swal({
-    //             title: "Eliminado",
-    //             text: "El Trabajador ha sido eliminado con exito",
-    //             icon: "success",
-    //           });
-    //           this.fetchWorkers();
-    //         })
-    //         .catch((error) => {
-    //           console.error(error);
-    //         });
-    //     }
-    //   });
-    // },
-    // handleDropOnTrash(e) {
-    //   const WorkerId = e.dataTransfer.getData("text/plain");
-    //   this.deleteWorkerOnDrop(WorkerId);
-    // },
     fetchWorkers() {
-      this.$http
-        .get("/api/accounts/workers")
-        .then((response) => {
-          this.items = response.data;
-        })
-        .catch((e) => {
-          console.error("Error en la peticion: ", e);
-        });
+      const token = localStorage.getItem("token");
+      if (token) {
+        this.$http
+          .get("/api/accounts/workers", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then((response) => {
+            this.items = response.data.map((item) =>
+              this.decryptWorkerData(item)
+            );
+          })
+          .catch((e) => {
+            console.error("Error en la petición: ", e);
+          });
+      }
     },
+
+    decryptWorkerData(item) {
+      const fieldsToDecrypt = [
+        "workerId",
+        "workerName",
+        "workerFirstLastName",
+        "workerSecondLastName",
+        "workerRfc",
+        "workerCellphone",
+        "workerSecurityNumber",
+        "workerSalary",
+        "workerEmail",
+        "workerProfilePicUrl",
+      ];
+
+      fieldsToDecrypt.forEach((field) => {
+        item[field] = this.$encryptionService.decryptData(
+          item[field],
+          this.key
+        );
+      });
+
+      return item;
+    },
+  },
+  mounted() {
+    const secretStore = useSecret();
+    this.key = secretStore.secretKey;
+    this.fetchWorkers();
   },
 };
 </script>
@@ -341,7 +340,7 @@ export default {
 }
 
 .table-button {
-  width: 10%;
+  width: 14%;
   background-color: white;
   border: 1px solid black;
   color: black;
@@ -357,6 +356,7 @@ export default {
   border: none;
   border-radius: 10px;
   border: 1px solid black;
+  overflow: auto;
 }
 
 .outter-pagination-container {

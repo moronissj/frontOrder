@@ -1,0 +1,41 @@
+//servicio de encriptación que utiliza la librería crypto-js, la llave de encriptación es
+//proporcionada por el servidor y la puedes llamaar con pinia
+
+import CryptoJS from "crypto-js";
+
+export default class encryptionService {
+  static decryptData(encryptedString, Akey) {
+    const ciphertext = CryptoJS.enc.Base64.parse(encryptedString);
+    const key = CryptoJS.enc.Utf8.parse(Akey);
+
+    const decrypted = CryptoJS.AES.decrypt({ ciphertext }, key, {
+      mode: CryptoJS.mode.ECB,
+      padding: CryptoJS.pad.Pkcs7,
+    });
+
+    const decryptedString = CryptoJS.enc.Utf8.stringify(decrypted);
+    return decryptedString;
+  }
+
+  static encryptData(message, Akey) {
+    const key = CryptoJS.enc.Utf8.parse(Akey.secretKey);
+    const encrypted = CryptoJS.AES.encrypt(message, key, {
+      mode: CryptoJS.mode.ECB,
+      padding: CryptoJS.pad.Pkcs7,
+    });
+
+    const encryptedString = encrypted.toString();
+    return encryptedString;
+  }
+
+  static encryptDataTwoXD(data, Akey) {
+    const key = CryptoJS.enc.Utf8.parse(Akey.secretKey);
+    const encrypted = CryptoJS.AES.encrypt(data, key, {
+      mode: CryptoJS.mode.ECB,
+      padding: CryptoJS.pad.Pkcs7,
+    });
+
+    const encryptedString = encrypted.toString();
+    return encryptedString;
+  }
+}
