@@ -180,6 +180,8 @@
 import NavbarAdmin from "../NavbarAdmin.vue";
 import CreateAdminModal from "./CreateAdminModal.vue";
 import EditAdminModal from "./EditAdminModal.vue";
+import { useSecret } from "@/stores/key";
+
 export default {
   name: "CrudAdmins",
   components: {
@@ -189,6 +191,7 @@ export default {
   },
   data() {
     return {
+      key: "",
       items: [],
       fields: [
         {
@@ -245,61 +248,57 @@ export default {
       });
     },
   },
-  mounted() {
-    this.totalRows = this.items.length;
-    this.fetchAdmins();
-  },
   methods: {
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length;
       this.currentPage = 1;
     },
-    // handleDragStart(e, item) {
-    //   console.log(item.adminId);
-    //   e.dataTransfer.setData("text/plain", item.adminId);
-    // },
-    // deleteAdminOnDrop(id) {
-    //   this.$swal({
-    //     title: "¿Estas seguro?",
-    //     text: "No podras revertir este cambio",
-    //     icon: "warning",
-    //     showCancelButton: true,
-    //     confirmButtonColor: "#3085d6",
-    //     cancelButtonColor: "#d33",
-    //     cancelButtonText: "cancelar",
-    //     confirmButtonText: "Si, eliminar",
-    //   }).then((result) => {
-    //     if (result.isConfirmed) {
-    //       this.$http
-    //         .delete(`/api/account/${id}`)
-    //         .then((response) => {
-    //           this.$swal({
-    //             title: "Eliminado",
-    //             text: "El servicio ha sido eliminado con exito",
-    //             icon: "success",
-    //           });
-    //           this.fetchAdmins();
-    //         })
-    //         .catch((error) => {
-    //           console.error(error);
-    //         });
-    //     }
-    //   });
-    // },
-    // handleDropOnTrash(e) {
-    //   const adminId = e.dataTransfer.getData("text/plain");
-    //   this.deleteAdminOnDrop(adminId);
-    // },
     fetchAdmins() {
-      this.$http
-        .get("/api/accounts/administrators")
-        .then((response) => {
-          this.items = response.data;
-        })
-        .catch((e) => {
-          console.error("Error en la peticion: ", e);
-        });
+      const token = localStorage.getItem("token");
+      if (token) {
+        this.$http
+          .get("/api/accounts/administrators", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then((response) => {
+            this.items = response.data.map((item) =>
+              this.decryptAdminData(item)
+            );
+          })
+          .catch((e) => {
+            console.error("Error en la peticion: ", e);
+          });
+      }
     },
+    decryptAdminData(item) {
+      const fieldsToDecrypt = [
+        "adminId",
+        "adminName",
+        "adminFirstLastName",
+        "adminSecondLastName",
+        "adminEmail",
+        "adminCellphone",
+        "adminSecurityNumber",
+        "adminProfilePicUrl",
+        "adminSalary",
+      ];
+
+      fieldsToDecrypt.forEach((field) => {
+        item[field] = this.$encryptionService.decryptData(
+          item[field],
+          this.key
+        );
+      });
+
+      return item;
+    },
+  },
+  mounted() {
+    const secretStore = useSecret();
+    this.key = secretStore.secretKey;
+    this.fetchAdmins();
   },
 };
 </script>
