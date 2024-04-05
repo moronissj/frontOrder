@@ -19,58 +19,86 @@
           X
         </b-button>
       </template>
-      <b-form @submit.prevent="sendPutEditService">
-        <b-form-group
-          id="input-group-1"
-          label="Nombre del servicio:"
-          label-for="input-1"
-        >
-          <b-form-input
-            id="input-1"
-            type="text"
-            v-model="form.serviceName"
-            required
-          ></b-form-input>
-        </b-form-group>
-
-        <b-form-group
-          id="input-group-2"
-          label="Descripcion del servicio:"
-          label-for="input-2"
-        >
-          <b-form-input
-            id="input-2"
-            type="text"
-            v-model="form.serviceDescription"
-            required
-          ></b-form-input>
-        </b-form-group>
-
-        <b-form-group
-          id="input-group-3"
-          label="Frase del servicio:"
-          label-for="input-3"
-        >
-          <b-form-input
-            id="input-3"
-            type="text"
-            v-model="form.serviceQuote"
-            required
-          ></b-form-input>
-        </b-form-group>
-
-        <div class="buttonsContainer">
-          <b-button type="submit" variant="primary"
-            >Registrar Servicio</b-button
+      <ValidationObserver v-slot="{ handleSubmit }">
+        <b-form @submit.prevent="handleSubmit(sendPutEditService)">
+          <b-form-group
+            id="input-group-1"
+            label="Nombre del servicio:"
+            label-for="input-1"
           >
-          <b-button @click="closeModal" id="botonCancelar"> Cancelar </b-button>
-        </div>
-      </b-form>
+            <ValidationProvider rules="required" v-slot="{ errors }">
+              <b-form-input
+                id="input-1"
+                type="text"
+                v-model="form.serviceName"
+                :class="{ invalid: errors[0] }"
+              ></b-form-input>
+              <span class="errors">{{ errors[0] }}</span>
+            </ValidationProvider>
+          </b-form-group>
+
+          <b-form-group
+            id="input-group-2"
+            label="Descripcion del servicio:"
+            label-for="input-2"
+          >
+            <ValidationProvider rules="required|minLength" v-slot="{ errors }">
+              <b-form-input
+                id="input-2"
+                type="text"
+                v-model="form.serviceDescription"
+                :class="{ invalid: errors[0] }"
+              ></b-form-input>
+              <span class="errors">{{ errors[0] }}</span>
+            </ValidationProvider>
+          </b-form-group>
+
+          <b-form-group
+            id="input-group-3"
+            label="Frase del servicio:"
+            label-for="input-3"
+          >
+            <ValidationProvider rules="required" v-slot="{ errors }">
+              <b-form-input
+                id="input-3"
+                type="text"
+                v-model="form.serviceQuote"
+                :class="{ invalid: errors[0] }"
+              ></b-form-input>
+              <span class="errors">{{ errors[0] }}</span>
+            </ValidationProvider>
+          </b-form-group>
+
+          <div class="buttonsContainer">
+            <b-button type="submit" variant="primary"
+              >Registrar Servicio</b-button
+            >
+            <b-button @click="closeModal" id="botonCancelar">
+              Cancelar
+            </b-button>
+          </div>
+        </b-form>
+      </ValidationObserver>
     </b-modal>
   </div>
 </template>
 
 <script>
+import { extend } from "vee-validate";
+import { required, ext } from "vee-validate/dist/rules";
+extend("required", {
+  ...required,
+  message: "Este campo es requerido",
+});
+extend("minLength", {
+  validate: (value) => {
+    if (!value || value.length < 20) {
+      return "La descripción debe contener al menos 20 caracteres.";
+    }
+    return true;
+  },
+  message: "La descripción debe contener al menos 20 caracteres.",
+});
 export default {
   name: "EditServiceModal",
   props: {
@@ -109,9 +137,6 @@ export default {
         .catch((error) => {
           console.log(error);
         });
-    },
-    handleFiles(event) {
-      this.form.serviceImage = event.target.files;
     },
     closeModal() {
       this.$root.$emit(
@@ -232,5 +257,14 @@ export default {
   margin: 0;
   font-size: 1rem;
   font-weight: 600;
+}
+
+.invalid {
+  border-color: red !important;
+  background-color: rgb(255, 255, 255) !important;
+}
+
+.errors {
+  color: red;
 }
 </style>

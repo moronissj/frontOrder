@@ -313,6 +313,7 @@ export default {
       this.$http
         .get("/api/services")
         .then((response) => {
+          console.log(response.data);
           this.items = response.data;
           this.totalRows = this.items.length;
         })

@@ -12,21 +12,16 @@
         </b-button>
       </template>
       <b-form @submit.prevent="sendPostCreateAdmin">
-
-
         <b-form-group id="input-group-1" label="Nombre:" label-for="input-1">
-          <ValidationProvider
-                rules="required"
-                v-slot="{ errors }"
-              >
-          <b-form-input
-            id="input-1"
-            type="text"
-            v-model="form.adminName"
-            :class="{ invalid: errors[0] }"
-          ></b-form-input>
-          <span class="errors">{{ errors[0] }}</span>
-              </ValidationProvider>
+          <ValidationProvider rules="required" v-slot="{ errors }">
+            <b-form-input
+              id="input-1"
+              type="text"
+              v-model="form.adminName"
+              :class="{ invalid: errors[0] }"
+            ></b-form-input>
+            <span class="errors">{{ errors[0] }}</span>
+          </ValidationProvider>
         </b-form-group>
 
         <b-form-group
@@ -34,18 +29,15 @@
           label="Apellido Paterno:"
           label-for="input-2"
         >
-        <ValidationProvider
-                rules="required"
-                v-slot="{ errors }"
-              >
-          <b-form-input
-            id="input-2"
-            type="text"
-            v-model="form.adminFirstLastName"
-            :class="{ invalid: errors[0] }"
-          ></b-form-input>
-          <span class="errors">{{ errors[0] }}</span>
-              </ValidationProvider>
+          <ValidationProvider rules="required" v-slot="{ errors }">
+            <b-form-input
+              id="input-2"
+              type="text"
+              v-model="form.adminFirstLastName"
+              :class="{ invalid: errors[0] }"
+            ></b-form-input>
+            <span class="errors">{{ errors[0] }}</span>
+          </ValidationProvider>
         </b-form-group>
 
         <b-form-group
@@ -53,34 +45,27 @@
           label="Apellido Materno:"
           label-for="input-3"
         >
-        <ValidationProvider
-                rules="required"
-                v-slot="{ errors }"
-              >
-          <b-form-input
-            id="input-3"
-            type="text"
-            v-model="form.adminSecondLastName"
-            :class="{ invalid: errors[0] }"
-          ></b-form-input>
-          <span class="errors">{{ errors[0] }}</span>
-              </ValidationProvider>
+          <ValidationProvider rules="required" v-slot="{ errors }">
+            <b-form-input
+              id="input-3"
+              type="text"
+              v-model="form.adminSecondLastName"
+              :class="{ invalid: errors[0] }"
+            ></b-form-input>
+            <span class="errors">{{ errors[0] }}</span>
+          </ValidationProvider>
         </b-form-group>
 
-
         <b-form-group id="input-group-4" label="Email:" label-for="input-4">
-          <ValidationProvider
-                rules="required|email"
-                v-slot="{ errors }"
-              >
-          <b-form-input
-            id="input-4"
-            type="email"
-            v-model="form.adminEmail"
-            :class="{ invalid: errors[0] }"
-          ></b-form-input>
-          <span class="errors">{{ errors[0] }}</span>
-              </ValidationProvider>
+          <ValidationProvider rules="required|email" v-slot="{ errors }">
+            <b-form-input
+              id="input-4"
+              type="email"
+              v-model="form.adminEmail"
+              :class="{ invalid: errors[0] }"
+            ></b-form-input>
+            <span class="errors">{{ errors[0] }}</span>
+          </ValidationProvider>
         </b-form-group>
 
         <b-form-group
@@ -88,33 +73,27 @@
           label="Contraseña:"
           label-for="input-5"
         >
-        <ValidationProvider
-                rules="required|password"
-                v-slot="{ errors }"
-              >
-          <b-form-input
-            id="input-5"
-            type="password"
-            v-model="form.adminPassword"
-            :class="{ invalid: errors[0] }"
-          ></b-form-input>
-          <span class="errors">{{ errors[0] }}</span>
-              </ValidationProvider>
+          <ValidationProvider rules="required|password" v-slot="{ errors }">
+            <b-form-input
+              id="input-5"
+              type="password"
+              v-model="form.adminPassword"
+              :class="{ invalid: errors[0] }"
+            ></b-form-input>
+            <span class="errors">{{ errors[0] }}</span>
+          </ValidationProvider>
         </b-form-group>
 
         <b-form-group id="input-group-6" label="Telefono:" label-for="input-6">
-          <ValidationProvider
-                rules="required|phone"
-                v-slot="{ errors }"
-              >
-          <b-form-input
-            id="input-6"
-            type="text"
-            v-model="form.adminCellphone"
-            :class="{ invalid: errors[0] }"
-          ></b-form-input>
-          <span class="errors">{{ errors[0] }}</span>
-              </ValidationProvider>
+          <ValidationProvider rules="required|phone" v-slot="{ errors }">
+            <b-form-input
+              id="input-6"
+              type="text"
+              v-model="form.adminCellphone"
+              :class="{ invalid: errors[0] }"
+            ></b-form-input>
+            <span class="errors">{{ errors[0] }}</span>
+          </ValidationProvider>
         </b-form-group>
 
         <b-form-group
@@ -122,33 +101,27 @@
           label="Numero de Seguridad:"
           label-for="input-7"
         >
-        <ValidationProvider
-                rules="required|no-e"
-                v-slot="{ errors }"
-              >
-          <b-form-input
-            id="input-7"
-            type="number"
-            v-model="form.adminSecurityNumber"
-            :class="{ invalid: errors[0] }"
-          ></b-form-input>
-          <span class="errors">{{ errors[0] }}</span>
-              </ValidationProvider>
+          <ValidationProvider rules="required|no-e" v-slot="{ errors }">
+            <b-form-input
+              id="input-7"
+              type="number"
+              v-model="form.adminSecurityNumber"
+              :class="{ invalid: errors[0] }"
+            ></b-form-input>
+            <span class="errors">{{ errors[0] }}</span>
+          </ValidationProvider>
         </b-form-group>
 
         <b-form-group id="input-group-8" label="Salario:" label-for="input-8">
-          <ValidationProvider
-                rules="required|no-e"
-                v-slot="{ errors }"
-              >
-          <b-form-input
-            id="input-8"
-            type="number"
-            v-model="form.adminSalary"
-            :class="{ invalid: errors[0] }"
-          ></b-form-input>
-          <span class="errors">{{ errors[0] }}</span>
-              </ValidationProvider>
+          <ValidationProvider rules="required|no-e" v-slot="{ errors }">
+            <b-form-input
+              id="input-8"
+              type="number"
+              v-model="form.adminSalary"
+              :class="{ invalid: errors[0] }"
+            ></b-form-input>
+            <span class="errors">{{ errors[0] }}</span>
+          </ValidationProvider>
         </b-form-group>
 
         <b-form-group
@@ -156,20 +129,17 @@
           label="Foto del Administrador:"
           label-for="input-9"
         >
-        <ValidationProvider
-                rules="required|ext:png"
-                v-slot="{ errors }"
-              >
-          <b-form-file
-            id="input-9"
-            v-model="form.adminProfilePic"
-            accept="image/*"
-            @change="handleFiles"
-            placeholder="Seleccione una imagen"
-            :class="{ invalid: errors[0] }"
-          ></b-form-file>
-          <span class="errors">{{ errors[0] }}</span>
-              </ValidationProvider>
+          <ValidationProvider rules="required|ext:png" v-slot="{ errors }">
+            <b-form-file
+              id="input-9"
+              v-model="form.adminProfilePic"
+              accept="image/*"
+              @change="handleFiles"
+              placeholder="Seleccione una imagen"
+              :class="{ invalid: errors[0] }"
+            ></b-form-file>
+            <span class="errors">{{ errors[0] }}</span>
+          </ValidationProvider>
         </b-form-group>
 
         <div class="buttonsContainer">
@@ -184,10 +154,9 @@
 </template>
 
 <script>
-
-import { extend, ValidationProvider   } from "vee-validate";
+import { extend, ValidationProvider } from "vee-validate";
 import { required, min, ext } from "vee-validate/dist/rules";
-
+import { useSecret } from "@/stores/key";
 
 extend("required", {
   ...required,
@@ -199,45 +168,46 @@ extend("ext", {
   ...ext,
   message: "La imagen debe ser un png",
 });
-extend('email', {
-  validate: value => {
+extend("email", {
+  validate: (value) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
   },
-  message: 'El campo debe ser una dirección de correo electrónico válida.'
+  message: "El campo debe ser una dirección de correo electrónico válida.",
 });
 
-extend('phone', {
-  validate: value => {
+extend("phone", {
+  validate: (value) => {
     return /^\d{10}$/.test(value);
   },
-  message: 'El número de celular debe tener exactamente 10 dígitos y no contener letras.',
+  message:
+    "El número de celular debe tener exactamente 10 dígitos y no contener letras.",
 });
 
-extend('password', {
-  validate: value => {
+extend("password", {
+  validate: (value) => {
     return /^(?=.*[A-Z])(?=.*\d)(?!.*[^a-zA-Z0-9]).{8,}$/.test(value);
   },
-  message: 'La contraseña debe contener al menos una letra mayúscula, un número y no debe contener caracteres especiales.',
+  message:
+    "La contraseña debe contener al menos una letra mayúscula, un número y no debe contener caracteres especiales.",
 });
-extend('no-e', {
-  validate: value => {
-    if (typeof value === 'number') {
+extend("no-e", {
+  validate: (value) => {
+    if (typeof value === "number") {
       value = value.toString();
     }
-    return !value.includes('e');
+    return !value.includes("e");
   },
   message: 'El campo no puede contener la letra "e".',
 });
 
-
-
 export default {
   components: {
-    ValidationProvider
+    ValidationProvider,
   },
   name: "CreateAdminModal",
   data() {
     return {
+      key: "",
       form: {
         adminName: "",
         adminFirstLastName: "",
@@ -253,27 +223,53 @@ export default {
   },
   methods: {
     sendPostCreateAdmin() {
-      this.$http
-        .post("/api/accounts/create-admin", this.form, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then((response) => {
-          this.$emit("registroExitoso");
-          this.$swal({
-            title: "Creacion exitosa",
-            text: "El admin ha sido agregada con exito",
-            icon: "success",
+      const serializedData = JSON.stringify({
+        adminName: this.form.adminName,
+        adminFirstLastName: this.form.adminFirstLastName,
+        adminSecondLastName: this.form.adminSecondLastName,
+        adminEmail: this.form.adminEmail,
+        adminPassword: this.form.adminPassword,
+        adminCellphone: this.form.adminCellphone,
+        adminSecurityNumber: this.form.adminSecurityNumber,
+        adminSalary: this.form.adminSalary,
+      });
+
+      const encryptedData = this.$encryptionService.encryptData(
+        serializedData,
+        this.key
+      );
+
+      let formData = new FormData();
+      formData.append("data", encryptedData);
+      if (this.form.adminProfilePic) {
+        formData.append("adminProfilePic", this.form.adminProfilePic);
+      }
+
+      const token = localStorage.getItem("token");
+      if (token) {
+        this.$http
+          .post("/api/accounts/create-admin", formData, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then((resonse) => {
+            this.$emit("registroExitoso");
+            this.$swal({
+              title: "Creación exitosa",
+              text: "El Administrador ha sido agregado con éxito",
+              icon: "success",
+            });
+            this.closeModal();
+          })
+          .catch((error) => {
+            console.error("Error al crear el trabajador:", error);
           });
-          this.closeModal();
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      }
     },
     handleFiles(event) {
-      this.form.adminProfilePic = event.target.files;
+      const file = event.target.files[0];
+      this.form.adminProfilePic = file;
     },
     closeModal() {
       this.$root.$emit("bv::hide::modal", "modal-1");
@@ -290,6 +286,9 @@ export default {
       this.form.adminSalary = null;
       this.form.adminProfilePic = null;
     },
+  },
+  mounted() {
+    this.key = useSecret();
   },
 };
 </script>

@@ -15,6 +15,8 @@ import { createPinia, PiniaVuePlugin } from "pinia";
 import VueCryptojs from "vue-cryptojs";
 import encryptionPlugin from "./utils/EncryptionPlugin";
 
+import { ValidationProvider, ValidationObserver } from "vee-validate";
+
 axios.defaults.baseURL = "http://localhost:8080";
 Vue.prototype.$http = axios;
 
@@ -24,6 +26,10 @@ Vue.use(IconsPlugin);
 Vue.use(VueCryptojs);
 Vue.use(VueSweetalert2);
 Vue.use(encryptionPlugin);
+
+// REGISTRAR COMO COMPONENTES GLOBALES LAS IMPORTACIONES DE VEE-VALIDATE
+Vue.component("ValidationProvider", ValidationProvider);
+Vue.component("ValidationObserver", ValidationObserver);
 
 new Vue({
   router,

@@ -31,8 +31,8 @@ import Carousel from "../Carousel.vue";
         </div>
       </div>
 
-      <div class="container">
-        <Carousel />
+      <div class="container scrollable-container">
+        <Carousel :class="{ hidden: !showElement, 'fade-transition': true }" />
         <div class="title">
           <h1>Servicios</h1>
         </div>
@@ -108,12 +108,34 @@ import Carousel from "../Carousel.vue";
 <script>
 export default {
   data() {
-    return {};
+    return {
+      showElement: true,
+    };
   },
   methods: {
     goToLogin() {
       this.$router.push("/login");
     },
+    handleScroll() {
+      const currentScrollPosition = window.scrollY;
+      const scrollThreshold = 700;
+      if (currentScrollPosition > scrollThreshold) {
+        setTimeout(() => {
+          this.showElement = false;
+        }, 3000);
+      } else {
+        setTimeout(() => {
+          this.showElement = true;
+        }, 3000);
+      }
+      this.lastScrollPosition = currentScrollPosition;
+    },
+  },
+  mounted() {
+    window.addEventListener("scroll", this.handleScroll);
+  },
+  beforeDestroy() {
+    window.removeEventListener("scroll", this.handleScroll);
   },
 };
 </script>
@@ -211,6 +233,22 @@ export default {
   font-size: 4rem;
 }
 
+.scrollable-container {
+  margin: 50px;
+  height: auto;
+  transition: height 0.3s ease;
+  min-height: 100vh;
+}
+
+.fade-transition {
+  transition: opacity 0.3s ease;
+}
+
+.hidden {
+  opacity: 0;
+  height: 10px;
+  display: none;
+}
 @media (max-width: 800px) {
   #app {
     margin: 0;

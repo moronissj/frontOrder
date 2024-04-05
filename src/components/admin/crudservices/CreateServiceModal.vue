@@ -10,130 +10,114 @@
           X
         </b-button>
       </template>
-      <b-form @submit.prevent="sendPostCreateService">
 
-        <b-form-group
-          id="input-group-1"
-          label="Nombre del servicio:"
-          label-for="input-1"
-        >
-        <ValidationProvider
-                rules="required"
-                v-slot="{ errors }"
-              >
-          <b-form-input
-            id="input-1"
-            type="text"
-            v-model="form.serviceName"
-            :class="{ invalid: errors[0] }"
-          ></b-form-input>
-          <span class="errors">{{ errors[0] }}</span>
-              </ValidationProvider>
-        </b-form-group>
-
-        <b-form-group
-          id="input-group-2"
-          label="Descripcion del servicio:"
-          label-for="input-2"
-        >
-        <ValidationProvider
-                rules="required|minLength"
-                v-slot="{ errors }"
-              >
-          <b-form-input
-            id="input-2"
-            type="text"
-            v-model="form.serviceDescription"
-            :class="{ invalid: errors[0] }"
-          ></b-form-input>
-          <span class="errors">{{ errors[0] }}</span>
-              </ValidationProvider>
-        </b-form-group>
-
-        <b-form-group
-          id="input-group-3"
-          label="Frase del servicio:"
-          label-for="input-3"
-        >
-        <ValidationProvider
-                rules="required"
-                v-slot="{ errors }"
-              >
-          <b-form-input
-            id="input-3"
-            type="text"
-            v-model="form.serviceQuote"
-            :class="{ invalid: errors[0] }"
-          ></b-form-input>
-          <span class="errors">{{ errors[0] }}</span>
-              </ValidationProvider>
-        </b-form-group>
-
-        <b-form-group
-          id="input-group-4"
-          label="Imagel del servicio:"
-          label-for="input-4"
-        >
-        <ValidationProvider
-                rules="required|ext:png"
-                v-slot="{ errors }"
-              >
-          <b-form-file
-            id="input-4"
-            v-model="form.serviceImage"
-            accept="image/*"
-            @change="handleFiles"
-            placeholder="Seleccione una imagen"
-            :class="{ invalid: errors[0] }"
-          ></b-form-file>
-          <span class="errors">{{ errors[0] }}</span>
-              </ValidationProvider>
-        </b-form-group>
-
-        <div class="buttonsContainer">
-          <b-button type="submit" variant="primary"
-            >Registrar Servicio</b-button
+      <ValidationObserver v-slot="{ handleSubmit }">
+        <b-form @submit.prevent="handleSubmit(sendPostCreateService)">
+          <b-form-group
+            id="input-group-1"
+            label="Nombre del servicio:"
+            label-for="input-1"
           >
-          <b-button @click="closeModal" id="botonCancelar"> Cancelar </b-button>
-        </div>
-      </b-form>
+            <ValidationProvider rules="required" v-slot="{ errors }">
+              <b-form-input
+                id="input-1"
+                type="text"
+                v-model="form.serviceName"
+                :class="{ invalid: errors[0] }"
+              ></b-form-input>
+              <span class="errors">{{ errors[0] }}</span>
+            </ValidationProvider>
+          </b-form-group>
+
+          <b-form-group
+            id="input-group-2"
+            label="Descripcion del servicio:"
+            label-for="input-2"
+          >
+            <ValidationProvider rules="required|minLength" v-slot="{ errors }">
+              <b-form-input
+                id="input-2"
+                type="text"
+                v-model="form.serviceDescription"
+                :class="{ invalid: errors[0] }"
+              ></b-form-input>
+              <span class="errors">{{ errors[0] }}</span>
+            </ValidationProvider>
+          </b-form-group>
+
+          <b-form-group
+            id="input-group-3"
+            label="Frase del servicio:"
+            label-for="input-3"
+          >
+            <ValidationProvider rules="required" v-slot="{ errors }">
+              <b-form-input
+                id="input-3"
+                type="text"
+                v-model="form.serviceQuote"
+                :class="{ invalid: errors[0] }"
+              ></b-form-input>
+              <span class="errors">{{ errors[0] }}</span>
+            </ValidationProvider>
+          </b-form-group>
+
+          <b-form-group
+            id="input-group-4"
+            label="Imagel del servicio:"
+            label-for="input-4"
+          >
+            <ValidationProvider
+              rules="required|ext:jpg,png"
+              v-slot="{ errors }"
+            >
+              <b-form-file
+                id="input-4"
+                v-model="form.serviceImage"
+                accept="image/*"
+                @change="handleFiles"
+                placeholder="Seleccione una imagen"
+                :class="{ invalid: errors[0] }"
+              ></b-form-file>
+              <span class="errors">{{ errors[0] }}</span>
+            </ValidationProvider>
+          </b-form-group>
+
+          <div class="buttonsContainer">
+            <b-button type="submit" variant="primary"
+              >Registrar Servicio</b-button
+            >
+            <b-button @click="closeModal" id="botonCancelar">
+              Cancelar
+            </b-button>
+          </div>
+        </b-form>
+      </ValidationObserver>
     </b-modal>
   </div>
 </template>
 
 <script>
-import { extend, ValidationProvider   } from "vee-validate";
-import { required, min, ext } from "vee-validate/dist/rules";
+import { extend } from "vee-validate";
+import { required, ext } from "vee-validate/dist/rules";
 extend("required", {
   ...required,
   message: "Este campo es requerido",
 });
 extend("ext", {
   ...ext,
-  message: "La imagen debe ser un png",
+  message: "El archivo debe ser una imagen png o jpg",
 });
-extend('no-e', {
-  validate: value => {
-    if (typeof value === 'number') {
-      value = value.toString();
-    }
-    return !value.includes('e');
-  },
-  message: 'El campo no puede contener la letra "e".',
-});
-extend('minLength', {
+
+extend("minLength", {
   validate: (value) => {
     if (!value || value.length < 20) {
-      return 'La descripción debe contener al menos 20 caracteres.';
+      return "La descripción debe contener al menos 20 caracteres.";
     }
     return true;
   },
-  message: 'La descripción debe contener al menos 20 caracteres.',
+  message: "La descripción debe contener al menos 20 caracteres.",
 });
 export default {
-  components: {
-    ValidationProvider
-  },
   name: "CreateServiceModal",
   data() {
     return {
@@ -167,7 +151,8 @@ export default {
         });
     },
     handleFiles(event) {
-      this.form.serviceImage = event.target.files;
+      const file = event.target.files[0];
+      this.form.serviceImage = file;
     },
     closeModal() {
       this.$root.$emit("bv::hide::modal", "modal-1");

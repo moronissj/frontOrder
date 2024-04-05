@@ -159,7 +159,8 @@ export default {
         });
     },
     handleFiles(event) {
-      this.form.adminImage = event.target.files;
+      const file = event.target.files[0];
+      this.form.adminImage = file;
     },
     closeModal() {
       this.$root.$emit(

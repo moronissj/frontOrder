@@ -283,7 +283,8 @@ export default {
       }
     },
     handleFiles(event) {
-      this.form.workerProfilePic = event.target.files[0];
+      const file = event.target.files[0];
+      this.form.workerProfilePic = file;
     },
     closeModal() {
       this.$root.$emit("bv::hide::modal", "modal-1");
