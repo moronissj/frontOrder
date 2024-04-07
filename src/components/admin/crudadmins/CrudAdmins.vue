@@ -266,6 +266,8 @@ export default {
             this.items = response.data.map((item) =>
               this.decryptAdminData(item)
             );
+            this.items = response.data;
+            this.totalRows = this.items.length;
           })
           .catch((e) => {
             console.error("Error en la peticion: ", e);
