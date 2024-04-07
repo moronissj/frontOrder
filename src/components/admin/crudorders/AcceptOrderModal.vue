@@ -46,6 +46,8 @@
 </template>
 
 <script>
+import { useSecret } from "@/stores/key";
+
 export default {
   name: "AcceptOrderModal",
   props: {
@@ -56,6 +58,7 @@ export default {
   },
   data() {
     return {
+      key: "",
       workers: [],
       workerOptions: [],
       form: {
@@ -88,21 +91,52 @@ export default {
     clearFields() {
       this.form.workerIds = [];
     },
+    fetchWorkers() {
+      this.$http
+        .get("/api/accounts/workers")
+        .then((response) => {
+          console.log(response.data);
+          this.workers = response.data.map((worker) => {
+            this.decryptWorkerData(worker);
+          });
+          this.workerOptions = this.workers.map((work) => ({
+            value: work.workerId,
+            text: work.workerName,
+          }));
+        })
+        .catch((e) => {
+          console.error("Error en la petición: ", e);
+        });
+    },
+    decryptWorkerData(worker) {
+      const fieldsToDecrypt = [
+        "workerId",
+        "workerName",
+        "workerFirstLastName",
+        "workerSecondLastName",
+        "workerRfc",
+        "workerCellphone",
+        "workerSecurityNumber",
+        "workerSalary",
+        "workerEmail",
+        "workerProfilePicUrl",
+      ];
+
+      fieldsToDecrypt.forEach((field) => {
+        worker[field] = this.$encryptionService.decryptData(
+          worker[field],
+          this.key
+        );
+      });
+
+      return worker;
+    },
   },
   mounted() {
+    const secretStore = useSecret();
     this.form.orderId = this.id;
-    this.$http
-      .get("/api/accounts/workers")
-      .then((response) => {
-        this.workers = response.data;
-        this.workerOptions = this.workers.map((pkg) => ({
-          value: pkg.workerId,
-          text: pkg.workerName,
-        }));
-      })
-      .catch((e) => {
-        console.error("Error en la petición: ", e);
-      });
+    this.key = secretStore.secretKey;
+    this.fetchWorkers();
   },
 };
 </script>

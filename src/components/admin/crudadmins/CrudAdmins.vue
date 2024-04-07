@@ -102,11 +102,33 @@
                   :admin="row.item"
                   @actualizacionExitosa="fetchAdmins"
                 ></EditAdminModal>
-                <b-button class="table-button" variant="warning" size="sm">
-                  <b-icon icon="circle" scale=".7"></b-icon
-                ></b-button>
 
-                <b-button class="table-button" variant="danger" size="sm">
+                <b-button
+                  class="table-button"
+                  size="sm"
+                  :style="{
+                    backgroundColor:
+                      row.item.accountStatus === 'Confirmada'
+                        ? 'green'
+                        : row.item.accountStatus === 'Sin confirmar'
+                        ? 'red'
+                        : '',
+                  }"
+                >
+                  <b-icon
+                    @click="goToConfirmAdminAccount(row.item.accountStatus)"
+                    icon="circle"
+                    scale=".7"
+                  ></b-icon>
+                </b-button>
+
+                <b-button
+                  draggable="true"
+                  @dragstart="handleDragStart($event, row.item)"
+                  class="table-button"
+                  variant="danger"
+                  size="sm"
+                >
                   <b-icon icon="arrow-down-right" scale="1"></b-icon>
                 </b-button>
               </div>
@@ -159,6 +181,8 @@
       >
         <div
           class="bin-container-inner"
+          @dragover.prevent
+          @drop="handleDropOnTrash"
           style="
             background: red;
             width: 5%;
@@ -180,6 +204,8 @@
 import NavbarAdmin from "../NavbarAdmin.vue";
 import CreateAdminModal from "./CreateAdminModal.vue";
 import EditAdminModal from "./EditAdminModal.vue";
+import { useSecret } from "@/stores/key";
+
 export default {
   name: "CrudAdmins",
   components: {
@@ -189,6 +215,7 @@ export default {
   },
   data() {
     return {
+      key: "",
       items: [],
       fields: [
         {
@@ -230,6 +257,7 @@ export default {
           adminCellphone: "Telefono",
           adminSalary: "Salario",
           adminSecurityNumber: "Numero de Seguridad",
+          accountStatus: "Estado de la cuenta",
         };
         Object.entries(item).forEach(([key, value]) => {
           if (key !== "_showDetails") {
@@ -245,61 +273,130 @@ export default {
       });
     },
   },
-  mounted() {
-    this.totalRows = this.items.length;
-    this.fetchAdmins();
-  },
   methods: {
+    goToConfirmAdminAccount(status) {
+      if (status === "Sin confirmar") {
+        this.$router.push("/admin-confirm-admin-account");
+      } else {
+        this.$swal({
+          title: "A donde papi?",
+          text: "La cuenta ya fue confirmada, no hay necesidad",
+          icon: "question",
+        });
+      }
+    },
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length;
       this.currentPage = 1;
     },
-    // handleDragStart(e, item) {
-    //   console.log(item.adminId);
-    //   e.dataTransfer.setData("text/plain", item.adminId);
-    // },
-    // deleteAdminOnDrop(id) {
-    //   this.$swal({
-    //     title: "¿Estas seguro?",
-    //     text: "No podras revertir este cambio",
-    //     icon: "warning",
-    //     showCancelButton: true,
-    //     confirmButtonColor: "#3085d6",
-    //     cancelButtonColor: "#d33",
-    //     cancelButtonText: "cancelar",
-    //     confirmButtonText: "Si, eliminar",
-    //   }).then((result) => {
-    //     if (result.isConfirmed) {
-    //       this.$http
-    //         .delete(`/api/account/${id}`)
-    //         .then((response) => {
-    //           this.$swal({
-    //             title: "Eliminado",
-    //             text: "El servicio ha sido eliminado con exito",
-    //             icon: "success",
-    //           });
-    //           this.fetchAdmins();
-    //         })
-    //         .catch((error) => {
-    //           console.error(error);
-    //         });
-    //     }
-    //   });
-    // },
-    // handleDropOnTrash(e) {
-    //   const adminId = e.dataTransfer.getData("text/plain");
-    //   this.deleteAdminOnDrop(adminId);
-    // },
-    fetchAdmins() {
-      this.$http
-        .get("/api/accounts/administrators")
-        .then((response) => {
-          this.items = response.data;
-        })
-        .catch((e) => {
-          console.error("Error en la peticion: ", e);
-        });
+    handleDragStart(e, item) {
+      console.log(item.adminId);
+      e.dataTransfer.setData("text/plain", item.adminId);
     },
+    deleteAdminOnDrop(id) {
+      this.key = useSecret();
+
+      this.$swal({
+        title: "¿Estas seguro?",
+        text: "No podras revertir este cambio",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        cancelButtonText: "cancelar",
+        confirmButtonText: "Si, eliminar",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const serializedData = JSON.stringify({
+            adminId: id,
+          });
+          const encryptedData = this.$encryptionService.encryptData(
+            serializedData,
+            this.key
+          );
+
+          const token = localStorage.getItem("token");
+
+          if (token) {
+            this.$http
+              .delete("/api/accounts/delete-admin", {
+                data: encryptedData,
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+              })
+              .then((response) => {
+                this.$swal({
+                  title: "Eliminado",
+                  text: "La cuenta de administrador ha sido eliminada con exito",
+                  icon: "success",
+                });
+                this.fetchAdmins();
+              })
+              .catch((error) => {
+                console.error(error);
+              });
+          }
+        }
+      });
+    },
+    handleDropOnTrash(e) {
+      const adminId = e.dataTransfer.getData("text/plain");
+      this.deleteAdminOnDrop(adminId);
+    },
+    fetchAdmins() {
+      const secretStore = useSecret();
+      this.key = secretStore.secretKey;
+      const token = localStorage.getItem("token");
+      if (token) {
+        this.$http
+          .get("/api/accounts/administrators", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then((response) => {
+            console.log(response.data);
+            this.items = response.data.map((item) =>
+              this.decryptAdminData(item)
+            );
+            this.items = response.data;
+            this.totalRows = this.items.length;
+          })
+          .catch((e) => {
+            console.error("Error en la peticion: ", e);
+          });
+      }
+    },
+    decryptAdminData(item) {
+      const fieldsToDecrypt = [
+        "adminId",
+        "adminName",
+        "adminFirstLastName",
+        "adminSecondLastName",
+        "adminEmail",
+        "adminCellphone",
+        "adminSecurityNumber",
+        "adminProfilePicUrl",
+        "adminSalary",
+        "accountStatus",
+      ];
+
+      fieldsToDecrypt.forEach((field) => {
+        item[field] = this.$encryptionService.decryptData(
+          item[field],
+          this.key
+        );
+      });
+
+      return item;
+    },
+  },
+  mounted() {
+    const secretStore = useSecret();
+    this.key = secretStore.secretKey;
+    this.fetchAdmins();
   },
 };
 </script>

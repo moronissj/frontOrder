@@ -19,94 +19,147 @@
           X
         </b-button>
       </template>
-      <b-form @submit.prevent="sendPutEditAdmin">
-        <b-form-group id="input-group-1" label="Nombre:" label-for="input-1">
-          <b-form-input
-            id="input-1"
-            type="text"
-            v-model="form.adminName"
-            required
-          ></b-form-input>
-        </b-form-group>
+      <ValidationObserver v-slot="{ handleSubmit }">
+        <b-form @submit.prevent="handleSubmit(sendPutEditAdmin)">
+          <b-form-group id="input-group-1" label="Nombre:" label-for="input-1">
+            <ValidationProvider rules="required" v-slot="{ errors }">
+              <b-form-input
+                id="input-1"
+                type="text"
+                v-model="form.adminName"
+                :class="{ invalid: errors[0] }"
+              ></b-form-input>
+              <span class="errors">{{ errors[0] }}</span>
+            </ValidationProvider>
+          </b-form-group>
 
-        <b-form-group
-          id="input-group-2"
-          label="Apellido Paterno:"
-          label-for="input-2"
-        >
-          <b-form-input
-            id="input-2"
-            type="text"
-            v-model="form.adminFirstLastName"
-            required
-          ></b-form-input>
-        </b-form-group>
-
-        <b-form-group
-          id="input-group-3"
-          label="Apellido Materno:"
-          label-for="input-3"
-        >
-          <b-form-input
-            id="input-3"
-            type="text"
-            v-model="form.adminSecondLastName"
-            required
-          ></b-form-input>
-        </b-form-group>
-
-        <b-form-group id="input-group-4" label="Email:" label-for="input-4">
-          <b-form-input
-            id="input-4"
-            type="text"
-            v-model="form.adminEmail"
-            required
-          ></b-form-input>
-        </b-form-group>
-
-        <b-form-group id="input-group-5" label="Telefono:" label-for="input-5">
-          <b-form-input
-            id="input-5"
-            type="text"
-            v-model="form.adminCellphone"
-            required
-          ></b-form-input>
-        </b-form-group>
-
-        <b-form-group
-          id="input-group-6"
-          label="Numero de Seguridad:"
-          label-for="input-6"
-        >
-          <b-form-input
-            id="input-6"
-            type="number"
-            v-model="form.adminSecurityNumber"
-            required
-          ></b-form-input>
-        </b-form-group>
-
-        <b-form-group id="input-group-3" label="Salario:" label-for="input-3">
-          <b-form-input
-            id="input-3"
-            type="number"
-            v-model="form.adminSalary"
-            required
-          ></b-form-input>
-        </b-form-group>
-
-        <div class="buttonsContainer">
-          <b-button type="submit" variant="primary"
-            >Actualizar Administrador</b-button
+          <b-form-group
+            id="input-group-2"
+            label="Apellido Paterno:"
+            label-for="input-2"
           >
-          <b-button @click="closeModal" id="botonCancelar"> Cancelar </b-button>
-        </div>
-      </b-form>
+            <ValidationProvider rules="required" v-slot="{ errors }">
+              <b-form-input
+                id="input-2"
+                type="text"
+                v-model="form.adminFirstLastName"
+                :class="{ invalid: errors[0] }"
+              ></b-form-input>
+              <span class="errors">{{ errors[0] }}</span>
+            </ValidationProvider>
+          </b-form-group>
+
+          <b-form-group
+            id="input-group-3"
+            label="Apellido Materno:"
+            label-for="input-3"
+          >
+            <ValidationProvider rules="required" v-slot="{ errors }">
+              <b-form-input
+                id="input-3"
+                type="text"
+                v-model="form.adminSecondLastName"
+                :class="{ invalid: errors[0] }"
+              ></b-form-input>
+              <span class="errors">{{ errors[0] }}</span>
+            </ValidationProvider>
+          </b-form-group>
+
+          <b-form-group
+            id="input-group-5"
+            label="Telefono:"
+            label-for="input-5"
+          >
+            <ValidationProvider rules="required|tel" v-slot="{ errors }">
+              <b-form-input
+                id="input-5"
+                type="text"
+                v-model="form.adminCellphone"
+                :class="{ invalid: errors[0] }"
+              ></b-form-input>
+              <span class="errors">{{ errors[0] }}</span>
+            </ValidationProvider>
+          </b-form-group>
+
+          <b-form-group
+            id="input-group-6"
+            label="Numero de Seguridad:"
+            label-for="input-6"
+          >
+            <ValidationProvider rules="required|nss" v-slot="{ errors }">
+              <b-form-input
+                id="input-6"
+                type="number"
+                v-model="form.adminSecurityNumber"
+                :class="{ invalid: errors[0] }"
+              ></b-form-input>
+              <span class="errors">{{ errors[0] }}</span>
+            </ValidationProvider>
+          </b-form-group>
+
+          <b-form-group id="input-group-3" label="Salario:" label-for="input-3">
+            <ValidationProvider
+              rules="required|max_value:50000"
+              v-slot="{ errors }"
+            >
+              <b-form-input
+                id="input-3"
+                type="number"
+                v-model="form.adminSalary"
+                :class="{ invalid: errors[0] }"
+              ></b-form-input>
+              <span class="errors">{{ errors[0] }}</span>
+            </ValidationProvider>
+          </b-form-group>
+
+          <div class="buttonsContainer">
+            <b-button type="submit" variant="primary"
+              >Actualizar Administrador</b-button
+            >
+            <b-button @click="closeModal" id="botonCancelar">
+              Cancelar
+            </b-button>
+          </div>
+        </b-form>
+      </ValidationObserver>
     </b-modal>
   </div>
 </template>
 
 <script>
+import { useSecret } from "@/stores/key";
+import { extend } from "vee-validate";
+import { required } from "vee-validate/dist/rules";
+
+extend("required", {
+  ...required,
+  message: "Este campo es requerido",
+});
+
+extend("tel", {
+  validate: (value) => {
+    if (!/^\d{10}$/.test(value)) return false;
+    return value.startsWith("777") || value.startsWith("52");
+  },
+  message:
+    "El teléfono debe ser numérico, comenzar con '777' o '52', y tener 10 dígitos.",
+});
+
+extend("nss", {
+  validate: (value) => {
+    return /^\d{11}$/.test(value);
+  },
+  message: "El número de seguridad social debe contener 11 digitos.",
+});
+
+extend("max_value", {
+  validate(value, { max }) {
+    return Number(value) <= max;
+  },
+  message: "El salario no debe ser superior a {max}",
+  params: ["max"],
+});
+
 export default {
   name: "EditAdminModal",
   props: {
@@ -117,11 +170,11 @@ export default {
   },
   data() {
     return {
+      key: "",
       form: {
         adminName: "",
         adminFirstLastName: "",
         adminSecondLastName: "",
-        adminEmail: "",
         adminCellphone: "",
         adminSecurityNumber: null,
         adminSalary: null,
@@ -133,26 +186,60 @@ export default {
       this.form.adminName = this.admin.adminName;
       this.form.adminFirstLastName = this.admin.adminFirstLastName;
       this.form.adminSecondLastName = this.admin.adminSecondLastName;
-      this.form.adminEmail = this.admin.adminEmail;
       this.form.adminCellphone = this.admin.adminCellphone;
       this.form.adminSecurityNumber = this.admin.adminSecurityNumber;
       this.form.adminSalary = this.admin.adminSalary;
     },
     sendPutEditAdmin() {
-      this.$http
-        .put(`/api/accounts/update-admin/info/${this.admin.adminId}`, this.form)
-        .then((response) => {
-          this.$emit("actualizacionExitosa");
-          this.$swal({
-            title: "Actualizacion exitosa",
-            text: "El administrador ha sido actualizado con exito",
-            icon: "success",
+      const serializedData = JSON.stringify({
+        adminId: this.admin.adminId,
+        adminName: this.form.adminName,
+        adminFirstLastName: this.form.adminFirstLastName,
+        adminSecondLastName: this.form.adminSecondLastName,
+        adminCellphone: this.form.adminCellphone,
+        adminSecurityNumber: this.form.adminSecurityNumber,
+        adminSalary: this.form.adminSalary,
+      });
+
+      const encryptedData = this.$encryptionService.encryptData(
+        serializedData,
+        this.key
+      );
+
+      let formData = new FormData();
+      formData.append("data", encryptedData);
+
+      const token = localStorage.getItem("token");
+
+      if (token) {
+        this.$http
+          .put("/api/accounts/update-admin", formData, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then((response) => {
+            this.$emit("actualizacionExitosa");
+            this.$swal({
+              title: "Actualizacion exitosa",
+              text: "El administrador ha sido actualizado con exito",
+              icon: "success",
+            });
+            this.closeModal();
+          })
+          .catch((error) => {
+            if (error.response.status === 419) {
+              const message = error.response.data.message;
+              this.$swal({
+                title: "Error",
+                text: message,
+                icon: "error",
+              });
+            } else {
+              console.error("Error al crear el administrador:", error);
+            }
           });
-          this.closeModal();
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      }
     },
     closeModal() {
       this.$root.$emit(
@@ -170,6 +257,9 @@ export default {
       this.form.adminSecurityNumber = null;
       this.form.adminSalary = null;
     },
+  },
+  mounted() {
+    this.key = useSecret();
   },
 };
 </script>
@@ -277,5 +367,14 @@ export default {
   margin: 0;
   font-size: 1rem;
   font-weight: 600;
+}
+
+.invalid {
+  border-color: red !important;
+  background-color: rgb(255, 255, 255) !important;
+}
+
+.errors {
+  color: red;
 }
 </style>
