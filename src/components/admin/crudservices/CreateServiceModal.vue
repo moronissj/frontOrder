@@ -1,12 +1,21 @@
 <template>
   <div>
-    <b-button v-b-modal.modal-1 id="addServiceButton" variant="success"
+    <b-button
+      v-b-modal.modal-1
+      id="addServiceButton"
+      @click="clearFields"
+      variant="success"
       >Agregar Servicio <b-icon id="plusIcon" icon="plus" scale="1.5"></b-icon
     ></b-button>
     <b-modal id="modal-1" title="Agregar Servicio" hide-footer>
       <template #modal-header="{ close }">
-        <h5>Agregar Servicio</h5>
-        <b-button size="sm" variant="outline-danger" @click="close()">
+        <h5 class="form-title">Agregar Servicio</h5>
+        <b-button
+          size="sm"
+          class="button-close-form"
+          variant="outline-danger"
+          @click="close()"
+        >
           X
         </b-button>
       </template>
@@ -17,6 +26,7 @@
             id="input-group-1"
             label="Nombre del servicio:"
             label-for="input-1"
+            class="input-label-container"
           >
             <ValidationProvider rules="required" v-slot="{ errors }">
               <b-form-input
@@ -33,14 +43,15 @@
             id="input-group-2"
             label="Descripcion del servicio:"
             label-for="input-2"
+            class="input-label-container"
           >
             <ValidationProvider rules="required|minLength" v-slot="{ errors }">
-              <b-form-input
+              <b-form-textarea
                 id="input-2"
-                type="text"
                 v-model="form.serviceDescription"
-                :class="{ invalid: errors[0] }"
-              ></b-form-input>
+                :class="{ 'is-invalid': errors[0] }"
+                placeholder="Ingrese la descripción del servicio aquí..."
+              ></b-form-textarea>
               <span class="errors">{{ errors[0] }}</span>
             </ValidationProvider>
           </b-form-group>
@@ -49,8 +60,12 @@
             id="input-group-3"
             label="Frase del servicio:"
             label-for="input-3"
+            class="input-label-container"
           >
-            <ValidationProvider rules="required" v-slot="{ errors }">
+            <ValidationProvider
+              rules="required|minLengthQuote"
+              v-slot="{ errors }"
+            >
               <b-form-input
                 id="input-3"
                 type="text"
@@ -63,11 +78,12 @@
 
           <b-form-group
             id="input-group-4"
-            label="Imagel del servicio:"
+            label="Imagen del servicio:"
             label-for="input-4"
+            class="input-label-container"
           >
             <ValidationProvider
-              rules="required|ext:jpg,png"
+              rules="required|ext:jpg,png|size:15"
               v-slot="{ errors }"
             >
               <b-form-file
@@ -80,13 +96,20 @@
               ></b-form-file>
               <span class="errors">{{ errors[0] }}</span>
             </ValidationProvider>
+            <div class="image-preview">
+              <img
+                v-if="imagePreviewUrl"
+                :src="imagePreviewUrl"
+                alt="Vista previa"
+              />
+            </div>
           </b-form-group>
 
           <div class="buttonsContainer">
-            <b-button type="submit" variant="primary"
-              >Registrar Servicio</b-button
+            <b-button type="submit" class="register-btn" variant="success"
+              >Registrar</b-button
             >
-            <b-button @click="closeModal" id="botonCancelar">
+            <b-button @click="closeModal" class="close-btn" id="botonCancelar">
               Cancelar
             </b-button>
           </div>
@@ -97,62 +120,136 @@
 </template>
 
 <script>
+import { useSecret } from "@/stores/key";
 import { extend } from "vee-validate";
 import { required, ext } from "vee-validate/dist/rules";
+
 extend("required", {
   ...required,
   message: "Este campo es requerido",
 });
+
 extend("ext", {
   ...ext,
   message: "El archivo debe ser una imagen png o jpg",
 });
 
+extend("size", {
+  params: ["size"],
+  validate(value, { size }) {
+    if (!value || !value.size) return false;
+
+    const sizeInMB = size * 1024 * 1024;
+    return value.size <= sizeInMB;
+  },
+  message: "El archivo debe ser menor o igual a {size} MB.",
+});
+
 extend("minLength", {
   validate: (value) => {
-    if (!value || value.length < 20) {
-      return "La descripción debe contener al menos 20 caracteres.";
+    if (!value || value.length < 50) {
+      return "La descripción debe contener al menos 50 caracteres.";
     }
     return true;
   },
-  message: "La descripción debe contener al menos 20 caracteres.",
+  message: "La descripción debe contener al menos 50 caracteres.",
 });
+
+extend("minLengthQuote", {
+  validate: (value) => {
+    if (!value || value.length < 10) {
+      return "La frase debe contener al menos 10 caracteres.";
+    }
+    return true;
+  },
+  message: "La frase debe contener al menos 10 caracteres.",
+});
+
 export default {
   name: "CreateServiceModal",
   data() {
     return {
+      key: "",
       form: {
         serviceName: "",
         serviceDescription: "",
         serviceQuote: "",
         serviceImage: null,
       },
+      imagePreviewUrl: null,
     };
   },
   methods: {
     sendPostCreateService() {
-      this.$http
-        .post("/api/services", this.form, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then((response) => {
-          this.$emit("registroExitoso");
-          this.$swal({
-            title: "Creacion exitosa",
-            text: "El servicio ha sido agregada con exito",
-            icon: "success",
+      const serializedData = JSON.stringify({
+        serviceName: this.form.serviceName,
+        serviceDescription: this.form.serviceDescription,
+        serviceQuote: this.form.serviceQuote,
+      });
+
+      const encryptedData = this.$encryptionService.encryptData(
+        serializedData,
+        this.key
+      );
+
+      let formData = new FormData();
+      formData.append("data", encryptedData);
+
+      if (this.form.serviceImage) {
+        formData.append("serviceImage", this.form.serviceImage);
+      }
+
+      const token = localStorage.getItem("token");
+      if (token) {
+        this.$http
+          .post("/api/services", formData, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then((response) => {
+            this.$emit("registroExitoso");
+            this.$swal({
+              title: "Creacion exitosa",
+              text: "El servicio ha sido agregada con exito",
+              icon: "success",
+            });
+            this.closeModal();
+          })
+          .catch((error) => {
+            if (error.response.status === 409) {
+              const message = error.response.data.message;
+              this.$swal({
+                title: "Opps!",
+                text: message,
+                icon: "warning",
+              });
+            } else if (error.response.status === 400) {
+              error.response.data.forEach((element) => {
+                this.backErrors.push(element);
+              });
+              this.$swal({
+                title: "Problema con la información",
+                text: "Verifique que todos los campos esten llenos y que hayan cumplido con las reglas mostradas",
+                icon: "warning",
+                confirmButtonText: "Ok",
+              });
+            } else {
+              console.error("Error al crear el servicio:", error);
+            }
           });
-          this.closeModal();
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      }
     },
     handleFiles(event) {
       const file = event.target.files[0];
       this.form.serviceImage = file;
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          this.imagePreviewUrl = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
     },
     closeModal() {
       this.$root.$emit("bv::hide::modal", "modal-1");
@@ -163,7 +260,11 @@ export default {
       this.form.serviceDescription = "";
       this.form.serviceQuote = "";
       this.form.serviceImage = null;
+      this.imagePreviewUrl = null;
     },
+  },
+  mounted() {
+    this.key = useSecret();
   },
 };
 </script>
@@ -189,73 +290,12 @@ export default {
   width: 35%;
 }
 
-#botonEnviar {
-  background-color: rgb(51, 139, 240);
-  color: white;
+.register-btn {
+  margin: 0;
 }
 
-#botonCancelar {
-  background-color: rgb(240, 51, 51);
-  color: white;
-}
-
-#form {
-  width: 100%;
-  padding: 10px;
-}
-
-.fieldContainer {
-  width: 100%;
-  margin-bottom: 20px;
-}
-
-.labelContainer {
-  margin-bottom: 10px;
-}
-
-.inputContainer {
-  width: 100%;
-}
-
-.inputContainer input {
-  padding: 10px;
-  width: 100%;
-  border: 2px solid #ccc;
-  border-radius: 10px;
-  background-color: #f9f9f9;
-  color: #333;
-  outline: none;
-}
-
-.inputContainer input:focus {
-  border-color: #2b2b2b;
-}
-.inputContainer textarea {
-  padding: 10px;
-  width: 100%;
-  border: 2px solid #ccc;
-  border-radius: 10px;
-  background-color: #f9f9f9;
-  color: #333;
-  outline: none;
-}
-
-.inputContainer textarea:focus {
-  border-color: #2b2b2b;
-}
-
-.inputContainer select {
-  padding: 10px;
-  width: 100%;
-  border: 2px solid #ccc;
-  border-radius: 10px;
-  background-color: #f9f9f9;
-  color: #333;
-  outline: none;
-}
-
-.inputContainer select:focus {
-  border-color: #2b2b2b;
+.close-btn {
+  margin: 0;
 }
 
 #addServiceButton {
@@ -271,5 +311,36 @@ export default {
 
 .errors {
   color: red;
+}
+
+.button-close-form {
+  width: 10%;
+  margin: 0;
+  margin-left: auto;
+}
+
+.form-title {
+  font-size: 1.5rem;
+}
+
+.input-label-container {
+  margin-bottom: 15px;
+}
+
+.input-group-text {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
+.image-preview {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+}
+
+.image-preview img {
+  max-width: 150px;
+  border-radius: 10px;
 }
 </style>

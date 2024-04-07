@@ -25,7 +25,7 @@ import VistaToken from "../components/VistaToken.vue";
 import AdminProfile from "../components/admin/profileadmin/AdminProfile.vue";
 import NotFoundPage from "../components/NotFoundPage.vue";
 import AdminConfirmAccount from "../components/admin/crudadmins/AdminConfirmAccount.vue";
-
+import WorkerConfirmAccount from "../components/admin/crudworkers/WorkerConfirmAccount.vue";
 const routes = [
   {
     name: "home",
@@ -92,6 +92,12 @@ const routes = [
     name: "admin-workers",
     path: "/admin-workers",
     component: CrudTrabajadores,
+    meta: { role: "ADMIN" },
+  },
+  {
+    name: "admin-confirm-worker-account",
+    path: "/admin-confirm-worker-account",
+    component: WorkerConfirmAccount,
     meta: { role: "ADMIN" },
   },
   {

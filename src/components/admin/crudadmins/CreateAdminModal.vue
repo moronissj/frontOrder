@@ -429,7 +429,6 @@ export default {
     },
     closeModal() {
       this.$root.$emit("bv::hide::modal", "modal-1");
-      console.log("cerrado");
       this.clearFields();
     },
     clearFields() {

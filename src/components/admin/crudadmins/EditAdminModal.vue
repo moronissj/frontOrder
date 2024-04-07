@@ -268,7 +268,7 @@ export default {
                 icon: "error",
               });
             } else {
-              console.error("Error al crear el administrador:", error);
+              console.error("Error al actualizar el administrador:", error);
             }
           });
       }
