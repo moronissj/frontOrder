@@ -24,6 +24,7 @@ import PackageInfo from "../components/client/orders/PackageInfo.vue";
 import VistaToken from "../components/VistaToken.vue";
 import AdminProfile from "../components/admin/profileadmin/AdminProfile.vue";
 import NotFoundPage from "../components/NotFoundPage.vue";
+import AdminConfirmAccount from "../components/admin/crudadmins/AdminConfirmAccount.vue";
 
 const routes = [
   {
@@ -79,6 +80,12 @@ const routes = [
     name: "admin-administrators",
     path: "/admin-administrators",
     component: CrudAdmins,
+    meta: { role: "ADMIN" },
+  },
+  {
+    name: "admin-confirm-admin-account",
+    path: "/admin-confirm-admin-account",
+    component: AdminConfirmAccount,
     meta: { role: "ADMIN" },
   },
   {
