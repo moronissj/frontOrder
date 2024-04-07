@@ -124,31 +124,95 @@
             </template>
 
             <template #row-details="row">
-              <b-card>
-                <ul>
-                  <li
+              <div class="row">
+                <div
+                  class="col-4"
+                  style="
+                    padding: 20px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                  "
+                >
+                  <div
                     v-for="(value, key) in processedDetails[row.index]"
                     :key="key"
-                    style="margin: 10px 0"
                   >
-                    <template v-if="key === 'Imagen del Servicio'">
+                    <div v-if="key === 'Imagen'">
                       <div
                         class="item-image-container"
-                        style="margin-top: 30px; border-radius: 10px"
+                        style="width: 200px; border-radius: 10px"
                       >
                         <img
                           :src="value"
                           alt="Service Image"
-                          style="width: 100px; height: auto"
+                          style="
+                            width: 150px;
+                            height: auto;
+                            border-radius: 10px;
+                          "
                         />
                       </div>
-                    </template>
-                    <template v-else
-                      ><b>{{ key }}</b> : {{ value }}
-                    </template>
-                  </li>
-                </ul>
-              </b-card>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="col-4"
+                  style="
+                    padding: 20px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                  "
+                >
+                  <div>
+                    <div
+                      v-for="(value, key) in processedDetails[row.index]"
+                      :key="key"
+                    >
+                      <div
+                        style="margin: 10px"
+                        v-if="
+                          key !== 'Imagen' &&
+                          key !== 'Descripción' &&
+                          key !== 'serviceImage'
+                        "
+                      >
+                        <b>{{ key }}</b> : {{ value }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="col-4"
+                  style="
+                    padding: 20px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                  "
+                >
+                  <div>
+                    <div
+                      v-for="(value, key) in processedDetails[row.index]"
+                      :key="key"
+                    >
+                      <div
+                        style="margin: 10px"
+                        v-if="
+                          key !== 'Imagen' &&
+                          key !== 'serviceImage' &&
+                          key !== 'Número' &&
+                          key !== 'Nombre del servicio' &&
+                          key !== 'Frase del servicio'
+                        "
+                      >
+                        <b>{{ key }}</b> : {{ value }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </template>
           </b-table>
           <div class="outter-pagination-container">
@@ -194,6 +258,8 @@
 import NavbarAdmin from "../NavbarAdmin.vue";
 import CreateServiceModal from "./CreateServiceModal.vue";
 import EditServiceModal from "./EditServiceModal.vue";
+import { useSecret } from "@/stores/key";
+
 export default {
   name: "CrudServicios",
   components: {
@@ -203,6 +269,7 @@ export default {
   },
   data() {
     return {
+      key: "",
       items: [],
       fields: [
         {
@@ -239,15 +306,16 @@ export default {
       return this.items.map((item) => {
         const processed = {};
         const keyMappings = {
-          serviceName: "Nombre del Servicio",
+          serviceName: "Nombre del servicio",
           serviceDescription: "Descripción",
           serviceQuote: "Frase del servicio",
+          serviceId: "Número",
         };
         Object.entries(item).forEach(([key, value]) => {
           if (key !== "_showDetails" && key !== "serviceState") {
             const friendlyKey = keyMappings[key] || key;
-            if (key === "serviceImageUrl") {
-              processed["Imagen del Servicio"] = value;
+            if (key === "serviceImgUrl") {
+              processed["Imagen"] = value;
             } else {
               processed[friendlyKey] = value;
             }
@@ -257,7 +325,6 @@ export default {
       });
     },
     sortOptions() {
-      // Create an options list from our fields
       return this.fields
         .filter((f) => f.sortable)
         .map((f) => {
@@ -278,6 +345,8 @@ export default {
       e.dataTransfer.setData("text/plain", item.serviceId);
     },
     deleteServiceOnDrop(id) {
+      this.key = useSecret();
+
       this.$swal({
         title: "¿Estas seguro?",
         text: "No podras revertir este cambio",
@@ -289,19 +358,36 @@ export default {
         confirmButtonText: "Si, eliminar",
       }).then((result) => {
         if (result.isConfirmed) {
-          this.$http
-            .delete(`/api/services/${id}`)
-            .then((response) => {
-              this.$swal({
-                title: "Eliminado",
-                text: "El servicio ha sido eliminado con exito",
-                icon: "success",
+          const serializedData = JSON.stringify({
+            serviceId: id,
+          });
+          const encryptedData = this.$encryptionService.encryptData(
+            serializedData,
+            this.key
+          );
+
+          const token = localStorage.getItem("token");
+          if (token) {
+            this.$http
+              .delete("/api/services/delete-service", {
+                data: encryptedData,
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+              })
+              .then((response) => {
+                this.$swal({
+                  title: "Eliminado",
+                  text: "El servicio ha sido eliminado con exito",
+                  icon: "success",
+                });
+                this.fetchServices();
+              })
+              .catch((error) => {
+                console.error(error);
               });
-              this.fetchServices();
-            })
-            .catch((error) => {
-              console.error(error);
-            });
+          }
         }
       });
     },
@@ -310,17 +396,49 @@ export default {
       this.deleteServiceOnDrop(serviceId);
     },
     fetchServices() {
-      this.$http
-        .get("/api/services")
-        .then((response) => {
-          console.log(response.data);
-          this.items = response.data;
-          this.totalRows = this.items.length;
-        })
-        .catch((e) => {
-          console.error("Error en la peticion: ", e);
-        });
+      const secretStore = useSecret();
+      this.key = secretStore.secretKey;
+      const token = localStorage.getItem("token");
+      if (token) {
+        this.$http
+          .get("/api/services", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then((response) => {
+            this.items = response.data.map((item) =>
+              this.decryptServiceData(item)
+            );
+            this.items = response.data;
+            this.totalRows = this.items.length;
+          })
+          .catch((e) => {
+            console.error("Error en la peticion: ", e);
+          });
+      }
     },
+    decryptServiceData(item) {
+      const fieldsToDecrypt = [
+        "serviceId",
+        "serviceName",
+        "serviceDescription",
+        "serviceQuote",
+        "serviceImgUrl",
+      ];
+      fieldsToDecrypt.forEach((field) => {
+        item[field] = this.$encryptionService.decryptData(
+          item[field],
+          this.key
+        );
+      });
+      return item;
+    },
+  },
+  mounted() {
+    const secretStore = useSecret();
+    this.key = secretStore.secretKey;
+    this.fetchServices();
   },
 };
 </script>

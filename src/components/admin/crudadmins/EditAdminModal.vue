@@ -14,109 +14,141 @@
       hide-footer
     >
       <template #modal-header="{ close }">
-        <h5>Editar Administrador</h5>
-        <b-button size="sm" variant="outline-danger" @click="close()">
+        <h5 class="form-title">Editar Administrador</h5>
+        <b-button
+          class="button-close-form"
+          size="sm"
+          variant="outline-danger"
+          @click="close()"
+        >
           X
         </b-button>
       </template>
+
       <ValidationObserver v-slot="{ handleSubmit }">
         <b-form @submit.prevent="handleSubmit(sendPutEditAdmin)">
-          <b-form-group id="input-group-1" label="Nombre:" label-for="input-1">
-            <ValidationProvider rules="required" v-slot="{ errors }">
-              <b-form-input
-                id="input-1"
-                type="text"
-                v-model="form.adminName"
-                :class="{ invalid: errors[0] }"
-              ></b-form-input>
-              <span class="errors">{{ errors[0] }}</span>
-            </ValidationProvider>
-          </b-form-group>
+          <div class="row">
+            <div class="col col-sm-12 col-md-6">
+              <b-form-group
+                id="input-group-1"
+                label="Nombre:"
+                label-for="input-1"
+                class="input-label-container"
+              >
+                <ValidationProvider rules="required" v-slot="{ errors }">
+                  <b-form-input
+                    id="input-1"
+                    type="text"
+                    v-model="form.adminName"
+                    :class="{ invalid: errors[0] }"
+                  ></b-form-input>
+                  <span class="errors">{{ errors[0] }}</span>
+                </ValidationProvider>
+              </b-form-group>
+            </div>
 
-          <b-form-group
-            id="input-group-2"
-            label="Apellido Paterno:"
-            label-for="input-2"
-          >
-            <ValidationProvider rules="required" v-slot="{ errors }">
-              <b-form-input
-                id="input-2"
-                type="text"
-                v-model="form.adminFirstLastName"
-                :class="{ invalid: errors[0] }"
-              ></b-form-input>
-              <span class="errors">{{ errors[0] }}</span>
-            </ValidationProvider>
-          </b-form-group>
+            <div class="col col-sm-12 col-md-6">
+              <b-form-group
+                id="input-group-2"
+                label="Apellido Paterno:"
+                label-for="input-2"
+                class="input-label-container"
+              >
+                <ValidationProvider rules="required" v-slot="{ errors }">
+                  <b-form-input
+                    id="input-2"
+                    type="text"
+                    v-model="form.adminFirstLastName"
+                    :class="{ invalid: errors[0] }"
+                  ></b-form-input>
+                  <span class="errors">{{ errors[0] }}</span>
+                </ValidationProvider>
+              </b-form-group>
+            </div>
 
-          <b-form-group
-            id="input-group-3"
-            label="Apellido Materno:"
-            label-for="input-3"
-          >
-            <ValidationProvider rules="required" v-slot="{ errors }">
-              <b-form-input
-                id="input-3"
-                type="text"
-                v-model="form.adminSecondLastName"
-                :class="{ invalid: errors[0] }"
-              ></b-form-input>
-              <span class="errors">{{ errors[0] }}</span>
-            </ValidationProvider>
-          </b-form-group>
+            <div class="col col-sm-12 col-md-6">
+              <b-form-group
+                id="input-group-3"
+                label="Apellido Materno:"
+                label-for="input-3"
+                class="input-label-container"
+              >
+                <ValidationProvider rules="required" v-slot="{ errors }">
+                  <b-form-input
+                    id="input-3"
+                    type="text"
+                    v-model="form.adminSecondLastName"
+                    :class="{ invalid: errors[0] }"
+                  ></b-form-input>
+                  <span class="errors">{{ errors[0] }}</span>
+                </ValidationProvider>
+              </b-form-group>
+            </div>
 
-          <b-form-group
-            id="input-group-5"
-            label="Telefono:"
-            label-for="input-5"
-          >
-            <ValidationProvider rules="required|tel" v-slot="{ errors }">
-              <b-form-input
-                id="input-5"
-                type="text"
-                v-model="form.adminCellphone"
-                :class="{ invalid: errors[0] }"
-              ></b-form-input>
-              <span class="errors">{{ errors[0] }}</span>
-            </ValidationProvider>
-          </b-form-group>
+            <div class="col col-sm-12 col-md-6">
+              <b-form-group
+                id="input-group-4"
+                label="Telefono:"
+                label-for="input-4"
+                class="input-label-container"
+              >
+                <ValidationProvider rules="required|tel" v-slot="{ errors }">
+                  <b-form-input
+                    id="input-4"
+                    type="text"
+                    v-model="form.adminCellphone"
+                    :class="{ invalid: errors[0] }"
+                  ></b-form-input>
+                  <span class="errors">{{ errors[0] }}</span>
+                </ValidationProvider>
+              </b-form-group>
+            </div>
 
-          <b-form-group
-            id="input-group-6"
-            label="Numero de Seguridad:"
-            label-for="input-6"
-          >
-            <ValidationProvider rules="required|nss" v-slot="{ errors }">
-              <b-form-input
-                id="input-6"
-                type="number"
-                v-model="form.adminSecurityNumber"
-                :class="{ invalid: errors[0] }"
-              ></b-form-input>
-              <span class="errors">{{ errors[0] }}</span>
-            </ValidationProvider>
-          </b-form-group>
-
-          <b-form-group id="input-group-3" label="Salario:" label-for="input-3">
-            <ValidationProvider
-              rules="required|max_value:50000"
-              v-slot="{ errors }"
-            >
-              <b-form-input
-                id="input-3"
-                type="number"
-                v-model="form.adminSalary"
-                :class="{ invalid: errors[0] }"
-              ></b-form-input>
-              <span class="errors">{{ errors[0] }}</span>
-            </ValidationProvider>
-          </b-form-group>
-
+            <div class="col col-sm-12 col-md-6">
+              <b-form-group
+                id="input-group-5"
+                label="Numero de Seguridad:"
+                label-for="input-5"
+                class="input-label-container"
+              >
+                <ValidationProvider rules="required|nss" v-slot="{ errors }">
+                  <b-form-input
+                    id="input-5"
+                    type="number"
+                    v-model="form.adminSecurityNumber"
+                    :class="{ invalid: errors[0] }"
+                  ></b-form-input>
+                  <span class="errors">{{ errors[0] }}</span>
+                </ValidationProvider>
+              </b-form-group>
+            </div>
+            <div class="col col-sm-12 col-md-6">
+              <b-form-group
+                id="input-group-6"
+                label="Salario:"
+                label-for="input-6"
+                class="input-label-container"
+              >
+                <ValidationProvider
+                  rules="required|max_value:50000"
+                  v-slot="{ errors }"
+                >
+                  <b-form-input
+                    id="input-6"
+                    type="number"
+                    v-model="form.adminSalary"
+                    :class="{ invalid: errors[0] }"
+                  ></b-form-input>
+                  <span class="errors">{{ errors[0] }}</span>
+                </ValidationProvider>
+              </b-form-group>
+            </div>
+          </div>
           <div class="buttonsContainer">
-            <b-button type="submit" variant="primary"
-              >Actualizar Administrador</b-button
-            >
-            <b-button @click="closeModal" id="botonCancelar">
+            <b-button type="submit" class="register-btn" variant="primary"
+              >Actualizar
+            </b-button>
+            <b-button @click="closeModal" class="close-btn" id="botonCancelar">
               Cancelar
             </b-button>
           </div>
@@ -236,7 +268,7 @@ export default {
                 icon: "error",
               });
             } else {
-              console.error("Error al crear el administrador:", error);
+              console.error("Error al actualizar el administrador:", error);
             }
           });
       }
@@ -276,6 +308,7 @@ export default {
   padding: 10px 20px;
   border-radius: 10px;
   border: none;
+  font-size: 0.8rem;
   margin-bottom: 10px;
   margin-top: 10px;
   transition: width 0.3s;
@@ -285,24 +318,12 @@ export default {
   width: 35%;
 }
 
-#botonEnviar {
-  background-color: rgb(51, 139, 240);
-  color: white;
+.register-btn {
+  margin: 0;
 }
 
-#botonCancelar {
-  background-color: rgb(240, 51, 51);
-  color: white;
-}
-
-#form {
-  width: 100%;
-  padding: 10px;
-}
-
-.fieldContainer {
-  width: 100%;
-  margin-bottom: 20px;
+.close-btn {
+  margin: 0;
 }
 
 .table-button {
@@ -313,62 +334,6 @@ export default {
   width: 100%;
 }
 
-.labelContainer {
-  margin-bottom: 10px;
-}
-
-.inputContainer {
-  width: 100%;
-}
-
-.inputContainer input {
-  padding: 10px;
-  width: 100%;
-  border: 2px solid #ccc;
-  border-radius: 10px;
-  background-color: #f9f9f9;
-  color: #333;
-  outline: none;
-}
-
-.inputContainer input:focus {
-  border-color: #2b2b2b;
-}
-.inputContainer textarea {
-  padding: 10px;
-  width: 100%;
-  border: 2px solid #ccc;
-  border-radius: 10px;
-  background-color: #f9f9f9;
-  color: #333;
-  outline: none;
-}
-
-.inputContainer textarea:focus {
-  border-color: #2b2b2b;
-}
-
-.inputContainer select {
-  padding: 10px;
-  width: 100%;
-  border: 2px solid #ccc;
-  border-radius: 10px;
-  background-color: #f9f9f9;
-  color: #333;
-  outline: none;
-}
-
-.inputContainer select:focus {
-  border-color: #2b2b2b;
-}
-
-#addAdminButton {
-  width: 100%;
-  margin: 0;
-  font-size: 1rem;
-  font-weight: 600;
-}
-
 .invalid {
   border-color: red !important;
   background-color: rgb(255, 255, 255) !important;
@@ -376,5 +341,36 @@ export default {
 
 .errors {
   color: red;
+}
+
+.button-close-form {
+  width: 10%;
+  margin: 0;
+  margin-left: auto;
+}
+
+.form-title {
+  font-size: 1.5rem;
+}
+
+.input-label-container {
+  margin-bottom: 15px;
+}
+
+.input-group-text {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
+.image-preview {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+}
+
+.image-preview img {
+  max-width: 150px;
+  border-radius: 10px;
 }
 </style>

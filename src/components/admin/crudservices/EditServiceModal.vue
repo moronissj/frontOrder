@@ -14,17 +14,24 @@
       hide-footer
     >
       <template #modal-header="{ close }">
-        <h5>Editar Servicio</h5>
-        <b-button size="sm" variant="outline-danger" @click="close()">
+        <h5 class="form-title">Editar Servicio</h5>
+        <b-button
+          class="button-close-form"
+          size="sm"
+          variant="outline-danger"
+          @click="close()"
+        >
           X
         </b-button>
       </template>
+
       <ValidationObserver v-slot="{ handleSubmit }">
         <b-form @submit.prevent="handleSubmit(sendPutEditService)">
           <b-form-group
             id="input-group-1"
             label="Nombre del servicio:"
             label-for="input-1"
+            class="input-label-container"
           >
             <ValidationProvider rules="required" v-slot="{ errors }">
               <b-form-input
@@ -41,14 +48,14 @@
             id="input-group-2"
             label="Descripcion del servicio:"
             label-for="input-2"
+            class="input-label-container"
           >
             <ValidationProvider rules="required|minLength" v-slot="{ errors }">
-              <b-form-input
+              <b-form-textarea
                 id="input-2"
-                type="text"
                 v-model="form.serviceDescription"
-                :class="{ invalid: errors[0] }"
-              ></b-form-input>
+                :class="{ 'is-invalid': errors[0] }"
+              ></b-form-textarea>
               <span class="errors">{{ errors[0] }}</span>
             </ValidationProvider>
           </b-form-group>
@@ -57,6 +64,7 @@
             id="input-group-3"
             label="Frase del servicio:"
             label-for="input-3"
+            class="input-label-container"
           >
             <ValidationProvider rules="required" v-slot="{ errors }">
               <b-form-input
@@ -70,10 +78,10 @@
           </b-form-group>
 
           <div class="buttonsContainer">
-            <b-button type="submit" variant="primary"
-              >Registrar Servicio</b-button
+            <b-button type="submit" class="register-btn" variant="primary"
+              >Actualizar</b-button
             >
-            <b-button @click="closeModal" id="botonCancelar">
+            <b-button @click="closeModal" class="close-btn" id="botonCancelar">
               Cancelar
             </b-button>
           </div>
@@ -84,21 +92,35 @@
 </template>
 
 <script>
+import { useSecret } from "@/stores/key";
 import { extend } from "vee-validate";
 import { required, ext } from "vee-validate/dist/rules";
+
 extend("required", {
   ...required,
   message: "Este campo es requerido",
 });
+
 extend("minLength", {
   validate: (value) => {
-    if (!value || value.length < 20) {
-      return "La descripción debe contener al menos 20 caracteres.";
+    if (!value || value.length < 50) {
+      return "La descripción debe contener al menos 50 caracteres.";
     }
     return true;
   },
-  message: "La descripción debe contener al menos 20 caracteres.",
+  message: "La descripción debe contener al menos 50 caracteres.",
 });
+
+extend("minLengthQuote", {
+  validate: (value) => {
+    if (!value || value.length < 10) {
+      return "La frase debe contener al menos 10 caracteres.";
+    }
+    return true;
+  },
+  message: "La frase debe contener al menos 10 caracteres.",
+});
+
 export default {
   name: "EditServiceModal",
   props: {
@@ -109,6 +131,7 @@ export default {
   },
   data() {
     return {
+      key: "",
       form: {
         serviceName: "",
         serviceDescription: "",
@@ -123,20 +146,52 @@ export default {
       this.form.serviceQuote = this.service.serviceQuote;
     },
     sendPutEditService() {
-      this.$http
-        .put(`/api/services/${this.service.serviceId}`, this.form)
-        .then((response) => {
-          this.$emit("actualizacionExitosa");
-          this.$swal({
-            title: "Actualizacion exitosa",
-            text: "El servicio ha sido actualizado con exito",
-            icon: "success",
+      console.log(this.form.serviceDescription);
+      const serializedData = JSON.stringify({
+        serviceId: this.service.serviceId,
+        serviceName: this.form.serviceName,
+        serviceDescription: this.form.serviceDescription,
+        serviceQuote: this.form.serviceQuote,
+      });
+      const encryptedData = this.$encryptionService.encryptData(
+        serializedData,
+        this.key
+      );
+      console.log(encryptedData);
+      let formData = new FormData();
+      formData.append("data", encryptedData);
+
+      const token = localStorage.getItem("token");
+
+      if (token) {
+        this.$http
+          .put("/api/services/update-service", formData, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then((response) => {
+            this.$emit("actualizacionExitosa");
+            this.$swal({
+              title: "Actualizacion exitosa",
+              text: "El servicio ha sido actualizado con exito",
+              icon: "success",
+            });
+            this.closeModal();
+          })
+          .catch((error) => {
+            if (error.response.status === 419) {
+              const message = error.response.data.message;
+              this.$swal({
+                title: "Error",
+                text: message,
+                icon: "error",
+              });
+            } else {
+              console.error("Error al actualizar el servicio:", error);
+            }
           });
-          this.closeModal();
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      }
     },
     closeModal() {
       this.$root.$emit(
@@ -150,6 +205,9 @@ export default {
       this.form.serviceDescription = "";
       this.form.serviceQuote = "";
     },
+  },
+  mounted() {
+    this.key = useSecret();
   },
 };
 </script>
@@ -175,24 +233,12 @@ export default {
   width: 35%;
 }
 
-#botonEnviar {
-  background-color: rgb(51, 139, 240);
-  color: white;
+.register-btn {
+  margin: 0;
 }
 
-#botonCancelar {
-  background-color: rgb(240, 51, 51);
-  color: white;
-}
-
-#form {
-  width: 100%;
-  padding: 10px;
-}
-
-.fieldContainer {
-  width: 100%;
-  margin-bottom: 20px;
+.close-btn {
+  margin: 0;
 }
 
 .table-button {
@@ -203,62 +249,6 @@ export default {
   width: 100%;
 }
 
-.labelContainer {
-  margin-bottom: 10px;
-}
-
-.inputContainer {
-  width: 100%;
-}
-
-.inputContainer input {
-  padding: 10px;
-  width: 100%;
-  border: 2px solid #ccc;
-  border-radius: 10px;
-  background-color: #f9f9f9;
-  color: #333;
-  outline: none;
-}
-
-.inputContainer input:focus {
-  border-color: #2b2b2b;
-}
-.inputContainer textarea {
-  padding: 10px;
-  width: 100%;
-  border: 2px solid #ccc;
-  border-radius: 10px;
-  background-color: #f9f9f9;
-  color: #333;
-  outline: none;
-}
-
-.inputContainer textarea:focus {
-  border-color: #2b2b2b;
-}
-
-.inputContainer select {
-  padding: 10px;
-  width: 100%;
-  border: 2px solid #ccc;
-  border-radius: 10px;
-  background-color: #f9f9f9;
-  color: #333;
-  outline: none;
-}
-
-.inputContainer select:focus {
-  border-color: #2b2b2b;
-}
-
-#addServiceButton {
-  width: 100%;
-  margin: 0;
-  font-size: 1rem;
-  font-weight: 600;
-}
-
 .invalid {
   border-color: red !important;
   background-color: rgb(255, 255, 255) !important;
@@ -266,5 +256,36 @@ export default {
 
 .errors {
   color: red;
+}
+
+.button-close-form {
+  width: 10%;
+  margin: 0;
+  margin-left: auto;
+}
+
+.form-title {
+  font-size: 1.5rem;
+}
+
+.input-label-container {
+  margin-bottom: 15px;
+}
+
+.input-group-text {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
+.image-preview {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+}
+
+.image-preview img {
+  max-width: 150px;
+  border-radius: 10px;
 }
 </style>

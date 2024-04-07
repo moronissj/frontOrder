@@ -1,168 +1,271 @@
 <template>
   <div>
-    <b-button v-b-modal.modal-1 id="addWorkerButton" variant="success"
+    <b-button
+      v-b-modal.modal-1
+      id="addWorkerButton"
+      @click="clearFields"
+      variant="success"
       >Agregar Trabajador <b-icon id="plusIcon" icon="plus" scale="1.5"></b-icon
     ></b-button>
     <b-modal id="modal-1" title="Agregar Trabajador" hide-footer>
       <template #modal-header="{ close }">
-        <h5>Agregar Trabajador</h5>
-        <b-button size="sm" variant="outline-danger" @click="close()">
+        <h5 class="form-title">Agregar Trabajador</h5>
+        <b-button
+          size="sm"
+          class="button-close-form"
+          variant="outline-danger"
+          @click="close()"
+        >
           X
         </b-button>
       </template>
-      <b-form @submit.prevent="sendPostCreateWorker">
-        <b-form-group id="input-group-1" label="Nombre:" label-for="input-1">
-          <ValidationProvider rules="required" v-slot="{ errors }">
-            <b-form-input
-              id="input-1"
-              type="text"
-              v-model="form.workerName"
-              :class="{ invalid: errors[0] }"
-            ></b-form-input>
-            <span class="errors">{{ errors[0] }}</span>
-          </ValidationProvider>
-        </b-form-group>
+      <ValidationObserver v-slot="{ handleSubmit }">
+        <b-form @submit.prevent="handleSubmit(sendPostCreateWorker)">
+          <div class="row">
+            <div class="col col-sm-12 col-md-12">
+              <b-form-group
+                id="input-group-1"
+                class="input-label-container"
+                label="Nombre:"
+                label-for="input-1"
+              >
+                <ValidationProvider rules="required" v-slot="{ errors }">
+                  <b-form-input
+                    id="input-1"
+                    type="text"
+                    v-model="form.workerName"
+                    :class="{ invalid: errors[0] }"
+                  ></b-form-input>
+                  <span class="errors">{{ errors[0] }}</span>
+                </ValidationProvider>
+              </b-form-group>
+            </div>
+            <div class="col col-sm-12 col-md-6">
+              <b-form-group
+                id="input-group-2"
+                class="input-label-container"
+                label="Apellido Paterno:"
+                label-for="input-2"
+              >
+                <ValidationProvider rules="required" v-slot="{ errors }">
+                  <b-form-input
+                    id="input-2"
+                    type="text"
+                    v-model="form.workerFirstLastName"
+                    :class="{ invalid: errors[0] }"
+                  ></b-form-input>
+                  <span class="errors">{{ errors[0] }}</span>
+                </ValidationProvider>
+              </b-form-group>
+            </div>
+            <div class="col col-sm-12 col-md-6">
+              <b-form-group
+                id="input-group-3"
+                class="input-label-container"
+                label="Apellido Materno:"
+                label-for="input-3"
+              >
+                <ValidationProvider rules="required" v-slot="{ errors }">
+                  <b-form-input
+                    id="input-3"
+                    type="text"
+                    v-model="form.workerSecondLastName"
+                    :class="{ invalid: errors[0] }"
+                  ></b-form-input>
+                  <span class="errors">{{ errors[0] }}</span>
+                </ValidationProvider>
+              </b-form-group>
+            </div>
+          </div>
 
-        <b-form-group
-          id="input-group-2"
-          label="Apellido Paterno:"
-          label-for="input-2"
-        >
-          <ValidationProvider rules="required" v-slot="{ errors }">
-            <b-form-input
-              id="input-2"
-              type="text"
-              v-model="form.workerFirstLastName"
-              :class="{ invalid: errors[0] }"
-            ></b-form-input>
-            <span class="errors">{{ errors[0] }}</span>
-          </ValidationProvider>
-        </b-form-group>
+          <div class="row">
+            <div class="col col-sm-12 col-md-12">
+              <b-form-group
+                id="input-group-4"
+                label="Correo electrónico:"
+                label-for="input-4"
+                class="input-label-container"
+              >
+                <ValidationProvider rules="required|email" v-slot="{ errors }">
+                  <b-form-input
+                    id="input-4"
+                    type="email"
+                    v-model="form.workerEmail"
+                    :class="{ invalid: errors[0] }"
+                  ></b-form-input>
+                  <span class="errors">{{ errors[0] }}</span>
+                </ValidationProvider>
+              </b-form-group>
+            </div>
+            <div class="col col-sm-12 col-md-6">
+              <b-form-group
+                id="input-group-5"
+                label="Contraseña:"
+                label-for="input-5"
+                class="input-label-container"
+              >
+                <ValidationProvider
+                  rules="required|password|password-match:@confirm"
+                  v-slot="{ errors }"
+                >
+                  <b-form-input
+                    id="input-5"
+                    type="password"
+                    v-model="form.workerPassword"
+                    :class="{ invalid: errors[0] }"
+                  ></b-form-input>
+                  <span class="errors">{{ errors[0] }}</span>
+                </ValidationProvider>
+              </b-form-group>
+            </div>
+            <div class="col col-sm-12 col-md-6">
+              <b-form-group
+                id="input-group-55"
+                label="Confirmar contraseña:"
+                label-for="input-55"
+                class="input-label-container"
+              >
+                <ValidationProvider
+                  rules="required"
+                  name="confirm"
+                  v-slot="{ errors }"
+                >
+                  <b-form-input
+                    id="input-55"
+                    type="password"
+                    v-model="confirmation"
+                    :class="{ invalid: errors[0] }"
+                  ></b-form-input>
+                  <span class="errors">{{ errors[0] }}</span>
+                </ValidationProvider>
+              </b-form-group>
+            </div>
+          </div>
 
-        <b-form-group
-          id="input-group-3"
-          label="Apellido Materno:"
-          label-for="input-3"
-        >
-          <ValidationProvider rules="required" v-slot="{ errors }">
-            <b-form-input
-              id="input-3"
-              type="text"
-              v-model="form.workerSecondLastName"
-              :class="{ invalid: errors[0] }"
-            ></b-form-input>
-            <span class="errors">{{ errors[0] }}</span>
-          </ValidationProvider>
-        </b-form-group>
+          <div class="row">
+            <div class="col col-sm-12 col-md-6">
+              <b-form-group
+                id="input-group-6"
+                label="Telefono:"
+                label-for="input-6"
+                class="input-label-container"
+              >
+                <ValidationProvider rules="required|tel" v-slot="{ errors }">
+                  <b-form-input
+                    id="input-6"
+                    type="tel"
+                    v-model="form.workerCellphone"
+                    :class="{ invalid: errors[0] }"
+                  ></b-form-input>
+                  <span class="errors">{{ errors[0] }}</span>
+                </ValidationProvider>
+              </b-form-group>
+            </div>
+            <div class="col col-sm-12 col-md-6">
+              <b-form-group
+                id="input-group-7"
+                label="NSS:"
+                label-for="input-7"
+                class="input-label-container"
+              >
+                <ValidationProvider rules="required|nss" v-slot="{ errors }">
+                  <b-form-input
+                    id="input-7"
+                    type="number"
+                    v-model="form.workerSecurityNumber"
+                    :class="{ invalid: errors[0] }"
+                  ></b-form-input>
+                  <span class="errors">{{ errors[0] }}</span>
+                </ValidationProvider>
+              </b-form-group>
+            </div>
+            <div class="col col-sm-12 col-md-6">
+              <b-form-group
+                id="input-group-8"
+                label="Salario:"
+                label-for="input-8"
+                class="input-label-container"
+              >
+                <ValidationProvider
+                  rules="required|max_value:20000"
+                  v-slot="{ errors }"
+                >
+                  <b-form-input
+                    id="input-8"
+                    type="number"
+                    v-model="form.workerSalary"
+                    :class="{ invalid: errors[0] }"
+                  ></b-form-input>
+                  <span class="errors">{{ errors[0] }}</span>
+                </ValidationProvider>
+              </b-form-group>
+            </div>
+            <div class="col col-sm-12 col-md-6">
+              <b-form-group
+                id="input-group-9"
+                label="RFC:"
+                class="input-label-container"
+                label-for="input-9"
+              >
+                <ValidationProvider rules="required|rfc" v-slot="{ errors }">
+                  <b-form-input
+                    id="input-9"
+                    type="text"
+                    v-model="form.workerRfc"
+                    :class="{ invalid: errors[0] }"
+                  ></b-form-input>
+                  <span class="errors">{{ errors[0] }}</span>
+                </ValidationProvider>
+              </b-form-group>
+            </div>
+          </div>
 
-        <b-form-group id="input-group-4" label="Email:" label-for="input-4">
-          <ValidationProvider rules="required|email" v-slot="{ errors }">
-            <b-form-input
-              id="input-4"
-              type="email"
-              v-model="form.workerEmail"
-              :class="{ invalid: errors[0] }"
-            ></b-form-input>
-            <span class="errors">{{ errors[0] }}</span>
-          </ValidationProvider>
-        </b-form-group>
-
-        <b-form-group id="input-group-5" label="Password:" label-for="input-5">
-          <ValidationProvider rules="required|password" v-slot="{ errors }">
-            <b-form-input
-              id="input-5"
-              type="password"
-              v-model="form.workerPassword"
-              :class="{ invalid: errors[0] }"
-            ></b-form-input>
-            <span class="errors">{{ errors[0] }}</span>
-          </ValidationProvider>
-        </b-form-group>
-
-        <b-form-group id="input-group-6" label="Telefono:" label-for="input-6">
-          <ValidationProvider rules="required|phone" v-slot="{ errors }">
-            <b-form-input
-              id="input-6"
-              type="tel"
-              v-model="form.workerCellphone"
-              :class="{ invalid: errors[0] }"
-            ></b-form-input>
-            <span class="errors">{{ errors[0] }}</span>
-          </ValidationProvider>
-        </b-form-group>
-
-        <b-form-group
-          id="input-group-7"
-          label="Número de seguridad:"
-          label-for="input-7"
-        >
-          <ValidationProvider rules="required|no-e" v-slot="{ errors }">
-            <b-form-input
-              id="input-7"
-              type="number"
-              v-model="form.workerSecurityNumber"
-              :class="{ invalid: errors[0] }"
-            ></b-form-input>
-            <span class="errors">{{ errors[0] }}</span>
-          </ValidationProvider>
-        </b-form-group>
-
-        <b-form-group id="input-group-8" label="Salario:" label-for="input-8">
-          <ValidationProvider rules="required|no-e" v-slot="{ errors }">
-            <b-form-input
-              id="input-8"
-              type="number"
-              v-model="form.workerSalary"
-              :class="{ invalid: errors[0] }"
-            ></b-form-input>
-            <span class="errors">{{ errors[0] }}</span>
-          </ValidationProvider>
-        </b-form-group>
-
-        <b-form-group id="input-group-9" label="RFC:" label-for="input-9">
-          <ValidationProvider rules="required" v-slot="{ errors }">
-            <b-form-input
-              id="input-9"
-              type="text"
-              v-model="form.workerRfc"
-              :class="{ invalid: errors[0] }"
-            ></b-form-input>
-            <span class="errors">{{ errors[0] }}</span>
-          </ValidationProvider>
-        </b-form-group>
-
-        <b-form-group
-          id="input-group-10"
-          label="Foto del trabajador:"
-          label-for="input-10"
-        >
-          <ValidationProvider rules="required|ext:png" v-slot="{ errors }">
-            <b-form-file
-              id="input-10"
-              v-model="form.workerProfilePic"
-              accept="image/*"
-              @change="handleFiles"
-              placeholder="Seleccione una imagen"
-              :class="{ invalid: errors[0] }"
-            ></b-form-file>
-            <span class="errors">{{ errors[0] }}</span>
-          </ValidationProvider>
-        </b-form-group>
-
-        <div class="buttonsContainer">
-          <b-button type="submit" variant="primary"
-            >Registrar Trabajador</b-button
+          <b-form-group
+            id="input-group-10"
+            label="Foto del trabajador:"
+            label-for="input-10"
+            class="input-label-container"
           >
-          <b-button @click="closeModal" id="botonCancelar"> Cancelar </b-button>
-        </div>
-      </b-form>
+            <ValidationProvider
+              rules="required|ext:jpg,png|size:10"
+              v-slot="{ errors }"
+            >
+              <b-form-file
+                id="input-10"
+                v-model="form.workerProfilePic"
+                accept="image/*"
+                @change="handleFiles"
+                placeholder="Seleccione una imagen"
+                :class="{ invalid: errors[0] }"
+              ></b-form-file>
+              <span class="errors">{{ errors[0] }}</span>
+            </ValidationProvider>
+            <div class="image-preview">
+              <img
+                v-if="imagePreviewUrl"
+                :src="imagePreviewUrl"
+                alt="Vista previa"
+              />
+            </div>
+          </b-form-group>
+
+          <div class="buttonsContainer">
+            <b-button type="submit" class="register-btn" variant="success"
+              >Registrar</b-button
+            >
+            <b-button @click="closeModal" class="close-btn" id="botonCancelar">
+              Cancelar
+            </b-button>
+          </div>
+        </b-form>
+      </ValidationObserver>
     </b-modal>
   </div>
 </template>
 
 <script>
-import { extend, ValidationProvider } from "vee-validate";
-import { required, min, ext } from "vee-validate/dist/rules";
+import { extend } from "vee-validate";
+import { required, ext, email, regex } from "vee-validate/dist/rules";
 import { useSecret } from "@/stores/key";
 
 extend("required", {
@@ -170,58 +273,80 @@ extend("required", {
   message: "Este campo es requerido",
 });
 
-extend("ext", {
-  ...ext,
-  message: "La imagen debe ser un png",
-});
 extend("email", {
-  validate: (value) => {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-  },
-  message: "El campo debe ser una dirección de correo electrónico válida.",
+  ...email,
+  message: "La dirección de correo debe ser valida",
 });
 
-extend("phone", {
-  validate: (value) => {
-    return /^\d{10}$/.test(value);
-  },
-  message:
-    "El número de celular debe tener exactamente 10 dígitos y no contener letras.",
+extend("ext", {
+  ...ext,
+  message: "La imagen debe ser un png o jpg",
 });
 
 extend("password", {
   validate: (value) => {
-    return /^(?=.*[A-Z])(?=.*\d)(?!.*[^a-zA-Z0-9]).{8,}$/.test(value);
+    return /^(?=.*[A-Z])(?=.*[0-9])[A-Za-z0-9]{8,}$/.test(value);
   },
   message:
-    "La contraseña debe contener al menos una letra mayúscula, un número y no debe contener caracteres especiales.",
+    "La contraseña debe contener al menos 8 caracteres, incluyendo al menos una letra mayúscula, un número y no debe contener caracteres especiales.",
 });
-extend("no-e", {
-  validate: (value) => {
-    if (typeof value === "number") {
-      value = value.toString();
-    }
-    return !value.includes("e");
+
+extend("password-match", {
+  params: ["target"],
+  validate(value, { target }) {
+    return value === target;
   },
-  message: 'El campo no puede contener la letra "e".',
+  message: "Las contraseñas no coinciden",
 });
+
+extend("tel", {
+  validate: (value) => {
+    if (!/^\d{10}$/.test(value)) return false;
+    return value.startsWith("777") || value.startsWith("52");
+  },
+  message:
+    "El teléfono debe ser numérico, comenzar con '777' o '52', y tener 10 dígitos.",
+});
+
+extend("nss", {
+  validate: (value) => {
+    return /^\d{11}$/.test(value);
+  },
+  message: "El número de seguridad social debe contener 11 digitos.",
+});
+
+extend("size", {
+  params: ["size"],
+  validate(value, { size }) {
+    if (!value || !value.size) return false;
+
+    const sizeInMB = size * 1024 * 1024;
+    return value.size <= sizeInMB;
+  },
+  message: "El archivo debe ser menor o igual a {size} MB.",
+});
+
+extend("max_value", {
+  validate(value, { max }) {
+    return Number(value) <= max;
+  },
+  message: "El salario no debe ser superior a {max}",
+  params: ["max"],
+});
+
 extend("rfc", {
-  validate: (value) => {
-    // Expresión regular para validar el formato de RFC
-    const rfcRegex = /^[A-Z&Ñ]{3,4}\d{6}[A-V1-9][A-Z1-9]\d{1}$/;
-    return rfcRegex.test(value);
-  },
-  message:
-    "El RFC ingresado no es válido. Verifica que tenga el formato correcto.",
+  ...regex,
+  message: "El RFC debe tener un formato válido como XXXX00000DDD",
+  validate: (value) => /^[A-Z]{4}\d{5}[A-Z0-9]{3}$/.test(value),
 });
+
 export default {
-  components: {
-    ValidationProvider,
-  },
   name: "CreateWorkerModal",
   data() {
     return {
       key: "",
+      confirmation: "",
+      backErrors: [],
       form: {
         workerName: "",
         workerFirstLastName: "",
@@ -234,6 +359,7 @@ export default {
         workerRfc: "",
         workerProfilePic: null,
       },
+      imagePreviewUrl: null,
     };
   },
   methods: {
@@ -278,13 +404,46 @@ export default {
             this.closeModal();
           })
           .catch((error) => {
-            console.error("Error al crear el trabajador:", error);
+            if (error.response.status === 409) {
+              const message = error.response.data.message;
+              this.$swal({
+                title: "Opps!",
+                text: message,
+                icon: "warning",
+              });
+            } else if (error.response.status === 420) {
+              const message = error.response.data.message;
+              this.$swal({
+                title: "Opps!",
+                text: message,
+                icon: "warning",
+              });
+            } else if (error.response.status === 400) {
+              error.response.data.forEach((element) => {
+                this.backErrors.push(element);
+              });
+              this.$swal({
+                title: "Problema con la información",
+                text: "Verifique que todos los campos esten llenos y que hayan cumplido con las reglas mostradas",
+                icon: "warning",
+                confirmButtonText: "Ok",
+              });
+            } else {
+              console.error("Error al crear el administrador:", error);
+            }
           });
       }
     },
     handleFiles(event) {
       const file = event.target.files[0];
       this.form.workerProfilePic = file;
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          this.imagePreviewUrl = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
     },
     closeModal() {
       this.$root.$emit("bv::hide::modal", "modal-1");
@@ -301,6 +460,7 @@ export default {
       this.form.workerSecurityNumber = null;
       this.form.workerSalary = null;
       this.form.workerRfc = "";
+      this.imagePreviewUrl = null;
     },
   },
   mounted() {
@@ -330,73 +490,12 @@ export default {
   width: 35%;
 }
 
-#botonEnviar {
-  background-color: rgb(51, 139, 240);
-  color: white;
+.register-btn {
+  margin: 0;
 }
 
-#botonCancelar {
-  background-color: rgb(240, 51, 51);
-  color: white;
-}
-
-#form {
-  width: 100%;
-  padding: 10px;
-}
-
-.fieldContainer {
-  width: 100%;
-  margin-bottom: 20px;
-}
-
-.labelContainer {
-  margin-bottom: 10px;
-}
-
-.inputContainer {
-  width: 100%;
-}
-
-.inputContainer input {
-  padding: 10px;
-  width: 100%;
-  border: 2px solid #ccc;
-  border-radius: 10px;
-  background-color: #f9f9f9;
-  color: #333;
-  outline: none;
-}
-
-.inputContainer input:focus {
-  border-color: #2b2b2b;
-}
-.inputContainer textarea {
-  padding: 10px;
-  width: 100%;
-  border: 2px solid #ccc;
-  border-radius: 10px;
-  background-color: #f9f9f9;
-  color: #333;
-  outline: none;
-}
-
-.inputContainer textarea:focus {
-  border-color: #2b2b2b;
-}
-
-.inputContainer select {
-  padding: 10px;
-  width: 100%;
-  border: 2px solid #ccc;
-  border-radius: 10px;
-  background-color: #f9f9f9;
-  color: #333;
-  outline: none;
-}
-
-.inputContainer select:focus {
-  border-color: #2b2b2b;
+.close-btn {
+  margin: 0;
 }
 
 #addWorkerButton {
@@ -405,6 +504,7 @@ export default {
   font-size: 1rem;
   font-weight: 600;
 }
+
 .invalid {
   border-color: red !important;
   background-color: rgb(255, 255, 255) !important;
@@ -412,5 +512,36 @@ export default {
 
 .errors {
   color: red;
+}
+
+.button-close-form {
+  width: 10%;
+  margin: 0;
+  margin-left: auto;
+}
+
+.form-title {
+  font-size: 1.5rem;
+}
+
+.input-label-container {
+  margin-bottom: 15px;
+}
+
+.input-group-text {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
+.image-preview {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+}
+
+.image-preview img {
+  max-width: 150px;
+  border-radius: 10px;
 }
 </style>

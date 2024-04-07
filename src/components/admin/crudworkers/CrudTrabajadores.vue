@@ -104,42 +104,130 @@
                   :worker="row.item"
                   @actualizacionExitosa="fetchWorkers"
                 ></EditWorkerModal>
-                <b-button class="table-button" variant="warning" size="sm">
-                  <b-icon icon="circle" scale=".7"></b-icon
-                ></b-button>
 
-                <b-button class="table-button" variant="danger" size="sm">
+                <b-button
+                  class="table-button status-button"
+                  variant="light"
+                  size="sm"
+                  @click="goToConfirmWorkerAccount(row.item.accountStatus)"
+                  :style="{
+                    color:
+                      row.item.accountStatus === 'Confirmada'
+                        ? 'green'
+                        : row.item.accountStatus === 'Sin confirmar'
+                        ? 'red'
+                        : '',
+                  }"
+                >
+                  <b-icon icon="circle" scale=".7"></b-icon>
+                </b-button>
+
+                <b-button
+                  class="table-button"
+                  draggable="true"
+                  @dragstart="handleDragStart($event, row.item)"
+                  variant="danger"
+                  size="sm"
+                >
                   <b-icon icon="arrow-down-right" scale="1"></b-icon>
                 </b-button>
               </div>
             </template>
 
             <template #row-details="row">
-              <b-card>
-                <ul>
-                  <li
+              <div class="row">
+                <div
+                  class="col-4"
+                  style="
+                    padding: 20px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                  "
+                >
+                  <div
                     v-for="(value, key) in processedDetails[row.index]"
                     :key="key"
-                    style="margin: 10px 0"
                   >
-                    <template v-if="key === 'Foto del Trabajador'">
+                    <div v-if="key === 'Foto del trabajador'">
                       <div
                         class="item-image-container"
-                        style="margin-top: 30px; border-radius: 10px"
+                        style="width: 200px; border-radius: 10px"
                       >
                         <img
                           :src="value"
                           alt="Worker Image"
-                          style="width: 100px; height: auto"
+                          style="
+                            width: 150px;
+                            height: auto;
+                            border-radius: 10px;
+                          "
                         />
                       </div>
-                    </template>
-                    <template v-else
-                      ><b>{{ key }}</b> : {{ value }}
-                    </template>
-                  </li>
-                </ul>
-              </b-card>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="col-4"
+                  style="
+                    padding: 20px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                  "
+                >
+                  <div>
+                    <div
+                      v-for="(value, key) in processedDetails[row.index]"
+                      :key="key"
+                    >
+                      <div
+                        style="margin: 10px"
+                        v-if="
+                          key !== 'Foto del trabajador' &&
+                          key !== 'Celular' &&
+                          key !== 'NSS' &&
+                          key !== 'Salario' &&
+                          key !== 'RFC' &&
+                          key !== 'Estado de la cuenta'
+                        "
+                      >
+                        <b>{{ key }}</b> : {{ value }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="col-4"
+                  style="
+                    padding: 20px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                  "
+                >
+                  <div>
+                    <div
+                      v-for="(value, key) in processedDetails[row.index]"
+                      :key="key"
+                    >
+                      <div
+                        style="margin: 10px"
+                        v-if="
+                          key !== 'Foto del trabajador' &&
+                          key !== 'Número' &&
+                          key !== 'Nombre' &&
+                          key !== 'Apellido paterno' &&
+                          key !== 'Apellido materno' &&
+                          key !== 'Correo'
+                        "
+                      >
+                        <b>{{ key }}</b> : {{ value }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </template>
           </b-table>
           <div class="outter-pagination-container">
@@ -162,6 +250,8 @@
       >
         <div
           class="bin-container-inner"
+          @dragover.prevent
+          @drop="handleDropOnTrash"
           style="
             background: red;
             width: 5%;
@@ -229,20 +319,22 @@ export default {
       return this.items.map((item) => {
         const processed = {};
         const keyMappings = {
-          workerName: "Nombre del trabajador",
-          workerFirsLastName: "Apellido paterno del trabajador",
-          workerSecondLastName: "Apellido materno del trabajador",
-          workerEmail: "Correo del trabajador",
-          workerCellphone: "Teléfono de trabajador",
-          workerSecurityNumber: "Número de seguridad del trabajador",
-          workerSalary: "Salario del trabajador",
-          workerRfc: "RFC del trabajador",
+          workerId: "Número",
+          workerName: "Nombre",
+          workerFirstLastName: "Apellido paterno",
+          workerSecondLastName: "Apellido materno",
+          workerEmail: "Correo",
+          workerCellphone: "Celular",
+          workerSecurityNumber: "NSS",
+          workerSalary: "Salario",
+          workerRfc: "RFC",
+          accountStatus: "Estado de la cuenta",
         };
         Object.entries(item).forEach(([key, value]) => {
           if (key !== "_showDetails" && key !== "workerState") {
             const friendlyKey = keyMappings[key] || key;
             if (key === "workerProfilePicUrl") {
-              processed["Foto del Trabajador"] = value;
+              processed["Foto del trabajador"] = value;
             } else {
               processed[friendlyKey] = value;
             }
@@ -253,11 +345,78 @@ export default {
     },
   },
   methods: {
+    goToConfirmWorkerAccount(status) {
+      if (status === "Sin confirmar") {
+        this.$router.push("/admin-confirm-worker-account");
+      } else {
+        this.$swal({
+          title: "¿De nuevo?",
+          text: "La cuenta ya fue confirmada!",
+          icon: "question",
+        });
+      }
+    },
     onFiltered(filteredItems) {
       this.totalRows = filteredItems.length;
       this.currentPage = 1;
     },
+    handleDragStart(e, item) {
+      e.dataTransfer.setData("text/plain", item.workerId);
+    },
+    deleteWorkerOnDrop(id) {
+      this.key = useSecret();
+      this.$swal({
+        title: "¿Estas seguro?",
+        text: "No podras revertir este cambio",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        cancelButtonText: "cancelar",
+        confirmButtonText: "Si, eliminar",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const serializedData = JSON.stringify({
+            workerId: id,
+          });
+          const encryptedData = this.$encryptionService.encryptData(
+            serializedData,
+            this.key
+          );
+
+          const token = localStorage.getItem("token");
+
+          if (token) {
+            this.$http
+              .delete("/api/accounts/delete-worker", {
+                data: encryptedData,
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+              })
+              .then((response) => {
+                this.$swal({
+                  title: "Eliminado",
+                  text: "La cuenta del trabajador ha sido eliminada con exito",
+                  icon: "success",
+                });
+                this.fetchWorkers();
+              })
+              .catch((error) => {
+                console.error(error);
+              });
+          }
+        }
+      });
+    },
+    handleDropOnTrash(e) {
+      const workerId = e.dataTransfer.getData("text/plain");
+      this.deleteWorkerOnDrop(workerId);
+    },
     fetchWorkers() {
+      const secretStore = useSecret();
+      this.key = secretStore.secretKey;
       const token = localStorage.getItem("token");
       if (token) {
         this.$http
@@ -289,6 +448,7 @@ export default {
         "workerSalary",
         "workerEmail",
         "workerProfilePicUrl",
+        "accountStatus",
       ];
 
       fieldsToDecrypt.forEach((field) => {

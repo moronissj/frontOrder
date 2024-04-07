@@ -104,10 +104,12 @@
                 ></EditAdminModal>
 
                 <b-button
-                  class="table-button"
+                  class="table-button status-button"
+                  variant="light"
                   size="sm"
+                  @click="goToConfirmAdminAccount(row.item.accountStatus)"
                   :style="{
-                    backgroundColor:
+                    color:
                       row.item.accountStatus === 'Confirmada'
                         ? 'green'
                         : row.item.accountStatus === 'Sin confirmar'
@@ -115,11 +117,7 @@
                         : '',
                   }"
                 >
-                  <b-icon
-                    @click="goToConfirmAdminAccount(row.item.accountStatus)"
-                    icon="circle"
-                    scale=".7"
-                  ></b-icon>
+                  <b-icon icon="circle" scale=".7"></b-icon>
                 </b-button>
 
                 <b-button
@@ -133,32 +131,100 @@
                 </b-button>
               </div>
             </template>
+
             <template #row-details="row">
-              <b-card>
-                <ul>
-                  <li
+              <div class="row">
+                <div
+                  class="col-4"
+                  style="
+                    padding: 20px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                  "
+                >
+                  <div
                     v-for="(value, key) in processedDetails[row.index]"
                     :key="key"
-                    style="margin: 10px 0"
                   >
-                    <template v-if="key === 'Foto del Administrador'">
+                    <div v-if="key === 'Foto del Administrador'">
                       <div
                         class="item-image-container"
-                        style="margin-top: 30px; border-radius: 10px"
+                        style="width: 200px; border-radius: 10px"
                       >
                         <img
                           :src="value"
                           alt="Admin Image"
-                          style="width: 100px; height: auto"
+                          style="
+                            width: 150px;
+                            height: auto;
+                            border-radius: 10px;
+                          "
                         />
                       </div>
-                    </template>
-                    <template v-else
-                      ><b>{{ key }}</b> : {{ value }}
-                    </template>
-                  </li>
-                </ul>
-              </b-card>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="col-4"
+                  style="
+                    padding: 20px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                  "
+                >
+                  <div>
+                    <div
+                      v-for="(value, key) in processedDetails[row.index]"
+                      :key="key"
+                    >
+                      <div
+                        style="margin: 10px"
+                        v-if="
+                          key !== 'Foto del Administrador' &&
+                          key !== 'Telefono' &&
+                          key !== 'NSS' &&
+                          key !== 'Salario'
+                        "
+                      >
+                        <b>{{ key }}</b> : {{ value }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="col-4"
+                  style="
+                    padding: 20px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                  "
+                >
+                  <div>
+                    <div
+                      v-for="(value, key) in processedDetails[row.index]"
+                      :key="key"
+                    >
+                      <div
+                        style="margin: 10px"
+                        v-if="
+                          key !== 'Foto del Administrador' &&
+                          key !== 'Número' &&
+                          key !== 'Nombre' &&
+                          key !== 'Apellido paterno' &&
+                          key !== 'Apellido materno' &&
+                          key !== 'Correo' &&
+                          key !== 'Estado de la cuenta'
+                        "
+                      >
+                        <b>{{ key }}</b> : {{ value }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </template>
           </b-table>
           <div class="outter-pagination-container">
@@ -250,13 +316,14 @@ export default {
       return this.items.map((item) => {
         const processed = {};
         const keyMappings = {
-          adminName: "Nombre del administrador",
-          adminFirstLastName: "Apelido parterno del trabajador",
-          adminSecondLastName: "Apellido materno del trabajador",
-          adminEmail: "Correo del trabajador",
+          adminId: "Número",
+          adminName: "Nombre",
+          adminFirstLastName: "Apelido parterno",
+          adminSecondLastName: "Apellido materno",
+          adminEmail: "Correo",
           adminCellphone: "Telefono",
           adminSalary: "Salario",
-          adminSecurityNumber: "Numero de Seguridad",
+          adminSecurityNumber: "NSS",
           accountStatus: "Estado de la cuenta",
         };
         Object.entries(item).forEach(([key, value]) => {
@@ -279,8 +346,8 @@ export default {
         this.$router.push("/admin-confirm-admin-account");
       } else {
         this.$swal({
-          title: "A donde papi?",
-          text: "La cuenta ya fue confirmada, no hay necesidad",
+          title: "¿De nuevo?",
+          text: "La cuenta ya fue confirmada!",
           icon: "question",
         });
       }
@@ -290,12 +357,10 @@ export default {
       this.currentPage = 1;
     },
     handleDragStart(e, item) {
-      console.log(item.adminId);
       e.dataTransfer.setData("text/plain", item.adminId);
     },
     deleteAdminOnDrop(id) {
       this.key = useSecret();
-
       this.$swal({
         title: "¿Estas seguro?",
         text: "No podras revertir este cambio",
@@ -357,7 +422,6 @@ export default {
             },
           })
           .then((response) => {
-            console.log(response.data);
             this.items = response.data.map((item) =>
               this.decryptAdminData(item)
             );
@@ -378,9 +442,9 @@ export default {
         "adminEmail",
         "adminCellphone",
         "adminSecurityNumber",
-        "adminProfilePicUrl",
         "adminSalary",
         "accountStatus",
+        "adminProfilePicUrl",
       ];
 
       fieldsToDecrypt.forEach((field) => {
@@ -468,10 +532,14 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: gray;
+  background-color: rgb(221, 221, 221);
 }
 
 ul li {
   list-style: none;
+}
+
+.status-button {
+  background: white;
 }
 </style>
