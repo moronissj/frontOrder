@@ -178,6 +178,8 @@
 import NavbarAdmin from "../NavbarAdmin.vue";
 import CreatePackageModal from "./CreatePackageModal.vue";
 import EditPackageModal from "./EditPackageModal.vue";
+import { useSecret } from "@/stores/key";
+
 export default {
   name: "CrudPaquetes",
   components: {
@@ -259,6 +261,7 @@ export default {
       e.dataTransfer.setData("text/plain", item.packageId);
     },
     deletePackageOnDrop(id) {
+      this.key = useSecret();
       this.$swal({
         title: "¿Estas seguro?",
         text: "No podras revertir este cambio",
@@ -270,19 +273,35 @@ export default {
         confirmButtonText: "Si, eliminar",
       }).then((result) => {
         if (result.isConfirmed) {
-          this.$http
-            .delete(`/api/packages/${id}`)
-            .then((response) => {
-              this.$swal({
-                title: "Eliminado",
-                text: "El paquete ha sido eliminado con exito",
-                icon: "success",
+          const serializedData = JSON.stringify({
+            packageId: id,
+          });
+          const encryptedData = this.$encryptionService.encryptData(
+            serializedData,
+            this.key
+          );
+          const token = localStorage.getItem("token");
+          if (token) {
+            this.$http
+              .delete("/api/packages/delete-package", {
+                data: encryptedData,
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+              })
+              .then((response) => {
+                this.$swal({
+                  title: "Eliminado",
+                  text: "El paquete ha sido eliminado con exito",
+                  icon: "success",
+                });
+                this.fetchPackages();
+              })
+              .catch((error) => {
+                console.error(error);
               });
-              this.fetchPackages();
-            })
-            .catch((error) => {
-              console.error(error);
-            });
+          }
         }
       });
     },
