@@ -187,14 +187,13 @@ export default {
   },
   methods: {
     fillForm() {
+      console.log(this.aPackage);
       this.form.packageName = this.aPackage.packageName;
       this.form.packageDescription = this.aPackage.packageDescription;
       this.form.packagePrice = this.aPackage.packagePrice;
       this.form.designatedHours = this.aPackage.designatedHours;
       this.form.workersNumber = this.aPackage.workersNumber;
-      this.form.categoryId = this.aPackage.category
-        ? this.aPackage.category.serviceId
-        : null;
+      this.form.categoryId = this.aPackage.categoryId;
     },
     sendPutEditPackage() {
       this.key = useSecret();
