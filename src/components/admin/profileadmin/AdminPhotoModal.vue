@@ -60,6 +60,7 @@ export default {
   },
   methods: {
     sendPutEditProfilePicAdmin() {
+      console.log(this.admin);
       this.$http
         .post(
           `/api/accounts/update-admin/profile-pic/${this.admin.adminId}`,

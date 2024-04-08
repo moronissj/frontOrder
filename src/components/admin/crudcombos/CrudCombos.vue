@@ -192,6 +192,8 @@
 import NavbarAdmin from "../NavbarAdmin.vue";
 import CreateComboModal from "./CreateComboModal.vue";
 import EditComboModal from "./EditComboModal.vue";
+import { useSecret } from "@/stores/key";
+
 export default {
   name: "CrudCombos",
   components: {
@@ -267,6 +269,8 @@ export default {
       e.dataTransfer.setData("text/plain", item.comboId);
     },
     deleteComboOnDrop(id) {
+      this.key = useSecret();
+
       this.$swal({
         title: "¿Estas seguro?",
         text: "No podras revertir este cambio",
@@ -278,19 +282,36 @@ export default {
         confirmButtonText: "Si, eliminar",
       }).then((result) => {
         if (result.isConfirmed) {
-          this.$http
-            .delete(`/api/combos/${id}`)
-            .then((response) => {
-              this.$swal({
-                title: "Eliminado",
-                text: "El Combo ha sido eliminado con éxito",
-                icon: "success",
+          const serializedData = JSON.stringify({
+            comboId: id,
+          });
+          const encryptedData = this.$encryptionService.encryptData(
+            serializedData,
+            this.key
+          );
+
+          const token = localStorage.getItem("token");
+          if (token) {
+            this.$http
+              .delete("/api/combos/delete-combo", {
+                data: encryptedData,
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+              })
+              .then((response) => {
+                this.$swal({
+                  title: "Eliminado",
+                  text: "El Combo ha sido eliminado con éxito",
+                  icon: "success",
+                });
+                this.fetchCombo();
+              })
+              .catch((error) => {
+                console.error(error);
               });
-              this.fetchCombo();
-            })
-            .catch((error) => {
-              console.error(error);
-            });
+          }
         }
       });
     },

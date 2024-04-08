@@ -178,6 +178,8 @@
 import NavbarAdmin from "../NavbarAdmin.vue";
 import CreatePackageModal from "./CreatePackageModal.vue";
 import EditPackageModal from "./EditPackageModal.vue";
+import { useSecret } from "@/stores/key";
+
 export default {
   name: "CrudPaquetes",
   components: {
@@ -195,20 +197,12 @@ export default {
           sortable: true,
           sortDirection: "desc",
         },
+
         {
-          key: "packageDescription",
-          label: "Descripcion",
-          sortable: true,
-          sortDirection: "desc",
-        },
-        {
-          key: "category.serviceName",
+          key: "categoryName",
           label: "Nombre del Servicio",
           sortable: true,
           sortDirection: "desc",
-          formatter: (value, key, item) => {
-            return item.category ? item.category.serviceName : value;
-          },
         },
         { key: "actions", label: "Acciones" },
       ],
@@ -224,30 +218,24 @@ export default {
       return this.items.map((item) => {
         const processed = {};
         const keyMappings = {
+          packageId: "Número",
           packageName: "Nombre del Paquete",
           packageDescription: "Descripcion del paquete",
           packagePrice: "Precio del paquete",
-          packageState: "Estado del paquete",
           designatedHours: "Horas designadas al paquete",
           workersNumber: "Número de trabajadores",
-          category: "Servicio al que pertenece",
+          categoryName: "Servicio al que pertenece",
+          categoryId: "Número del servicio",
         };
         Object.entries(item).forEach(([key, value]) => {
-          if (key !== "_showDetails" && key !== "packageId") {
+          if (key !== "_showDetails" && key !== "packageState") {
             const friendlyKey = keyMappings[key] || key;
             processed[friendlyKey] = value;
-            if (key === "category" && typeof value === "object") {
-              processed[friendlyKey] = value.serviceName;
-            }
           }
         });
         return processed;
       });
     },
-  },
-  mounted() {
-    this.totalRows = this.items.length;
-    this.fetchPackages();
   },
   methods: {
     onFiltered(filteredItems) {
@@ -259,6 +247,7 @@ export default {
       e.dataTransfer.setData("text/plain", item.packageId);
     },
     deletePackageOnDrop(id) {
+      this.key = useSecret();
       this.$swal({
         title: "¿Estas seguro?",
         text: "No podras revertir este cambio",
@@ -270,19 +259,35 @@ export default {
         confirmButtonText: "Si, eliminar",
       }).then((result) => {
         if (result.isConfirmed) {
-          this.$http
-            .delete(`/api/packages/${id}`)
-            .then((response) => {
-              this.$swal({
-                title: "Eliminado",
-                text: "El paquete ha sido eliminado con exito",
-                icon: "success",
+          const serializedData = JSON.stringify({
+            packageId: id,
+          });
+          const encryptedData = this.$encryptionService.encryptData(
+            serializedData,
+            this.key
+          );
+          const token = localStorage.getItem("token");
+          if (token) {
+            this.$http
+              .delete("/api/packages/delete-package", {
+                data: encryptedData,
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+              })
+              .then((response) => {
+                this.$swal({
+                  title: "Eliminado",
+                  text: "El paquete ha sido eliminado con exito",
+                  icon: "success",
+                });
+                this.fetchPackages();
+              })
+              .catch((error) => {
+                console.error(error);
               });
-              this.fetchPackages();
-            })
-            .catch((error) => {
-              console.error(error);
-            });
+          }
         }
       });
     },
@@ -291,15 +296,54 @@ export default {
       this.deletePackageOnDrop(packageId);
     },
     fetchPackages() {
-      this.$http
-        .get("/api/packages")
-        .then((response) => {
-          this.items = response.data;
-        })
-        .catch((e) => {
-          console.error("Error en la peticion: ", e);
-        });
+      const secretStore = useSecret();
+      this.key = secretStore.secretKey;
+      const token = localStorage.getItem("token");
+      if (token) {
+        this.$http
+          .get("/api/packages", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then((response) => {
+            this.items = response.data.map((item) =>
+              this.decryptPackageData(item)
+            );
+            this.items = response.data;
+            this.totalRows = this.items.length;
+          })
+          .catch((e) => {
+            console.error("Error en la peticion: ", e);
+          });
+      }
     },
+    decryptPackageData(item) {
+      const fieldsToDecrypt = [
+        "packageId",
+        "packageName",
+        "packageDescription",
+        "packagePrice",
+        "packageState",
+        "designatedHours",
+        "workersNumber",
+        "categoryName",
+        "categoryId",
+        "categoryId",
+      ];
+      fieldsToDecrypt.forEach((field) => {
+        item[field] = this.$encryptionService.decryptData(
+          item[field],
+          this.key
+        );
+      });
+      return item;
+    },
+  },
+  mounted() {
+    const secretStore = useSecret();
+    this.key = secretStore.secretKey;
+    this.fetchPackages();
   },
 };
 </script>
