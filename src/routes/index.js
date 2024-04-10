@@ -26,6 +26,8 @@ import AdminProfile from "../components/admin/profileadmin/AdminProfile.vue";
 import NotFoundPage from "../components/NotFoundPage.vue";
 import AdminConfirmAccount from "../components/admin/crudadmins/AdminConfirmAccount.vue";
 import WorkerConfirmAccount from "../components/admin/crudworkers/WorkerConfirmAccount.vue";
+import SuccessView from "../components/client/orders/SuccessView.vue";
+import CancelView from "../components/client/orders/CancelView.vue";
 const routes = [
   {
     name: "home",
@@ -149,6 +151,23 @@ const routes = [
       }
     },
   },
+  {
+    path: "/success",
+    name: "Success",
+    component: SuccessView,
+    beforeEnter: (to, from, next) => {
+      if (to.query.session_id) {
+        next();
+      } else {
+        next("/");
+      }
+    },
+  },
+  {
+    path: "/cancel",
+    name: "Cancel",
+    component: CancelView,
+  },
 ];
 
 const router = new VueRouter({
@@ -169,6 +188,16 @@ router.beforeEach((to, from, next) => {
   const loggedIn = localStorage.getItem("token");
 
   if (to.path === "/login" && loggedIn) {
+    const decoded = jwtDecode(loggedIn);
+    const rol = decoded.roles[0].authority;
+    if (rol === "ADMIN") {
+      return next("/administrator-home");
+    } else if (rol === "COMMON_USER") {
+      return next("/client-home");
+    } else {
+      return next("/worker-home");
+    }
+  } else if (to.path === "/" && loggedIn) {
     const decoded = jwtDecode(loggedIn);
     const rol = decoded.roles[0].authority;
     if (rol === "ADMIN") {

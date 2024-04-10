@@ -137,7 +137,7 @@ export default {
   padding: 8px 30px !important;
   font-weight: 600 !important;
   width: 50% !important;
-  margin: 30px 0 10px 0 !important;
+  margin: 10px 0 10px 0 !important;
   background: white !important;
 }
 </style>
