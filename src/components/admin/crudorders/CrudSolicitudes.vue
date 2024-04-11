@@ -480,11 +480,12 @@ export default {
 }
 
 .table-container {
-  max-height: 400px;
+  height: auto;
   border: none;
   border-radius: 10px;
   border: 1px solid black;
   overflow: auto;
+  margin-bottom: 50px;
 }
 
 .outter-pagination-container {

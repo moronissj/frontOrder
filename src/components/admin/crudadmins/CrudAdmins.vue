@@ -107,11 +107,12 @@
                   class="table-button status-button"
                   variant="light"
                   size="sm"
-                  @click="goToConfirmAdminAccount(row.item.accountStatus)"
+                  @click="goToConfirmWorkerAccount(row.item.accountStatus)"
+                  :disabled="row.item.accountStatus === 'Confirmada'"
                   :style="{
-                    color:
+                    backgroundColor:
                       row.item.accountStatus === 'Confirmada'
-                        ? 'green'
+                        ? '#15C151'
                         : row.item.accountStatus === 'Sin confirmar'
                         ? 'red'
                         : '',
@@ -174,7 +175,7 @@
                     align-items: center;
                   "
                 >
-                  <div>
+                  <div class="info-card">
                     <div
                       v-for="(value, key) in processedDetails[row.index]"
                       :key="key"
@@ -185,7 +186,8 @@
                           key !== 'Foto del Administrador' &&
                           key !== 'Telefono' &&
                           key !== 'NSS' &&
-                          key !== 'Salario'
+                          key !== 'Salario' &&
+                          key !== 'Estado de la cuenta'
                         "
                       >
                         <b>{{ key }}</b> : {{ value }}
@@ -202,7 +204,7 @@
                     align-items: center;
                   "
                 >
-                  <div>
+                  <div class="info-card">
                     <div
                       v-for="(value, key) in processedDetails[row.index]"
                       :key="key"
@@ -215,8 +217,7 @@
                           key !== 'Nombre' &&
                           key !== 'Apellido paterno' &&
                           key !== 'Apellido materno' &&
-                          key !== 'Correo' &&
-                          key !== 'Estado de la cuenta'
+                          key !== 'Correo'
                         "
                       >
                         <b>{{ key }}</b> : {{ value }}
@@ -286,19 +287,19 @@ export default {
       fields: [
         {
           key: "adminName",
-          label: "Nombre del admin",
+          label: "Nombre",
           sortable: true,
           sortDirection: "desc",
         },
         {
           key: "adminFirstLastName",
-          label: "Nombre del admin",
+          label: "Apellido paterno",
           sortable: true,
           sortDirection: "desc",
         },
         {
-          key: "adminSecondLastName",
-          label: "Nombre del admin",
+          key: "adminEmail",
+          label: "Correo",
           sortable: true,
           sortDirection: "desc",
         },
@@ -318,7 +319,7 @@ export default {
         const keyMappings = {
           adminId: "Número",
           adminName: "Nombre",
-          adminFirstLastName: "Apelido parterno",
+          adminFirstLastName: "Apellido paterno",
           adminSecondLastName: "Apellido materno",
           adminEmail: "Correo",
           adminCellphone: "Telefono",
@@ -508,11 +509,12 @@ export default {
 }
 
 .table-container {
-  max-height: 400px;
+  height: auto;
   border: none;
   border-radius: 10px;
   border: 1px solid black;
   overflow: auto;
+  margin-bottom: 50px;
 }
 
 .outter-pagination-container {
@@ -532,7 +534,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgb(221, 221, 221);
+  background-color: gray;
 }
 
 ul li {
@@ -541,5 +543,13 @@ ul li {
 
 .status-button {
   background: white;
+}
+
+.info-card {
+  background-color: rgb(221, 221, 221);
+  color: black;
+  padding: 20px;
+  font-size: 1.1rem;
+  border-radius: 20px;
 }
 </style>

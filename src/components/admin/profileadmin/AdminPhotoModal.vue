@@ -43,6 +43,8 @@
 </template>
 
 <script>
+import { useSecret } from "@/stores/key";
+
 export default {
   name: "AdminPhotoModal",
   props: {
@@ -60,29 +62,47 @@ export default {
   },
   methods: {
     sendPutEditProfilePicAdmin() {
-      console.log(this.admin);
-      this.$http
-        .post(
-          `/api/accounts/update-admin/profile-pic/${this.admin.adminId}`,
-          this.form,
-          {
+      this.key = useSecret();
+
+      const serializedData = JSON.stringify({
+        adminId: this.admin.adminId,
+      });
+
+      const encryptedData = this.$encryptionService.encryptData(
+        serializedData,
+        this.key
+      );
+
+      let formData = new FormData();
+      formData.append("data", encryptedData);
+
+      if (this.form.profilePic) {
+        formData.append("profilePic", this.form.profilePic);
+      }
+
+      const token = localStorage.getItem("token");
+
+      if (token) {
+        this.$http
+          .post("/api/accounts/update-admin/profile-pic", formData, {
             headers: {
+              Authorization: `Bearer ${token}`,
               "Content-Type": "multipart/form-data",
             },
-          }
-        )
-        .then((response) => {
-          this.$emit("photoUpdated");
-          this.$swal({
-            title: "Actualizacion exitosa",
-            text: "La foto de perfil ha sido cambiada",
-            icon: "success",
+          })
+          .then((response) => {
+            this.$emit("photoUpdated");
+            this.$swal({
+              title: "Actualizacion exitosa",
+              text: "La foto de perfil ha sido cambiada",
+              icon: "success",
+            });
+            this.closeModal();
+          })
+          .catch((error) => {
+            console.log(error);
           });
-          this.closeModal();
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      }
     },
     handleFiles(event) {
       this.form.profilePic = event.target.files;
@@ -97,6 +117,10 @@ export default {
     clearFields() {
       this.form.profilePic = null;
     },
+  },
+  mounted() {
+    const secretStore = useSecret();
+    this.key = secretStore.secretKey;
   },
 };
 </script>
