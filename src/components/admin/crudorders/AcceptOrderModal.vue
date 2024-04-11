@@ -69,20 +69,51 @@ export default {
   },
   methods: {
     sendOrderConfirmation() {
-      this.$http
-        .patch("/api/orders/accept-and-assign", this.form)
-        .then((response) => {
-          this.$emit("registroExitoso");
-          this.$swal({
-            title: "Confirmacion realizada",
-            text: "La confirmacion ha sido realizada con exito",
-            icon: "success",
+      this.key = useSecret();
+      const serializedData = JSON.stringify({
+        orderId: this.form.orderId,
+        workerIds: this.form.workerIds,
+      });
+      const encryptedData = this.$encryptionService.encryptData(
+        serializedData,
+        this.key
+      );
+
+      const token = localStorage.getItem("token");
+      if (token) {
+        this.$http
+          .patch("/api/orders/accept-and-assign", encryptedData, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          })
+          .then((response) => {
+            this.$emit("registroExitoso");
+            this.$swal({
+              title: "Confirmación realizada",
+              text: "La confirmación ha sido realizada con éxito",
+              icon: "success",
+            });
+            this.closeModal();
+          })
+          .catch((error) => {
+            console.log(error);
+            if (error.response.data.code === 500) {
+              this.$swal({
+                title: "Error en la confirmación",
+                text: "El pago ya ha sido capturado una vez, eso significa que la orden ya habia sido aceptada, no es posible aceptar una orden por segunda vez.",
+                icon: "error",
+              });
+            } else if (error.response.data.code === 400) {
+              this.$swal({
+                title: "Alto! hay un problema con los trabajadores",
+                text: error.response.data.message,
+                icon: "warning",
+              });
+            }
           });
-          this.closeModal();
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      }
     },
     closeModal() {
       this.$root.$emit("bv::hide::modal", `acceptOrderModal_${this.id}`);
@@ -92,21 +123,26 @@ export default {
       this.form.workerIds = [];
     },
     fetchWorkers() {
-      this.$http
-        .get("/api/accounts/workers")
-        .then((response) => {
-          console.log(response.data);
-          this.workers = response.data.map((worker) => {
-            this.decryptWorkerData(worker);
+      const secretStore = useSecret();
+      this.key = secretStore.secretKey;
+      const token = localStorage.getItem("token");
+      if (token) {
+        this.$http
+          .get("/api/accounts/workers")
+          .then((response) => {
+            this.workers = response.data.map((worker) => {
+              this.decryptWorkerData(worker);
+            });
+            this.workers = response.data;
+            this.workerOptions = this.workers.map((work) => ({
+              value: work.workerId,
+              text: `# ${work.workerId} - ${work.workerName} ${work.workerFirstLastName} ${work.workerSecondLastName}`,
+            }));
+          })
+          .catch((e) => {
+            console.error("Error en la petición: ", e);
           });
-          this.workerOptions = this.workers.map((work) => ({
-            value: work.workerId,
-            text: work.workerName,
-          }));
-        })
-        .catch((e) => {
-          console.error("Error en la petición: ", e);
-        });
+      }
     },
     decryptWorkerData(worker) {
       const fieldsToDecrypt = [
@@ -121,14 +157,12 @@ export default {
         "workerEmail",
         "workerProfilePicUrl",
       ];
-
       fieldsToDecrypt.forEach((field) => {
         worker[field] = this.$encryptionService.decryptData(
           worker[field],
           this.key
         );
       });
-
       return worker;
     },
   },
