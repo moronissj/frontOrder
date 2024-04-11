@@ -63,8 +63,8 @@
 export default {
   name: "Modal",
   props: {
-    packageId: {
-      type: Number,
+    aPackage: {
+      type: Object,
       required: true,
     },
   },
@@ -80,35 +80,40 @@ export default {
   },
   methods: {
     onSubmit() {
-      const token = localStorage.getItem("token");
-      const combinedDateTime = `${this.form.orderDate}T${this.form.orderTime}:00`;
-      const formData = {
-        orderDate: this.form.orderDate,
-        orderPlace: this.form.orderPlace,
-        orderTime: combinedDateTime,
-        packagesIds: [this.form.packageIds[0]],
+      this.initiatePayment();
+    },
+    initiatePayment() {
+      const paymentData = {
+        orderName: this.aPackage.packageName,
+        orderDescription: this.aPackage.packageDescription,
+        designatedHours: Number(this.aPackage.packagePrice),
+        workersNumber: Number(this.aPackage.designatedHours),
+        totalPrice: Number(this.aPackage.packagePrice),
       };
-      console.log(formData);
-      if (token) {
-        this.$http
-          .post("api/orders", formData, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          })
-          .then((response) => {
-            this.$emit("registroExitoso");
-            this.$swal({
-              title: "Registrada",
-              text: "Orden registrada con exito, espera la confirmacion de uno de nuestros administradores",
-              icon: "success",
-            });
-            this.closeModal();
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      }
+
+      localStorage.setItem(
+        "orderDetails",
+        JSON.stringify({
+          orderDate: this.form.orderDate,
+          orderPlace: this.form.orderPlace,
+          orderTime: this.form.orderTime,
+          packageIds: this.form.packageIds,
+        })
+      );
+
+      let formData = new FormData();
+      formData.append("data", JSON.stringify(paymentData));
+
+      console.log("wtf");
+
+      this.$http
+        .post("/api/payments/create-checkout-session", formData)
+        .then((response) => {
+          window.location.href = response.data.url;
+        })
+        .catch((error) => {
+          console.error("Error al iniciar la sesión de pago:", error);
+        });
     },
     closeModal() {
       this.$root.$emit("bv::hide::modal", "modal-1");
@@ -121,8 +126,11 @@ export default {
     },
   },
   mounted() {
-    this.form.packageIds[0] = this.packageId;
+    console.log(this.aPackage);
+    this.form.packageIds[0] = Number(this.aPackage.packageId);
     console.log(this.form);
+
+    localStorage.removeItem("orderDetails");
   },
 };
 </script>

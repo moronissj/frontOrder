@@ -14,142 +14,144 @@
           <div class="card info-card">
             <div class="card-body">
               <h1 class="info-title">Registro</h1>
-              <b-form @submit.prevent="sendPostCreateAdmin">
-                <b-form-group
-                  id="input-group-1"
-                  class="b-group"
-                  label="Nombre:"
-                  label-for="input-1"
-                >
-                  <ValidationProvider rules="required" v-slot="{ errors }">
-                    <b-form-input
-                      id="input-1"
-                      type="text"
-                      v-model="form.userName"
-                      :class="{ invalid: errors[0] }"
-                    ></b-form-input>
-                    <span class="errors">{{ errors[0] }}</span>
-                  </ValidationProvider>
-                </b-form-group>
-
-                <b-form-group
-                  id="input-group-2"
-                  class="b-group"
-                  label="Apellido paterno:"
-                  label-for="input-2"
-                >
-                  <ValidationProvider rules="required" v-slot="{ errors }">
-                    <b-form-input
-                      id="input-2"
-                      v-model="form.userFirstLastName"
-                      type="text"
-                      :class="{ invalid: errors[0] }"
-                    ></b-form-input>
-                    <span class="errors">{{ errors[0] }}</span>
-                  </ValidationProvider>
-                </b-form-group>
-
-                <b-form-group
-                  id="input-group-3"
-                  class="b-group"
-                  label="Apellido paterno:"
-                  label-for="input-3"
-                >
-                  <ValidationProvider rules="required" v-slot="{ errors }">
-                    <b-form-input
-                      id="input-3"
-                      v-model="form.userSecondLastName"
-                      type="text"
-                      :class="{ invalid: errors[0] }"
-                    ></b-form-input>
-                    <span class="errors">{{ errors[0] }}</span>
-                  </ValidationProvider>
-                </b-form-group>
-
-                <b-form-group
-                  id="input-group-4"
-                  class="b-group"
-                  label="Celular:"
-                  label-for="input-4"
-                >
-                  <ValidationProvider
-                    rules="required|phone"
-                    v-slot="{ errors }"
+              <ValidationObserver v-slot="{ handleSubmit }">
+                <b-form @submit.prevent="handleSubmit(sendPostCreateAdmin)">
+                  <b-form-group
+                    id="input-group-1"
+                    class="b-group"
+                    label="Nombre:"
+                    label-for="input-1"
                   >
-                    <b-form-input
-                      id="input-4"
-                      v-model="form.userCellphone"
-                      type="tel"
-                      :class="{ invalid: errors[0] }"
-                    ></b-form-input>
-                    <span class="errors">{{ errors[0] }}</span>
-                  </ValidationProvider>
-                </b-form-group>
+                    <ValidationProvider rules="required" v-slot="{ errors }">
+                      <b-form-input
+                        id="input-1"
+                        type="text"
+                        v-model="form.userName"
+                        :class="{ invalid: errors[0] }"
+                      ></b-form-input>
+                      <span class="errors">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                  </b-form-group>
 
-                <b-form-group
-                  id="input-group-5"
-                  class="b-group"
-                  label="Correo Electronico:"
-                  label-for="input-5"
-                >
-                  <ValidationProvider
-                    rules="required|email"
-                    v-slot="{ errors }"
+                  <b-form-group
+                    id="input-group-2"
+                    class="b-group"
+                    label="Apellido paterno:"
+                    label-for="input-2"
                   >
-                    <b-form-input
-                      id="input-5"
-                      v-model="form.userEmail"
-                      type="email"
-                      :class="{ invalid: errors[0] }"
-                    ></b-form-input>
-                    <span class="errors">{{ errors[0] }}</span>
-                  </ValidationProvider>
-                </b-form-group>
+                    <ValidationProvider rules="required" v-slot="{ errors }">
+                      <b-form-input
+                        id="input-2"
+                        v-model="form.userFirstLastName"
+                        type="text"
+                        :class="{ invalid: errors[0] }"
+                      ></b-form-input>
+                      <span class="errors">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                  </b-form-group>
 
-                <b-form-group
-                  id="input-group-6"
-                  class="b-group"
-                  label="Contraseña:"
-                  label-for="input-6"
-                >
-                  <ValidationProvider
-                    rules="required|password"
-                    v-slot="{ errors }"
+                  <b-form-group
+                    id="input-group-3"
+                    class="b-group"
+                    label="Apellido paterno:"
+                    label-for="input-3"
                   >
-                    <b-form-input
-                      id="input-6"
-                      v-model="form.userPassword"
-                      type="password"
-                      :class="{ invalid: errors[0] }"
-                    ></b-form-input>
-                    <span class="errors">{{ errors[0] }}</span>
-                  </ValidationProvider>
-                </b-form-group>
+                    <ValidationProvider rules="required" v-slot="{ errors }">
+                      <b-form-input
+                        id="input-3"
+                        v-model="form.userSecondLastName"
+                        type="text"
+                        :class="{ invalid: errors[0] }"
+                      ></b-form-input>
+                      <span class="errors">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                  </b-form-group>
 
-                <b-form-group
-                  id="input-group-8"
-                  label="Foto de perfil:"
-                  label-for="input-8"
-                >
-                  <ValidationProvider
-                    rules="required|ext:png"
-                    v-slot="{ errors }"
+                  <b-form-group
+                    id="input-group-4"
+                    class="b-group"
+                    label="Celular:"
+                    label-for="input-4"
                   >
-                    <b-form-file
-                      id="input-8"
-                      v-model="form.userProfilePic"
-                      accept="image/*"
-                      @change="handleFiles"
-                      placeholder="Seleccione una imagen"
-                      :class="{ invalid: errors[0] }"
-                    ></b-form-file>
-                    <span class="errors">{{ errors[0] }}</span>
-                  </ValidationProvider>
-                </b-form-group>
+                    <ValidationProvider
+                      rules="required|phone"
+                      v-slot="{ errors }"
+                    >
+                      <b-form-input
+                        id="input-4"
+                        v-model="form.userCellphone"
+                        type="tel"
+                        :class="{ invalid: errors[0] }"
+                      ></b-form-input>
+                      <span class="errors">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                  </b-form-group>
 
-                <br />
-                <b-button type="submit" variant="primary">Ingresar</b-button>
-              </b-form>
+                  <b-form-group
+                    id="input-group-5"
+                    class="b-group"
+                    label="Correo Electronico:"
+                    label-for="input-5"
+                  >
+                    <ValidationProvider
+                      rules="required|email"
+                      v-slot="{ errors }"
+                    >
+                      <b-form-input
+                        id="input-5"
+                        v-model="form.userEmail"
+                        type="email"
+                        :class="{ invalid: errors[0] }"
+                      ></b-form-input>
+                      <span class="errors">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                  </b-form-group>
+
+                  <b-form-group
+                    id="input-group-6"
+                    class="b-group"
+                    label="Contraseña:"
+                    label-for="input-6"
+                  >
+                    <ValidationProvider
+                      rules="required|password"
+                      v-slot="{ errors }"
+                    >
+                      <b-form-input
+                        id="input-6"
+                        v-model="form.userPassword"
+                        type="password"
+                        :class="{ invalid: errors[0] }"
+                      ></b-form-input>
+                      <span class="errors">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                  </b-form-group>
+
+                  <b-form-group
+                    id="input-group-8"
+                    label="Foto de perfil:"
+                    label-for="input-8"
+                  >
+                    <ValidationProvider
+                      rules="required|ext:png,jpg"
+                      v-slot="{ errors }"
+                    >
+                      <b-form-file
+                        id="input-8"
+                        v-model="form.userProfilePic"
+                        accept="image/*"
+                        @change="handleFiles"
+                        placeholder="Seleccione una imagen"
+                        :class="{ invalid: errors[0] }"
+                      ></b-form-file>
+                      <span class="errors">{{ errors[0] }}</span>
+                    </ValidationProvider>
+                  </b-form-group>
+
+                  <br />
+                  <b-button type="submit" variant="primary">Ingresar</b-button>
+                </b-form>
+              </ValidationObserver>
             </div>
           </div>
         </div>
@@ -160,21 +162,20 @@
 
 <script>
 import NavBar from "./NavBar.vue";
-import "friendly-challenge/widget";
-
-import { extend, ValidationProvider } from "vee-validate";
-import { required, min, ext } from "vee-validate/dist/rules";
+import { useSecret } from "@/stores/key";
+import { extend } from "vee-validate";
+import { required, ext } from "vee-validate/dist/rules";
 
 extend("required", {
   ...required,
   message: "Este campo es requerido",
 });
 
-//Esta regla valida la extension de la imagen
 extend("ext", {
   ...ext,
-  message: "La imagen debe ser un png",
+  message: "La imagen debe ser un png o un jpg",
 });
+
 extend("email", {
   validate: (value) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
@@ -212,10 +213,11 @@ export default {
   name: "RegisterClient",
   components: {
     NavBar,
-    ValidationProvider,
   },
   data() {
     return {
+      key: "",
+      backErrors: [],
       form: {
         userName: "",
         userFirstLastName: "",
@@ -232,12 +234,28 @@ export default {
       this.$router.push("/token-confirmation");
     },
     sendPostCreateAdmin() {
+      const serializedData = JSON.stringify({
+        userName: this.form.userName,
+        userFirstLastName: this.form.userFirstLastName,
+        userSecondLastName: this.form.userSecondLastName,
+        userEmail: this.form.userEmail,
+        userPassword: this.form.userPassword,
+        userCellphone: this.form.userCellphone,
+      });
+
+      const encryptedData = this.$encryptionService.encryptData(
+        serializedData,
+        this.key
+      );
+
+      let formData = new FormData();
+      formData.append("data", encryptedData);
+      if (this.form.userProfilePic) {
+        formData.append("userProfilePic", this.form.userProfilePic);
+      }
+
       this.$http
-        .post("/api/accounts/create-common", this.form, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
+        .post("/api/accounts/create-common", formData)
         .then((response) => {
           this.$emit("registroExitoso");
           this.$swal({
@@ -248,12 +266,42 @@ export default {
           this.goToToken();
         })
         .catch((error) => {
-          console.log(error);
+          if (error.response.status === 409) {
+            const message = error.response.data.message;
+            this.$swal({
+              title: "Opps!",
+              text: message,
+              icon: "warning",
+            });
+          } else if (error.response.status === 420) {
+            const message = error.response.data.message;
+            this.$swal({
+              title: "Opps!",
+              text: message,
+              icon: "warning",
+            });
+          } else if (error.response.status === 400) {
+            error.response.data.forEach((element) => {
+              this.backErrors.push(element);
+            });
+            this.$swal({
+              title: "Problema con la información",
+              text: "Verifique que todos los campos esten llenos y que hayan cumplido con las reglas mostradas",
+              icon: "warning",
+              confirmButtonText: "Ok",
+            });
+          } else {
+            console.error("Error al crear el administrador:", error);
+          }
         });
     },
     handleFiles(event) {
-      this.form.userProfilePic = event.target.files[0];
+      const file = event.target.files[0];
+      this.form.userProfilePic = file;
     },
+  },
+  mounted() {
+    this.key = useSecret();
   },
 };
 </script>

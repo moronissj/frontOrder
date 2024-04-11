@@ -2,7 +2,7 @@
   <div>
     <NavbarClient />
     <div class="container">
-      <div class="row">
+      <div class="row" style="margin-top: 50px">
         <div class="col-6">
           <h1>{{ aPackage.packageName }}</h1>
           <p>Descripción: {{ aPackage.packageDescription }}</p>
@@ -15,7 +15,7 @@
           <br />
           <MakeOrderModal
             v-if="aPackage.packageId"
-            :packageId="aPackage.packageId"
+            :aPackage="aPackage"
           ></MakeOrderModal>
         </div>
         <div class="col-6">
@@ -80,7 +80,7 @@ export default {
         .then((response) => {
           this.aPackage = response.data;
           this.images = [];
-          this.service = this.aPackage.category.serviceName;
+          this.service = this.aPackage.categoryName;
           if (response.data.images && response.data.images.length > 0) {
             this.images = response.data.images.map((image) => image.imageUrl);
           }
