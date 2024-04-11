@@ -107,9 +107,6 @@
                 <b-button class="table-button" variant="warning" size="sm">
                   <b-icon icon="circle" scale=".7"></b-icon
                 ></b-button>
-                <b-button class="table-button" variant="secondary" size="sm"
-                  ><b-icon icon="box" scale="1"></b-icon
-                ></b-button>
 
                 <b-button
                   draggable="true"
@@ -165,7 +162,7 @@
                     align-items: center;
                   "
                 >
-                  <div>
+                  <div class="info-card">
                     <div
                       v-for="(value, key) in processedDetails[row.index]"
                       :key="key"
@@ -192,7 +189,7 @@
                     align-items: center;
                   "
                 >
-                  <div>
+                  <div class="info-card">
                     <div
                       v-for="(value, key) in processedDetails[row.index]"
                       :key="key"
@@ -377,6 +374,7 @@ export default {
                 },
               })
               .then((response) => {
+                console.log(response);
                 this.$swal({
                   title: "Eliminado",
                   text: "El servicio ha sido eliminado con exito",
@@ -385,7 +383,26 @@ export default {
                 this.fetchServices();
               })
               .catch((error) => {
-                console.error(error);
+                console.log(error);
+                if (error.response.data.status === 409) {
+                  this.$swal({
+                    title: "No se puede eliminar",
+                    text: error.response.data.message,
+                    icon: "error",
+                  });
+                } else if (error.response.data.status === 400) {
+                  this.$swal({
+                    title: "No se puede eliminar",
+                    text: error.response.data.message,
+                    icon: "error",
+                  });
+                } else {
+                  this.$swal({
+                    title: "Error al eliminar",
+                    text: "Ocurrio un error al eliminar el servicio",
+                    icon: "error",
+                  });
+                }
               });
           }
         }
@@ -486,11 +503,12 @@ export default {
 }
 
 .table-container {
-  max-height: 400px;
+  height: auto;
   border: none;
   border-radius: 10px;
   border: 1px solid black;
   overflow: auto;
+  margin-bottom: 50px;
 }
 
 .outter-pagination-container {
@@ -515,5 +533,13 @@ export default {
 
 ul li {
   list-style: none;
+}
+
+.info-card {
+  background-color: rgb(221, 221, 221);
+  color: black;
+  padding: 20px;
+  font-size: 1.1rem;
+  border-radius: 20px;
 }
 </style>

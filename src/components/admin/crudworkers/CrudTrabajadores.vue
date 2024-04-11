@@ -110,10 +110,11 @@
                   variant="light"
                   size="sm"
                   @click="goToConfirmWorkerAccount(row.item.accountStatus)"
+                  :disabled="row.item.accountStatus === 'Confirmada'"
                   :style="{
-                    color:
+                    backgroundColor:
                       row.item.accountStatus === 'Confirmada'
-                        ? 'green'
+                        ? '#15C151'
                         : row.item.accountStatus === 'Sin confirmar'
                         ? 'red'
                         : '',
@@ -176,7 +177,7 @@
                     align-items: center;
                   "
                 >
-                  <div>
+                  <div class="info-card">
                     <div
                       v-for="(value, key) in processedDetails[row.index]"
                       :key="key"
@@ -206,7 +207,7 @@
                     align-items: center;
                   "
                 >
-                  <div>
+                  <div class="info-card">
                     <div
                       v-for="(value, key) in processedDetails[row.index]"
                       :key="key"
@@ -512,11 +513,12 @@ export default {
 }
 
 .table-container {
-  max-height: 400px;
+  height: auto;
   border: none;
   border-radius: 10px;
   border: 1px solid black;
   overflow: auto;
+  margin-bottom: 50px;
 }
 
 .outter-pagination-container {
@@ -541,5 +543,13 @@ export default {
 
 ul li {
   list-style: none;
+}
+
+.info-card {
+  background-color: rgb(221, 221, 221);
+  color: black;
+  padding: 20px;
+  font-size: 1.1rem;
+  border-radius: 20px;
 }
 </style>

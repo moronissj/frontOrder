@@ -98,6 +98,8 @@
 import NavbarAdmin from "../NavbarAdmin.vue";
 import AdminEditProfileModal from "./AdminEditProfileModal.vue";
 import AdminPhotoModal from "./AdminPhotoModal.vue";
+import { useSecret } from "@/stores/key";
+
 export default {
   name: "AdminProfile",
   components: {
@@ -107,11 +109,15 @@ export default {
   },
   data() {
     return {
+      key: "",
       profileInfo: {},
     };
   },
   methods: {
     fetchUserProfileInfo() {
+      const secretStore = useSecret();
+      this.key = secretStore.secretKey;
+
       const token = localStorage.getItem("token");
       if (token) {
         this.$http
@@ -121,8 +127,8 @@ export default {
             },
           })
           .then((response) => {
-            this.profileInfo = response.data;
-            console.log(this.profileInfo.adminId);
+            console.log(response.data);
+            this.profileInfo = this.decryptAdminData(response.data);
           })
           .catch((error) => {
             console.error(
@@ -132,8 +138,32 @@ export default {
           });
       }
     },
+    decryptAdminData(item) {
+      const fieldsToDecrypt = [
+        "adminId",
+        "adminName",
+        "adminFirstLastName",
+        "adminSecondLastName",
+        "adminEmail",
+        "adminCellphone",
+        "adminSecurityNumber",
+        "adminSalary",
+        "adminProfilePicUrl",
+      ];
+
+      fieldsToDecrypt.forEach((field) => {
+        item[field] = this.$encryptionService.decryptData(
+          item[field],
+          this.key
+        );
+      });
+
+      return item;
+    },
   },
   mounted() {
+    const secretStore = useSecret();
+    this.key = secretStore.secretKey;
     this.fetchUserProfileInfo();
   },
 };

@@ -109,6 +109,8 @@
 </template>
 
 <script>
+import { useSecret } from "@/stores/key";
+
 export default {
   name: "AdminEditProfileModal",
   props: {
@@ -119,6 +121,7 @@ export default {
   },
   data() {
     return {
+      key: "",
       form: {
         adminName: "",
         adminFirstLastName: "",
@@ -136,27 +139,52 @@ export default {
       this.form.adminName = this.admin.adminName;
       this.form.adminFirstLastName = this.admin.adminFirstLastName;
       this.form.adminSecondLastName = this.admin.adminSecondLastName;
-      this.form.adminEmail = this.admin.adminEmail;
       this.form.adminCellphone = this.admin.adminCellphone;
       this.form.adminSecurityNumber = this.admin.adminSecurityNumber;
       this.form.adminSalary = this.admin.adminSalary;
-      this.form.adminRfc = this.admin.adminRfc;
     },
     sendPutEditAdmin() {
-      this.$http
-        .put(`/api/accounts/update-admin/info/${this.admin.adminId}`, this.form)
-        .then((response) => {
-          this.$emit("actualizacionExitosa");
-          this.$swal({
-            title: "Actualizacion exitosa",
-            text: "El Administrador ha sido actualizado con exito",
-            icon: "success",
+      this.key = useSecret();
+      const serializedData = JSON.stringify({
+        adminId: this.admin.adminId,
+        adminName: this.form.adminName,
+        adminFirstLastName: this.form.adminFirstLastName,
+        adminSecondLastName: this.form.adminSecondLastName,
+        adminCellphone: this.form.adminCellphone,
+        adminSecurityNumber: this.form.adminSecurityNumber,
+        adminSalary: this.form.adminSalary,
+      });
+
+      const encryptedData = this.$encryptionService.encryptData(
+        serializedData,
+        this.key
+      );
+
+      let formData = new FormData();
+      formData.append("data", encryptedData);
+
+      const token = localStorage.getItem("token");
+
+      if (token) {
+        this.$http
+          .put("/api/accounts/update-admin", formData, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then((response) => {
+            this.$emit("actualizacionExitosa");
+            this.$swal({
+              title: "Actualizacion exitosa",
+              text: "El Administrador ha sido actualizado con exito",
+              icon: "success",
+            });
+            this.closeModal();
+          })
+          .catch((error) => {
+            console.log(error);
           });
-          this.closeModal();
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      }
     },
     handleFiles(event) {
       const file = event.target.files[0];
@@ -179,6 +207,10 @@ export default {
       this.form.adminSalary = null;
       this.form.adminRfc = "";
     },
+  },
+  mounted() {
+    const secretStore = useSecret();
+    this.key = secretStore.secretKey;
   },
 };
 </script>
