@@ -56,7 +56,6 @@ export default {
         });
     },
     navigateToUserPackageInfo(packageId) {
-      console.log(packageId);
       this.$router.push({
         name: "user-package-info",
         query: { packageId },

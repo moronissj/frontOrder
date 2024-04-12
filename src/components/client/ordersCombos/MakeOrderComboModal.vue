@@ -61,9 +61,9 @@
 
 <script>
 export default {
-  name: "Modal",
+  name: "MakeOrderComboModal",
   props: {
-    aPackage: {
+    combo: {
       type: Object,
       required: true,
     },
@@ -74,7 +74,7 @@ export default {
         orderDate: null,
         orderPlace: "",
         orderTime: null,
-        packageIds: [],
+        combosIds: [],
       },
     };
   },
@@ -84,11 +84,11 @@ export default {
     },
     initiatePayment() {
       const paymentData = {
-        orderName: this.aPackage.packageName,
-        orderDescription: this.aPackage.packageDescription,
-        designatedHours: Number(this.aPackage.designatedHours),
-        workersNumber: Number(this.aPackage.workersNumber),
-        totalPrice: Number(this.aPackage.packagePrice),
+        orderName: this.combo.comboName,
+        orderDescription: this.combo.comboDescription,
+        designatedHours: Number(this.combo.comboDesignatedHours),
+        workersNumber: Number(this.combo.comboWorkersNumber),
+        totalPrice: Number(this.combo.comboPrice),
       };
 
       localStorage.setItem(
@@ -97,13 +97,13 @@ export default {
           orderDate: this.form.orderDate,
           orderPlace: this.form.orderPlace,
           orderTime: this.form.orderTime,
-          packageIds: this.form.packageIds,
+          combosIds: this.form.combosIds,
         })
       );
 
       let formData = new FormData();
       formData.append("data", JSON.stringify(paymentData));
-
+      console.log(paymentData);
       this.$http
         .post("/api/payments/create-checkout-session", formData)
         .then((response) => {
@@ -128,8 +128,9 @@ export default {
     },
   },
   mounted() {
-    this.form.packageIds[0] = Number(this.aPackage.packageId);
+    this.form.combosIds[0] = Number(this.combo.comboId);
     localStorage.removeItem("orderDetails");
+    console.log(this.combo);
   },
 };
 </script>

@@ -28,6 +28,10 @@ import AdminConfirmAccount from "../components/admin/crudadmins/AdminConfirmAcco
 import WorkerConfirmAccount from "../components/admin/crudworkers/WorkerConfirmAccount.vue";
 import SuccessView from "../components/client/orders/SuccessView.vue";
 import CancelView from "../components/client/orders/CancelView.vue";
+import UserAllPackages from "../components/client/UserAllPackages.vue";
+import UserAllCombos from "../components/client/UserAllCombos.vue";
+import ComboInfo from "../components/client/ordersCombos/ComboInfo.vue";
+
 const routes = [
   {
     name: "home",
@@ -133,6 +137,18 @@ const routes = [
     meta: { role: "COMMON_USER" },
   },
   {
+    name: "user-packages",
+    path: "/user-packages",
+    component: UserAllPackages,
+    meta: { role: "COMMON_USER" },
+  },
+  {
+    name: "user-combos",
+    path: "/user-combos",
+    component: UserAllCombos,
+    meta: { role: "COMMON_USER" },
+  },
+  {
     name: "user-service-packages",
     path: "/user-service-packages",
     component: ServicePackages,
@@ -145,6 +161,19 @@ const routes = [
     meta: { role: "COMMON_USER" },
     beforeEnter: (to, from, next) => {
       if (!to.query.packageId) {
+        next({ path: "/not-found" });
+      } else {
+        next();
+      }
+    },
+  },
+  {
+    name: "user-combo-info",
+    path: "/user-combo-info",
+    component: ComboInfo,
+    meta: { role: "COMMON_USER" },
+    beforeEnter: (to, from, next) => {
+      if (!to.query.comboId) {
         next({ path: "/not-found" });
       } else {
         next();
