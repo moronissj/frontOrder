@@ -107,7 +107,7 @@
                   class="table-button status-button"
                   variant="light"
                   size="sm"
-                  @click="goToConfirmWorkerAccount(row.item.accountStatus)"
+                  @click="goToConfirmAdminAccount(row.item.accountStatus)"
                   :disabled="row.item.accountStatus === 'Confirmada'"
                   :style="{
                     backgroundColor:

@@ -11,16 +11,16 @@
         <b-collapse id="nav-collapse" is-nav>
           <b-navbar-nav>
             <b-nav-item href="/user-services">Servicios</b-nav-item>
-            <!-- <b-nav-item href="/user-packages">Paquetes</b-nav-item>
+            <b-nav-item href="/user-packages">Paquetes</b-nav-item>
             <b-nav-item href="/user-combos">Combos</b-nav-item>
-            <b-nav-item href="/user-orders">Mis pedidos</b-nav-item> -->
+            <b-nav-item href="/user-orders">Mis pedidos</b-nav-item>
           </b-navbar-nav>
           <b-navbar-nav>
             <b-nav-item-dropdown right>
               <template #button-content>
                 <em>Usuario</em>
               </template>
-              <b-dropdown-item href="/admin-profile">Perfil</b-dropdown-item>
+              <b-dropdown-item href="/user-profile">Perfil</b-dropdown-item>
               <b-dropdown-item @click="cerrarSesion"
                 >Cerrar Sesión</b-dropdown-item
               >

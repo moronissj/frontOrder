@@ -35,7 +35,10 @@
                 label-for="input-1"
                 class="input-label-container"
               >
-                <ValidationProvider rules="required" v-slot="{ errors }">
+                <ValidationProvider
+                  rules="required|valid-name-part"
+                  v-slot="{ errors }"
+                >
                   <b-form-input
                     id="input-1"
                     type="text"
@@ -54,7 +57,10 @@
                 label-for="input-2"
                 class="input-label-container"
               >
-                <ValidationProvider rules="required" v-slot="{ errors }">
+                <ValidationProvider
+                  rules="required|valid-name-part"
+                  v-slot="{ errors }"
+                >
                   <b-form-input
                     id="input-2"
                     type="text"
@@ -73,7 +79,10 @@
                 label-for="input-3"
                 class="input-label-container"
               >
-                <ValidationProvider rules="required" v-slot="{ errors }">
+                <ValidationProvider
+                  rules="required|valid-name-part"
+                  v-slot="{ errors }"
+                >
                   <b-form-input
                     id="input-3"
                     type="text"
@@ -122,6 +131,7 @@
                 </ValidationProvider>
               </b-form-group>
             </div>
+
             <div class="col col-sm-12 col-md-6">
               <b-form-group
                 id="input-group-6"
@@ -144,6 +154,7 @@
               </b-form-group>
             </div>
           </div>
+
           <div class="buttonsContainer">
             <b-button type="submit" class="register-btn" variant="primary"
               >Actualizar
@@ -161,7 +172,7 @@
 <script>
 import { useSecret } from "@/stores/key";
 import { extend } from "vee-validate";
-import { required } from "vee-validate/dist/rules";
+import { required, regex } from "vee-validate/dist/rules";
 
 extend("required", {
   ...required,
@@ -190,6 +201,15 @@ extend("max_value", {
   },
   message: "El salario no debe ser superior a {max}",
   params: ["max"],
+});
+
+extend("valid-name-part", {
+  ...regex,
+  message: "Este campo solo puede contener letras acentuadas y sin acentuar",
+  validate: (value) => {
+    const pattern = /^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s]*$/;
+    return pattern.test(value);
+  },
 });
 
 export default {
@@ -254,13 +274,16 @@ export default {
             this.$emit("actualizacionExitosa");
             this.$swal({
               title: "Actualizacion exitosa",
-              text: "El administrador ha sido actualizado con exito",
+              text: "El administrador ha sido actualizado con exito.",
               icon: "success",
             });
             this.closeModal();
           })
           .catch((error) => {
-            if (error.response.status === 419) {
+            if (
+              error.response.status === 419 ||
+              error.response.status === 409
+            ) {
               const message = error.response.data.message;
               this.$swal({
                 title: "Error",
@@ -268,7 +291,11 @@ export default {
                 icon: "error",
               });
             } else {
-              console.error("Error al actualizar el administrador:", error);
+              this.$swal({
+                title: "Error",
+                text: error,
+                icon: "error",
+              });
             }
           });
       }

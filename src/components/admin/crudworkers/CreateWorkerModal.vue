@@ -29,7 +29,10 @@
                 label="Nombre:"
                 label-for="input-1"
               >
-                <ValidationProvider rules="required" v-slot="{ errors }">
+                <ValidationProvider
+                  rules="required|valid-name-part"
+                  v-slot="{ errors }"
+                >
                   <b-form-input
                     id="input-1"
                     type="text"
@@ -47,7 +50,10 @@
                 label="Apellido Paterno:"
                 label-for="input-2"
               >
-                <ValidationProvider rules="required" v-slot="{ errors }">
+                <ValidationProvider
+                  rules="required|valid-name-part"
+                  v-slot="{ errors }"
+                >
                   <b-form-input
                     id="input-2"
                     type="text"
@@ -65,7 +71,10 @@
                 label="Apellido Materno:"
                 label-for="input-3"
               >
-                <ValidationProvider rules="required" v-slot="{ errors }">
+                <ValidationProvider
+                  rules="required|valid-name-part"
+                  v-slot="{ errors }"
+                >
                   <b-form-input
                     id="input-3"
                     type="text"
@@ -227,7 +236,7 @@
             class="input-label-container"
           >
             <ValidationProvider
-              rules="required|ext:jpg,png|size:10"
+              rules="required|ext:jpg,png|size:20"
               v-slot="{ errors }"
             >
               <b-form-file
@@ -289,6 +298,15 @@ extend("password", {
   },
   message:
     "La contraseña debe contener al menos 8 caracteres, incluyendo al menos una letra mayúscula, un número y no debe contener caracteres especiales.",
+});
+
+extend("valid-name-part", {
+  ...regex,
+  message: "Este campo solo puede contener letras acentuadas y sin acentuar",
+  validate: (value) => {
+    const pattern = /^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s]*$/;
+    return pattern.test(value);
+  },
 });
 
 extend("password-match", {

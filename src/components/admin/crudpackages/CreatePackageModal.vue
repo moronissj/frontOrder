@@ -27,7 +27,7 @@
             label-for="input-1"
             class="input-label-container"
           >
-            <ValidationProvider rules="required" v-slot="{ errors }">
+            <ValidationProvider rules="required|valid-text" v-slot="{ errors }">
               <b-form-input
                 id="input-1"
                 type="text"
@@ -44,7 +44,7 @@
             label-for="input-2"
             class="input-label-container"
           >
-            <ValidationProvider rules="required" v-slot="{ errors }">
+            <ValidationProvider rules="required|valid-text" v-slot="{ errors }">
               <b-form-textarea
                 id="input-2"
                 v-model="form.packageDescription"
@@ -61,7 +61,10 @@
             label-for="input-3"
             class="input-label-container"
           >
-            <ValidationProvider rules="required" v-slot="{ errors }">
+            <ValidationProvider
+              rules="required|positiveNumber"
+              v-slot="{ errors }"
+            >
               <b-form-input
                 id="input-3"
                 type="number"
@@ -78,7 +81,10 @@
             label-for="input-4"
             class="input-label-container"
           >
-            <ValidationProvider rules="required" v-slot="{ errors }">
+            <ValidationProvider
+              rules="required|positiveNumber"
+              v-slot="{ errors }"
+            >
               <b-form-input
                 id="input-4"
                 type="number"
@@ -95,7 +101,10 @@
             label-for="input-5"
             class="input-label-container"
           >
-            <ValidationProvider rules="required" v-slot="{ errors }">
+            <ValidationProvider
+              rules="required|positiveNumber"
+              v-slot="{ errors }"
+            >
               <b-form-input
                 id="input-5"
                 type="number"
@@ -133,7 +142,7 @@
             class="input-label-container"
           >
             <ValidationProvider
-              rules="required|ext:jpg,png"
+              rules="required|ext:jpg,png|totalSizeImages"
               v-slot="{ errors }"
             >
               <b-form-file
@@ -166,16 +175,56 @@
 <script>
 import { useSecret } from "@/stores/key";
 import { extend } from "vee-validate";
-import { required, ext } from "vee-validate/dist/rules";
+import { required, ext, numeric, regex } from "vee-validate/dist/rules";
 
 extend("required", {
   ...required,
   message: "Este campo es requerido",
 });
 
+extend("numeric", numeric);
+
+extend("positiveNumber", {
+  ...numeric,
+  message:
+    "El campo debe ser un número positivo mayor que cero y no puede contener caracteres especiales como e, +, -",
+  validate: (value) => {
+    if (!/^\d+$/.test(value)) {
+      return false;
+    }
+    const number = parseInt(value, 10);
+    return number > 0;
+  },
+});
+
+extend("valid-text", {
+  ...regex,
+  message:
+    "Este campo solo puede contener letras acentuadas, sin acentuar, puntos y comas",
+  validate: (value) => {
+    const pattern = /^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ.,\s]*$/;
+    return pattern.test(value);
+  },
+});
+
 extend("ext", {
   ...ext,
   message: "El archivo debe ser una imagen png o jpg",
+});
+
+extend("totalSizeImages", {
+  validate(files) {
+    if (!files.length) return true;
+
+    const totalSize = Array.from(files).reduce(
+      (total, file) => total + file.size,
+      0
+    );
+    const sizeLimit = 50 * 1024 * 1024;
+
+    return totalSize <= sizeLimit;
+  },
+  message: "El total de las imágenes no debe superar los 50 MB.",
 });
 
 export default {

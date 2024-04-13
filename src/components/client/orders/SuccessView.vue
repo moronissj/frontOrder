@@ -46,15 +46,25 @@ export default {
         const storedOrderDetails = localStorage.getItem("orderDetails");
         if (storedOrderDetails) {
           const orderDetails = JSON.parse(storedOrderDetails);
-          const token = localStorage.getItem("token");
-          const serializedData = JSON.stringify({
+          let payload = {
             orderDate: orderDetails.orderDate,
             orderPlace: orderDetails.orderPlace,
             orderTime: orderDetails.orderTime,
-            packagesIds: [orderDetails.packageIds[0]],
             sessionId: sessionId,
-          });
+          };
 
+          if (orderDetails.packageIds && orderDetails.packageIds.length > 0) {
+            payload.packagesIds = [orderDetails.packageIds[0]];
+          } else if (
+            orderDetails.combosIds &&
+            orderDetails.combosIds.length > 0
+          ) {
+            payload.combosIds = [orderDetails.combosIds[0]];
+          }
+
+          const serializedData = JSON.stringify(payload);
+
+          const token = localStorage.getItem("token");
           const encryptedData = this.$encryptionService.encryptData(
             serializedData,
             this.key

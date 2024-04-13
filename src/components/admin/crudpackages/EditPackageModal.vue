@@ -32,7 +32,7 @@
             label-for="input-1"
             class="input-label-container"
           >
-            <ValidationProvider rules="required" v-slot="{ errors }">
+            <ValidationProvider rules="required|valid-text" v-slot="{ errors }">
               <b-form-input
                 id="input-1"
                 type="text"
@@ -49,7 +49,7 @@
             label-for="input-2"
             class="input-label-container"
           >
-            <ValidationProvider rules="required" v-slot="{ errors }">
+            <ValidationProvider rules="required|valid-text" v-slot="{ errors }">
               <b-form-textarea
                 id="input-2"
                 v-model="form.packageDescription"
@@ -68,7 +68,10 @@
                 label-for="input-3"
                 class="input-label-container"
               >
-                <ValidationProvider rules="required" v-slot="{ errors }">
+                <ValidationProvider
+                  rules="required|positiveNumber"
+                  v-slot="{ errors }"
+                >
                   <b-form-input
                     id="input-3"
                     type="number"
@@ -79,6 +82,7 @@
                 </ValidationProvider>
               </b-form-group>
             </div>
+
             <div class="col col-sm-12 col-md-6">
               <b-form-group
                 id="input-group-4"
@@ -86,7 +90,10 @@
                 label-for="input-4"
                 class="input-label-container"
               >
-                <ValidationProvider rules="required" v-slot="{ errors }">
+                <ValidationProvider
+                  rules="required|positiveNumber"
+                  v-slot="{ errors }"
+                >
                   <b-form-input
                     id="input-4"
                     type="number"
@@ -104,7 +111,10 @@
                 label-for="input-5"
                 class="input-label-container"
               >
-                <ValidationProvider rules="required" v-slot="{ errors }">
+                <ValidationProvider
+                  rules="required|positiveNumber"
+                  v-slot="{ errors }"
+                >
                   <b-form-input
                     id="input-5"
                     type="number"
@@ -155,11 +165,36 @@
 <script>
 import { useSecret } from "@/stores/key";
 import { extend } from "vee-validate";
-import { required } from "vee-validate/dist/rules";
+import { required, numeric, regex } from "vee-validate/dist/rules";
 
 extend("required", {
   ...required,
   message: "Este campo es requerido",
+});
+
+extend("numeric", numeric);
+
+extend("positiveNumber", {
+  ...numeric,
+  message:
+    "El campo debe ser un número positivo mayor que cero y no puede contener caracteres especiales como e, +, -",
+  validate: (value) => {
+    if (!/^\d+$/.test(value)) {
+      return false;
+    }
+    const number = parseInt(value, 10);
+    return number > 0;
+  },
+});
+
+extend("valid-text", {
+  ...regex,
+  message:
+    "Este campo solo puede contener letras acentuadas, sin acentuar, puntos y comas",
+  validate: (value) => {
+    const pattern = /^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ.,\s]*$/;
+    return pattern.test(value);
+  },
 });
 
 export default {

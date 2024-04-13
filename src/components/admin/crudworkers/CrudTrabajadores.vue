@@ -405,7 +405,12 @@ export default {
                 this.fetchWorkers();
               })
               .catch((error) => {
-                console.error(error);
+                const message = error.response.data.message;
+                this.$swal({
+                  title: "No se puede eliminar",
+                  text: message,
+                  icon: "error",
+                });
               });
           }
         }

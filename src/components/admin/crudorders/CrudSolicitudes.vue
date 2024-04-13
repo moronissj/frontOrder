@@ -158,7 +158,7 @@ import AcceptOrderModal from "./AcceptOrderModal.vue";
 import { useSecret } from "@/stores/key";
 
 export default {
-  name: "CrudServicios",
+  name: "CrudSolicitudes",
   components: {
     NavbarAdmin,
     AcceptOrderModal,
@@ -209,6 +209,7 @@ export default {
           userCellphone: "Celular",
           commonUserId: "Clave del usuario",
           packageNames: "Paquete(s) solicitado(s)",
+          comboNames: "Combo solicitado",
           workerNames: "Trabajador(es) asignado(s)",
           orderTotalWorkers: "Total de trabajadores a asignar",
         };
@@ -290,11 +291,20 @@ export default {
           this.$encryptionService.decryptData(name, this.key)
         );
       }
+      if (item.comboNames) {
+        item.comboNames = item.comboNames.map((name) =>
+          this.$encryptionService.decryptData(name, this.key)
+        );
+      }
+
       if (item.packageNames && Array.isArray(item.packageNames)) {
         item.packageNames = item.packageNames.join(", ");
       }
       if (item.workerNames && Array.isArray(item.workerNames)) {
         item.workerNames = item.workerNames.join(", ");
+      }
+      if (item.comboNames && Array.isArray(item.comboNames)) {
+        item.comboNames = item.comboNames.join(", ");
       }
 
       if (typeof item.packageNames === "string") {
@@ -303,9 +313,14 @@ export default {
       if (typeof item.workerNames === "string") {
         item.workerNames = item.workerNames.replace(/^\[|\]$/g, "");
       }
+      if (typeof item.comboNames === "string") {
+        item.comboNames = item.comboNames.replace(/^\[|\]$/g, "");
+      }
+
       if (item.orderDate) {
         item.orderDate = this.formatDate(item.orderDate);
       }
+
       return item;
     },
     declineOrder(id) {
@@ -362,7 +377,7 @@ export default {
                 } else {
                   this.$swal({
                     title: "Error",
-                    text: `Ocurrio un error inesperado con estado: ${error.response.data.code}`,
+                    text: error.response.data.message,
                     icon: "error",
                   });
                 }
@@ -391,14 +406,11 @@ export default {
           const serializedData = JSON.stringify({
             orderId: id,
           });
-
           const encryptedData = this.$encryptionService.encryptData(
             serializedData,
             this.key
           );
-
           const token = localStorage.getItem("token");
-
           if (token) {
             this.$http
               .patch("/api/orders/complete", encryptedData, {
@@ -419,7 +431,7 @@ export default {
               .catch((error) => {
                 this.$swal({
                   title: "Error",
-                  text: `Ocurrio un error inesperado con estado: ${error.response.data.code}`,
+                  text: `${error.response.data.message}`,
                   icon: "error",
                 });
               });

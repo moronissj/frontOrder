@@ -107,7 +107,7 @@ export default {
               });
             } else if (error.response.data.code === 400) {
               this.$swal({
-                title: "Alto! hay un problema con los trabajadores",
+                title: "Alto! hay un problema",
                 text: error.response.data.message,
                 icon: "warning",
               });

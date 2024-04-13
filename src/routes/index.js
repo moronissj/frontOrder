@@ -18,7 +18,6 @@ import CrudPaquetes from "../components/admin/crudpackages/CrudPaquetes.vue";
 import CrudTrabajadores from "../components/admin/crudworkers/CrudTrabajadores.vue";
 import CrudCombos from "../components/admin/crudcombos/CrudCombos.vue";
 import CrudSolicitudes from "../components/admin/crudorders/CrudSolicitudes.vue";
-import HistorialOrdenes from "../components/client/HistorialOrdenes.vue";
 import SolicitudesWorker from "../components/worker/SolicitudesWorker.vue";
 import PackageInfo from "../components/client/orders/PackageInfo.vue";
 import VistaToken from "../components/VistaToken.vue";
@@ -28,6 +27,12 @@ import AdminConfirmAccount from "../components/admin/crudadmins/AdminConfirmAcco
 import WorkerConfirmAccount from "../components/admin/crudworkers/WorkerConfirmAccount.vue";
 import SuccessView from "../components/client/orders/SuccessView.vue";
 import CancelView from "../components/client/orders/CancelView.vue";
+import UserAllPackages from "../components/client/UserAllPackages.vue";
+import UserAllCombos from "../components/client/UserAllCombos.vue";
+import ComboInfo from "../components/client/ordersCombos/ComboInfo.vue";
+import ClientOrders from "../components/client/ClientOrders.vue";
+import WorkerProfile from "../components/worker/profileworker/WorkerProfile.vue";
+
 const routes = [
   {
     name: "home",
@@ -70,6 +75,12 @@ const routes = [
     name: "worker-home",
     path: "/worker-home",
     component: LandingWorker,
+    meta: { role: "WORKER" },
+  },
+  {
+    name: "worker-profile",
+    path: "/worker-profile",
+    component: WorkerProfile,
     meta: { role: "WORKER" },
   },
   {
@@ -133,10 +144,28 @@ const routes = [
     meta: { role: "COMMON_USER" },
   },
   {
+    name: "user-packages",
+    path: "/user-packages",
+    component: UserAllPackages,
+    meta: { role: "COMMON_USER" },
+  },
+  {
+    name: "user-combos",
+    path: "/user-combos",
+    component: UserAllCombos,
+    meta: { role: "COMMON_USER" },
+  },
+  {
     name: "user-service-packages",
     path: "/user-service-packages",
     component: ServicePackages,
     meta: { role: "COMMON_USER" },
+  },
+  {
+    name: "orders-list",
+    path: "/orders-list",
+    component: SolicitudesWorker,
+    meta: { role: "WORKER" },
   },
   {
     name: "user-package-info",
@@ -145,6 +174,19 @@ const routes = [
     meta: { role: "COMMON_USER" },
     beforeEnter: (to, from, next) => {
       if (!to.query.packageId) {
+        next({ path: "/not-found" });
+      } else {
+        next();
+      }
+    },
+  },
+  {
+    name: "user-combo-info",
+    path: "/user-combo-info",
+    component: ComboInfo,
+    meta: { role: "COMMON_USER" },
+    beforeEnter: (to, from, next) => {
+      if (!to.query.comboId) {
         next({ path: "/not-found" });
       } else {
         next();
@@ -162,6 +204,12 @@ const routes = [
         next("/");
       }
     },
+  },
+  {
+    name: "my-orders",
+    path: "/my-orders",
+    component: ClientOrders,
+    meta: { role: "COMMON_USER" },
   },
   {
     path: "/cancel",
