@@ -10,56 +10,85 @@
           X
         </b-button>
       </template>
-      <b-form @submit.prevent="onSubmit">
-        <b-form-group
-          id="input-group-1"
-          label="Direccion del evento:"
-          label-for="input-1"
-        >
-          <b-form-input
-            id="input-1"
-            type="text"
-            v-model="form.orderPlace"
-            required
-          ></b-form-input>
-        </b-form-group>
+      <ValidationObserver v-slot="{ handleSubmit }">
+        <b-form @submit.prevent="handleSubmit(onSubmit)">
+          <b-form-group
+            id="input-group-1"
+            label="Direccion del evento:"
+            label-for="input-1"
+          >
+            <ValidationProvider rules="required|valid-text" v-slot="{ errors }">
+              <b-form-input
+                id="input-1"
+                type="text"
+                v-model="form.orderPlace"
+                :class="{ invalid: errors[0] }"
+              ></b-form-input>
+              <span class="errors">{{ errors[0] }}</span>
+            </ValidationProvider>
+          </b-form-group>
 
-        <b-form-group
-          id="input-group-2"
-          label="Fecha de la orden:"
-          label-for="input-2"
-        >
-          <b-form-input
-            id="input-2"
-            type="date"
-            v-model="form.orderDate"
-            required
-          ></b-form-input>
-        </b-form-group>
+          <b-form-group
+            id="input-group-2"
+            label="Fecha de la orden:"
+            label-for="input-2"
+          >
+            <ValidationProvider rules="required|futureDate" v-slot="{ errors }">
+              <b-form-input
+                id="input-2"
+                type="date"
+                v-model="form.orderDate"
+                :class="{ invalid: errors[0] }"
+              ></b-form-input>
+              <span class="errors">{{ errors[0] }}</span>
+            </ValidationProvider>
+          </b-form-group>
 
-        <b-form-group
-          id="input-group-3"
-          label="Hora de comienzo:"
-          label-for="input-3"
-        >
-          <b-form-input
-            id="input-3"
-            type="time"
-            v-model="form.orderTime"
-            required
-          ></b-form-input>
-        </b-form-group>
-        <br />
-        <b-button type="submit" variant="primary">Registrar orden</b-button>
-        <button type="button" @click="closeModal" id="botonCancelar">
-          Cancelar
-        </button>
-      </b-form>
+          <b-form-group
+            id="input-group-3"
+            label="Hora de comienzo:"
+            label-for="input-3"
+          >
+            <ValidationProvider rules="required" v-slot="{ errors }">
+              <b-form-input
+                id="input-3"
+                type="time"
+                v-model="form.orderTime"
+                :class="{ invalid: errors[0] }"
+              ></b-form-input>
+              <span class="errors">{{ errors[0] }}</span>
+            </ValidationProvider>
+          </b-form-group>
+          <br />
+          <b-button type="submit" variant="primary">Registrar orden</b-button>
+          <button type="button" @click="closeModal" id="botonCancelar">
+            Cancelar
+          </button>
+        </b-form>
+      </ValidationObserver>
     </b-modal>
   </div>
 </template>
 
 <script>
+import { extend } from "vee-validate";
+import { required } from "vee-validate/dist/rules";
+
+extend("required", {
+  ...required,
+  message: "Este campo es requerido",
+});
+
+extend("futureDate", {
+  params: ["refDate"],
+  validate(value, { refDate }) {
+    const currentDate = refDate ? new Date(refDate) : new Date();
+    const inputDate = new Date(value);
+    return inputDate.setHours(0, 0, 0, 0) > currentDate.setHours(0, 0, 0, 0);
+  },
+  message: "La fecha debe ser mayor que la fecha actual.",
+});
+
 export default {
   name: "MakeOrderComboModal",
   props: {

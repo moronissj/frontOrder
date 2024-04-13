@@ -262,7 +262,6 @@ export default {
       this.currentPage = 1;
     },
     handleDragStart(e, item) {
-      console.log(item.comboId);
       e.dataTransfer.setData("text/plain", item.comboId);
     },
     deleteComboOnDrop(id) {
@@ -307,7 +306,7 @@ export default {
               })
               .catch((error) => {
                 console.log(error.response);
-                if (error.response.data.status === 409) {
+                if (error.response.data.status === 400) {
                   this.$swal({
                     title: "No se puede eliminar",
                     text: error.response.data.message,
