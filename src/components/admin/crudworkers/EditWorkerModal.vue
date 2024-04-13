@@ -34,7 +34,10 @@
                 label-for="input-1"
                 class="input-label-container"
               >
-                <ValidationProvider rules="required" v-slot="{ errors }">
+                <ValidationProvider
+                  rules="required|valid-name-part"
+                  v-slot="{ errors }"
+                >
                   <b-form-input
                     id="input-1"
                     type="text"
@@ -53,7 +56,10 @@
                 label-for="input-2"
                 class="input-label-container"
               >
-                <ValidationProvider rules="required" v-slot="{ errors }">
+                <ValidationProvider
+                  rules="required|valid-name-part"
+                  v-slot="{ errors }"
+                >
                   <b-form-input
                     id="input-2"
                     type="text"
@@ -71,7 +77,10 @@
                 label-for="input-3"
                 class="input-label-container"
               >
-                <ValidationProvider rules="required" v-slot="{ errors }">
+                <ValidationProvider
+                  rules="required|valid-name-part"
+                  v-slot="{ errors }"
+                >
                   <b-form-input
                     id="input-3"
                     type="text"
@@ -103,6 +112,7 @@
                 </ValidationProvider>
               </b-form-group>
             </div>
+
             <div class="col col-sm-12 col-md-6">
               <b-form-group
                 id="input-group-7"
@@ -178,7 +188,7 @@
 
 <script>
 import { extend } from "vee-validate";
-import { required, ext, email, regex } from "vee-validate/dist/rules";
+import { required, regex } from "vee-validate/dist/rules";
 import { useSecret } from "@/stores/key";
 
 extend("required", {
@@ -208,6 +218,15 @@ extend("max_value", {
   },
   message: "El salario no debe ser superior a {max}",
   params: ["max"],
+});
+
+extend("valid-name-part", {
+  ...regex,
+  message: "Este campo solo puede contener letras acentuadas y sin acentuar",
+  validate: (value) => {
+    const pattern = /^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s]*$/;
+    return pattern.test(value);
+  },
 });
 
 extend("rfc", {

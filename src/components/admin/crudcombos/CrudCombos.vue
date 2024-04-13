@@ -105,9 +105,6 @@
                 <b-button class="table-button" variant="warning" size="sm">
                   <b-icon icon="circle" scale=".7"></b-icon
                 ></b-button>
-                <b-button class="table-button" variant="secondary" size="sm"
-                  ><b-icon icon="box" scale="1"></b-icon
-                ></b-button>
 
                 <b-button
                   draggable="true"
@@ -309,7 +306,20 @@ export default {
                 this.fetchCombo();
               })
               .catch((error) => {
-                console.error(error);
+                console.log(error.response);
+                if (error.response.data.status === 409) {
+                  this.$swal({
+                    title: "No se puede eliminar",
+                    text: error.response.data.message,
+                    icon: "error",
+                  });
+                } else {
+                  this.$swal({
+                    title: "Error al eliminar",
+                    text: "Ocurrio un error al eliminar el paquete",
+                    icon: "error",
+                  });
+                }
               });
           }
         }

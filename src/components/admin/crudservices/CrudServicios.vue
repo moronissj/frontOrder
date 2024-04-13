@@ -172,7 +172,8 @@
                         v-if="
                           key !== 'Imagen' &&
                           key !== 'Descripción' &&
-                          key !== 'serviceImage'
+                          key !== 'serviceImage' &&
+                          key !== 'Estado'
                         "
                       >
                         <b>{{ key }}</b> : {{ value }}
@@ -201,7 +202,8 @@
                           key !== 'serviceImage' &&
                           key !== 'Número' &&
                           key !== 'Nombre del servicio' &&
-                          key !== 'Frase del servicio'
+                          key !== 'Frase del servicio' &&
+                          key !== 'Estado'
                         "
                       >
                         <b>{{ key }}</b> : {{ value }}
@@ -276,10 +278,14 @@ export default {
           sortDirection: "desc",
         },
         {
-          key: "isActive",
+          key: "serviceState",
           label: "Estado del servicio",
-          formatter: (value, key, item) => {
-            return value ? "En servicio" : "Bloqueado";
+          formatter: (value) => {
+            if (value == "true") {
+              return "Disponible";
+            } else {
+              return "No disponible";
+            }
           },
           sortable: true,
           sortByFormatted: true,
@@ -307,9 +313,10 @@ export default {
           serviceDescription: "Descripción",
           serviceQuote: "Frase del servicio",
           serviceId: "Número",
+          serviceState: "Estado",
         };
         Object.entries(item).forEach(([key, value]) => {
-          if (key !== "_showDetails" && key !== "serviceState") {
+          if (key !== "_showDetails") {
             const friendlyKey = keyMappings[key] || key;
             if (key === "serviceImgUrl") {
               processed["Imagen"] = value;
@@ -442,6 +449,7 @@ export default {
         "serviceDescription",
         "serviceQuote",
         "serviceImgUrl",
+        "serviceState",
       ];
       fieldsToDecrypt.forEach((field) => {
         item[field] = this.$encryptionService.decryptData(

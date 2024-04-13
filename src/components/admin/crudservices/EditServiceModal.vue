@@ -33,7 +33,7 @@
             label-for="input-1"
             class="input-label-container"
           >
-            <ValidationProvider rules="required" v-slot="{ errors }">
+            <ValidationProvider rules="required|valid-name" v-slot="{ errors }">
               <b-form-input
                 id="input-1"
                 type="text"
@@ -50,7 +50,10 @@
             label-for="input-2"
             class="input-label-container"
           >
-            <ValidationProvider rules="required|minLength" v-slot="{ errors }">
+            <ValidationProvider
+              rules="required|minLength|valid-text-entry"
+              v-slot="{ errors }"
+            >
               <b-form-textarea
                 id="input-2"
                 v-model="form.serviceDescription"
@@ -66,7 +69,10 @@
             label-for="input-3"
             class="input-label-container"
           >
-            <ValidationProvider rules="required" v-slot="{ errors }">
+            <ValidationProvider
+              rules="required|minLengthQuote|valid-text-entry"
+              v-slot="{ errors }"
+            >
               <b-form-input
                 id="input-3"
                 type="text"
@@ -94,7 +100,27 @@
 <script>
 import { useSecret } from "@/stores/key";
 import { extend } from "vee-validate";
-import { required, ext } from "vee-validate/dist/rules";
+import { required, regex } from "vee-validate/dist/rules";
+
+extend("valid-name", {
+  ...regex,
+  message:
+    "El campo nombre solo puede contener letras, puntos, comas, y caracteres acentuados",
+  validate: (value) => {
+    const pattern = /^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ.,\s]*$/;
+    return pattern.test(value);
+  },
+});
+
+extend("valid-text-entry", {
+  ...regex,
+  message:
+    "El campo descripción solo puede contener letras, puntos, comas, paréntesis, signos de exclamación, signos de interrogación y caracteres acentuados",
+  validate: (value) => {
+    const pattern = /^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ.,\s()!?]*$/;
+    return pattern.test(value);
+  },
+});
 
 extend("required", {
   ...required,

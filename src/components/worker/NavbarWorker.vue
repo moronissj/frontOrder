@@ -8,7 +8,7 @@
         <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
         <b-collapse id="nav-collapse" is-nav>
           <b-navbar-nav>
-            <b-nav-item href="/admin-services">Servicios</b-nav-item>
+            <b-nav-item href="/orders-list">Mis asignaciones</b-nav-item>
           </b-navbar-nav>
           <b-navbar-nav>
             <b-nav-item-dropdown right>

@@ -158,7 +158,7 @@ import AcceptOrderModal from "./AcceptOrderModal.vue";
 import { useSecret } from "@/stores/key";
 
 export default {
-  name: "CrudServicios",
+  name: "CrudSolicitudes",
   components: {
     NavbarAdmin,
     AcceptOrderModal,

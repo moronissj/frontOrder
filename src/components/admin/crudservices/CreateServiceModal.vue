@@ -28,7 +28,7 @@
             label-for="input-1"
             class="input-label-container"
           >
-            <ValidationProvider rules="required" v-slot="{ errors }">
+            <ValidationProvider rules="required|valid-name" v-slot="{ errors }">
               <b-form-input
                 id="input-1"
                 type="text"
@@ -45,7 +45,10 @@
             label-for="input-2"
             class="input-label-container"
           >
-            <ValidationProvider rules="required|minLength" v-slot="{ errors }">
+            <ValidationProvider
+              rules="required|minLength|valid-text-entry"
+              v-slot="{ errors }"
+            >
               <b-form-textarea
                 id="input-2"
                 v-model="form.serviceDescription"
@@ -63,7 +66,7 @@
             class="input-label-container"
           >
             <ValidationProvider
-              rules="required|minLengthQuote"
+              rules="required|minLengthQuote|valid-text-entry"
               v-slot="{ errors }"
             >
               <b-form-input
@@ -83,7 +86,7 @@
             class="input-label-container"
           >
             <ValidationProvider
-              rules="required|ext:jpg,png|size:15"
+              rules="required|ext:jpg,png|size:20"
               v-slot="{ errors }"
             >
               <b-form-file
@@ -122,7 +125,27 @@
 <script>
 import { useSecret } from "@/stores/key";
 import { extend } from "vee-validate";
-import { required, ext } from "vee-validate/dist/rules";
+import { required, ext, regex } from "vee-validate/dist/rules";
+
+extend("valid-name", {
+  ...regex,
+  message:
+    "El campo nombre solo puede contener letras, puntos, comas, y caracteres acentuados",
+  validate: (value) => {
+    const pattern = /^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ.,\s]*$/;
+    return pattern.test(value);
+  },
+});
+
+extend("valid-text-entry", {
+  ...regex,
+  message:
+    "El campo descripción solo puede contener letras, puntos, comas, paréntesis, signos de exclamación, signos de interrogación y caracteres acentuados",
+  validate: (value) => {
+    const pattern = /^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ.,\s()!?]*$/;
+    return pattern.test(value);
+  },
+});
 
 extend("required", {
   ...required,
@@ -225,17 +248,26 @@ export default {
                 icon: "warning",
               });
             } else if (error.response.status === 400) {
-              error.response.data.forEach((element) => {
-                this.backErrors.push(element);
-              });
               this.$swal({
                 title: "Problema con la información",
-                text: "Verifique que todos los campos esten llenos y que hayan cumplido con las reglas mostradas",
+                text: error.response.data,
                 icon: "warning",
                 confirmButtonText: "Ok",
               });
+            } else if (error.response.status === 413) {
+              const message = error.response.data.message;
+              this.$swal({
+                title: "Opps!",
+                text: `${message} de 20mb`,
+                icon: "warning",
+              });
             } else {
-              console.error("Error al crear el servicio:", error);
+              console.log(error);
+              this.$swal({
+                title: "Error",
+                text: error.response.status,
+                icon: "error",
+              });
             }
           });
       }

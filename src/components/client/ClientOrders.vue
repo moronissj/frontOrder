@@ -1,16 +1,11 @@
 <template>
   <div class="app">
-    <NavbarAdmin />
+    <NavbarClient />
     <div class="container">
       <div class="head">
         <div class="row">
           <div class="col">
-            <h1>PAQUETES</h1>
-          </div>
-          <div class="col" id="colButton">
-            <CreatePackageModal
-              @registroExitoso="fetchPackages"
-            ></CreatePackageModal>
+            <h1>Mir ordenes</h1>
           </div>
         </div>
       </div>
@@ -76,7 +71,7 @@
             stacked="md"
             fixed
             show-empty
-            id="packagesTable"
+            id="ordersTable"
             small
             @filtered="onFiltered"
             label-sort-asc="Click para ordenar ascendente"
@@ -98,23 +93,6 @@
                   @click="row.toggleDetails"
                 >
                   <b-icon icon="plus" scale="1.5"></b-icon>
-                </b-button>
-                <EditPackageModal
-                  :key="'modalEdicion_' + row.item.packageId"
-                  :aPackage="row.item"
-                  @actualizacionExitosa="fetchPackages"
-                ></EditPackageModal>
-                <b-button class="table-button" variant="warning" size="sm">
-                  <b-icon icon="circle" scale=".7"></b-icon
-                ></b-button>
-                <b-button
-                  draggable="true"
-                  @dragstart="handleDragStart($event, row.item)"
-                  class="table-button"
-                  variant="danger"
-                  size="sm"
-                >
-                  <b-icon icon="arrow-down-right" scale="1"></b-icon>
                 </b-button>
               </div>
             </template>
@@ -143,64 +121,38 @@
                 :per-page="perPage"
                 align="fill"
                 size="sm"
-                aria-controls="packagesTable"
+                aria-controls="ordersTable"
               ></b-pagination>
             </div>
           </div>
         </b-container>
-      </div>
-      <div
-        class="bin-container-outter"
-        style="width: 100%; display: flex; justify-content: end; margin: 30px 0"
-      >
-        <div
-          class="bin-container-inner"
-          @dragover.prevent
-          @drop="handleDropOnTrash"
-          style="
-            background: red;
-            width: 5%;
-            padding: 17px;
-            border-radius: 50%;
-            position: fixed;
-            right: 20px;
-            bottom: 20px;
-          "
-        >
-          <img src="../../../assets/Basurero.png" class="logo" alt="logo" />
-        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import NavbarAdmin from "../NavbarAdmin.vue";
-import CreatePackageModal from "./CreatePackageModal.vue";
-import EditPackageModal from "./EditPackageModal.vue";
+import NavbarClient from "./NavbarClient.vue";
 import { useSecret } from "@/stores/key";
 
 export default {
-  name: "CrudPaquetes",
+  name: "ClientOrders",
   components: {
-    NavbarAdmin,
-    CreatePackageModal,
-    EditPackageModal,
+    NavbarClient,
   },
   data() {
     return {
       items: [],
       fields: [
         {
-          key: "packageName",
-          label: "Nombre del Paquete",
+          key: "orderType",
+          label: "Tipo de orden",
           sortable: true,
           sortDirection: "desc",
         },
-
         {
-          key: "categoryName",
-          label: "Nombre del Servicio",
+          key: "orderState",
+          label: "Estado de la orden",
           sortable: true,
           sortDirection: "desc",
         },
@@ -218,17 +170,30 @@ export default {
       return this.items.map((item) => {
         const processed = {};
         const keyMappings = {
-          packageId: "Número",
-          packageName: "Nombre del Paquete",
-          packageDescription: "Descripcion del paquete",
-          packagePrice: "Precio del paquete",
-          designatedHours: "Horas designadas al paquete",
-          workersNumber: "Número de trabajadores",
-          categoryName: "Servicio al que pertenece",
-          categoryId: "Número del servicio",
+          orderId: "Clave de la orden",
+          orderDate: "La orden fue solicitada para el día",
+          orderPlace: "Lugar del pedido",
+          orderState: "Estado del pedido",
+          orderTime: "La orden fue solicitada para esta hora",
+          orderTotalPayment: "El total a pagar sería",
+          orderPaymentState: "Estado del cobro",
+          orderType: "Tipo de orden",
+          orderTotalHours: "Duración en horas de la orden",
+          packageNames: "Paquete(s) solicitado(s)",
+          comboNames: "Combo solicitado",
+          workerNames: "Trabajador(es) asignado(s)",
+          orderTotalWorkers: "Total de trabajadores a asignar",
         };
         Object.entries(item).forEach(([key, value]) => {
-          if (key !== "_showDetails" && key !== "packageState") {
+          if (
+            key !== "_showDetails" &&
+            key !== "userFirstLastName" &&
+            key !== "userSecondLastName" &&
+            key !== "userName" &&
+            key !== "userEmail" &&
+            key !== "userCellphone" &&
+            key !== "commonUserId"
+          ) {
             const friendlyKey = keyMappings[key] || key;
             processed[friendlyKey] = value;
           }
@@ -242,85 +207,21 @@ export default {
       this.totalRows = filteredItems.length;
       this.currentPage = 1;
     },
-    handleDragStart(e, item) {
-      console.log(item.packageId);
-      e.dataTransfer.setData("text/plain", item.packageId);
-    },
-    deletePackageOnDrop(id) {
-      this.key = useSecret();
-      this.$swal({
-        title: "¿Estas seguro?",
-        text: "No podras revertir este cambio",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        cancelButtonText: "cancelar",
-        confirmButtonText: "Si, eliminar",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          const serializedData = JSON.stringify({
-            packageId: id,
-          });
-          const encryptedData = this.$encryptionService.encryptData(
-            serializedData,
-            this.key
-          );
-          const token = localStorage.getItem("token");
-          if (token) {
-            this.$http
-              .delete("/api/packages/delete-package", {
-                data: encryptedData,
-                headers: {
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${token}`,
-                },
-              })
-              .then((response) => {
-                this.$swal({
-                  title: "Eliminado",
-                  text: "El paquete ha sido eliminado con exito",
-                  icon: "success",
-                });
-                this.fetchPackages();
-              })
-              .catch((error) => {
-                if (error.response.data.status === 400) {
-                  this.$swal({
-                    title: "No se puede eliminar",
-                    text: error.response.data.message,
-                    icon: "error",
-                  });
-                } else {
-                  this.$swal({
-                    title: "Error al eliminar",
-                    text: "Ocurrio un error al eliminar el paquete",
-                    icon: "error",
-                  });
-                }
-              });
-          }
-        }
-      });
-    },
-    handleDropOnTrash(e) {
-      const packageId = e.dataTransfer.getData("text/plain");
-      this.deletePackageOnDrop(packageId);
-    },
-    fetchPackages() {
+    fetchOrders() {
       const secretStore = useSecret();
       this.key = secretStore.secretKey;
       const token = localStorage.getItem("token");
       if (token) {
         this.$http
-          .get("/api/packages", {
+          .get("/api/orders/my-orders", {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           })
           .then((response) => {
+            console.log(response.data);
             this.items = response.data.map((item) =>
-              this.decryptPackageData(item)
+              this.decryptOrderData(item)
             );
             this.items = response.data;
             this.totalRows = this.items.length;
@@ -330,32 +231,87 @@ export default {
           });
       }
     },
-    decryptPackageData(item) {
+    decryptOrderData(item) {
       const fieldsToDecrypt = [
-        "packageId",
-        "packageName",
-        "packageDescription",
-        "packagePrice",
-        "packageState",
-        "designatedHours",
-        "workersNumber",
-        "categoryName",
-        "categoryId",
-        "categoryId",
+        "commonUserId",
+        "orderDate",
+        "orderId",
+        "orderPaymentState",
+        "orderPlace",
+        "orderState",
+        "orderTime",
+        "orderTotalHours",
+        "orderTotalPayment",
+        "orderType",
+        "userCellphone",
+        "userEmail",
+        "userFirstLastName",
+        "userName",
+        "userSecondLastName",
+        "orderTotalWorkers",
       ];
+
       fieldsToDecrypt.forEach((field) => {
-        item[field] = this.$encryptionService.decryptData(
-          item[field],
-          this.key
-        );
+        if (item[field]) {
+          item[field] = this.$encryptionService.decryptData(
+            item[field],
+            this.key
+          );
+        }
       });
+
+      if (item.packageNames) {
+        item.packageNames = item.packageNames.map((name) =>
+          this.$encryptionService.decryptData(name, this.key)
+        );
+      }
+      if (item.workerNames) {
+        item.workerNames = item.workerNames.map((name) =>
+          this.$encryptionService.decryptData(name, this.key)
+        );
+      }
+      if (item.comboNames) {
+        item.comboNames = item.comboNames.map((name) =>
+          this.$encryptionService.decryptData(name, this.key)
+        );
+      }
+
+      if (item.packageNames && Array.isArray(item.packageNames)) {
+        item.packageNames = item.packageNames.join(", ");
+      }
+      if (item.workerNames && Array.isArray(item.workerNames)) {
+        item.workerNames = item.workerNames.join(", ");
+      }
+      if (item.comboNames && Array.isArray(item.comboNames)) {
+        item.comboNames = item.comboNames.join(", ");
+      }
+
+      if (typeof item.packageNames === "string") {
+        item.packageNames = item.packageNames.replace(/^\[|\]$/g, "");
+      }
+      if (typeof item.workerNames === "string") {
+        item.workerNames = item.workerNames.replace(/^\[|\]$/g, "");
+      }
+      if (typeof item.comboNames === "string") {
+        item.comboNames = item.comboNames.replace(/^\[|\]$/g, "");
+      }
+
+      if (item.orderDate) {
+        item.orderDate = this.formatDate(item.orderDate);
+      }
+
       return item;
+    },
+    formatDate(dateString) {
+      const [year, month, day] = dateString.split("-");
+      return `${day}-${month}-${year}`;
     },
   },
   mounted() {
     const secretStore = useSecret();
     this.key = secretStore.secretKey;
-    this.fetchPackages();
+    this.totalRows = this.items.length;
+    this.fetchOrders();
   },
 };
 </script>

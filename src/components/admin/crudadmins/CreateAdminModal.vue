@@ -31,7 +31,10 @@
                 label="Nombre:"
                 label-for="input-1"
               >
-                <ValidationProvider rules="required" v-slot="{ errors }">
+                <ValidationProvider
+                  rules="required|valid-name-part"
+                  v-slot="{ errors }"
+                >
                   <b-form-input
                     id="input-1"
                     type="text"
@@ -49,7 +52,10 @@
                 class="input-label-container"
                 label-for="input-2"
               >
-                <ValidationProvider rules="required" v-slot="{ errors }">
+                <ValidationProvider
+                  rules="required|valid-name-part"
+                  v-slot="{ errors }"
+                >
                   <b-form-input
                     id="input-2"
                     type="text"
@@ -67,7 +73,10 @@
                 class="input-label-container"
                 label-for="input-3"
               >
-                <ValidationProvider rules="required" v-slot="{ errors }">
+                <ValidationProvider
+                  rules="required|valid-name-part"
+                  v-slot="{ errors }"
+                >
                   <b-form-input
                     id="input-3"
                     type="text"
@@ -216,7 +225,7 @@
             label-for="input-9"
           >
             <ValidationProvider
-              rules="required|ext:jpg,png|size:8"
+              rules="required|ext:jpg,png|size:20"
               v-slot="{ errors }"
             >
               <b-form-file
@@ -255,7 +264,7 @@
 <script>
 import { useSecret } from "@/stores/key";
 import { extend } from "vee-validate";
-import { required, ext, email } from "vee-validate/dist/rules";
+import { required, ext, email, regex } from "vee-validate/dist/rules";
 
 extend("required", {
   ...required,
@@ -295,6 +304,15 @@ extend("tel", {
   },
   message:
     "El teléfono debe ser numérico, comenzar con '777' o '52', y tener 10 dígitos.",
+});
+
+extend("valid-name-part", {
+  ...regex,
+  message: "Este campo solo puede contener letras acentuadas y sin acentuar",
+  validate: (value) => {
+    const pattern = /^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ\s]*$/;
+    return pattern.test(value);
+  },
 });
 
 extend("nss", {
@@ -380,7 +398,7 @@ export default {
             this.$emit("registroExitoso");
             this.$swal({
               title: "Creación exitosa",
-              text: "El Administrador ha sido agregado con éxito",
+              text: "El Administrador ha sido agregado con éxito.",
               icon: "success",
             });
             this.closeModal();
@@ -390,7 +408,7 @@ export default {
               const message = error.response.data.message;
               this.$swal({
                 title: "Opps!",
-                text: message,
+                text: `${message} es posible que el correo o NSS ya esten en uso, verifique la información.`,
                 icon: "warning",
               });
             } else if (error.response.status === 420) {
@@ -406,7 +424,7 @@ export default {
               });
               this.$swal({
                 title: "Problema con la información",
-                text: "Verifique que todos los campos esten llenos y que hayan cumplido con las reglas mostradas",
+                text: "Verifique que todos los campos esten llenos y que hayan cumplido con las reglas mostradas.",
                 icon: "warning",
                 confirmButtonText: "Ok",
               });
