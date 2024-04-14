@@ -8,8 +8,12 @@
         <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
         <b-collapse id="nav-collapse" is-nav style="justify-content: end">
           <b-navbar-nav>
+            <b-nav-item href="/reviews"
+              ><b-button style="width: 150px">Ver reseñas</b-button></b-nav-item
+            >
+
             <b-nav-item href="/login"
-              ><b-button class="banner-button"
+              ><b-button style="width: 180px"
                 >Iniciar Sesión</b-button
               ></b-nav-item
             >

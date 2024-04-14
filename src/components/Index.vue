@@ -2,7 +2,6 @@
 import NavbarLanding from "./NavbarLanding.vue";
 import Footer from "./Footer.vue";
 import Carousel from "./Carousel.vue";
-import Rating from "./Ratings.vue";
 </script>
 
 <template>
@@ -51,7 +50,6 @@ import Rating from "./Ratings.vue";
       <div class="servicios">
         <div>
           <h1 style="margin-bottom: 50px">Opiniones</h1>
-          <Rating></Rating>
         </div>
       </div>
     </div>

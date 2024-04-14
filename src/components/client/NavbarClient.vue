@@ -14,6 +14,7 @@
             <b-nav-item href="/user-packages">Paquetes</b-nav-item>
             <b-nav-item href="/user-combos">Combos</b-nav-item>
             <b-nav-item href="/my-orders">Mis pedidos</b-nav-item>
+            <b-nav-item href="/my-reviews">Reseñas</b-nav-item>
           </b-navbar-nav>
           <b-navbar-nav>
             <b-nav-item-dropdown right>

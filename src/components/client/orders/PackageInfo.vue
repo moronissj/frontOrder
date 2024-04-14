@@ -39,11 +39,6 @@
           </Fancybox>
         </div>
       </div>
-
-      <br />
-      <h1>RESEÑAS</h1>
-      <br />
-      <Rating />
     </div>
     <Footer />
   </div>
@@ -52,7 +47,6 @@
 <script>
 import Footer from "../../Footer.vue";
 import MakeOrderModal from "./MakeOrderModal.vue";
-import Rating from "../../Ratings.vue";
 import NavbarClient from "../NavbarClient.vue";
 import Fancybox from "../../Fancybox.vue";
 
@@ -61,7 +55,6 @@ export default {
   components: {
     Footer,
     MakeOrderModal,
-    Rating,
     NavbarClient,
     Fancybox,
   },

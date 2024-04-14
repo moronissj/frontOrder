@@ -2,7 +2,7 @@
   <div>
     <b-button
       v-b-modal="`acceptOrderModal_${id}`"
-      id="acceptOrderModal"
+      @click="clearFields"
       variant="success"
       class="table-button"
       ><b-icon icon="check2" scale="1.2"></b-icon
@@ -13,32 +13,48 @@
       hide-footer
     >
       <template #modal-header="{ close }">
-        <h5>Aceptacion de orden</h5>
-        <b-button size="sm" variant="outline-danger" @click="close()">
+        <h5 class="form-title">Aceptacion de orden</h5>
+        <b-button
+          class="button-close-form"
+          size="sm"
+          variant="outline-danger"
+          @click="close()"
+        >
           X
         </b-button>
       </template>
-      <p>
-        Antes de aceptar la orden porfavor selecciona los trabajadores a asignar
+      <p style="font-size: 1.1rem; margin-bottom: 0">
+        Antes de aceptar la orden porfavor selecciona los trabajadores a
+        asignar,
+        <span style="font-weight: 600">
+          para seleccionarlos manten presionada la tecla ctrl de tu teclado
+          mientras haces click sobre ellos</span
+        >
       </p>
+      <br />
       <b-form @submit.prevent="sendOrderConfirmation">
         <b-form-group
           id="input-group-1"
-          label="Trabajadores a asignar a la orden:"
+          label="Trabajadores:"
           label-for="input-1"
+          style="margin-bottom: 20px"
         >
           <b-form-select
             id="input-2"
             v-model="form.workerIds"
             :options="workerOptions"
             multiple
-            :select-size="15"
+            :select-size="10"
           ></b-form-select>
         </b-form-group>
 
         <div class="buttonsContainer">
-          <b-button type="submit" variant="primary">Confirmar Orden</b-button>
-          <b-button @click="closeModal" id="botonCancelar"> Cancelar </b-button>
+          <b-button type="submit" class="register-btn" variant="success"
+            >Registrar</b-button
+          >
+          <b-button @click="closeModal" class="close-btn" id="botonCancelar">
+            Cancelar
+          </b-button>
         </div>
       </b-form>
     </b-modal>
@@ -196,32 +212,18 @@ export default {
   width: 35%;
 }
 
-#botonEnviar {
-  background-color: rgb(51, 139, 240);
-  color: white;
+.form-title {
+  font-size: 1.5rem;
 }
 
-#botonCancelar {
-  background-color: rgb(240, 51, 51);
-  color: white;
-}
-
-#form {
-  width: 100%;
-  padding: 10px;
-}
-
-.fieldContainer {
-  width: 100%;
-  margin-bottom: 20px;
+.button-close-form {
+  width: 10%;
+  margin: 0;
+  margin-left: auto;
 }
 
 .labelContainer {
   margin-bottom: 10px;
-}
-
-.inputContainer {
-  width: 100%;
 }
 
 .table-button {
@@ -230,53 +232,5 @@ export default {
   border: 1px solid black;
   color: black;
   width: 100%;
-}
-
-.inputContainer input {
-  padding: 10px;
-  width: 100%;
-  border: 2px solid #ccc;
-  border-radius: 10px;
-  background-color: #f9f9f9;
-  color: #333;
-  outline: none;
-}
-
-.inputContainer input:focus {
-  border-color: #2b2b2b;
-}
-.inputContainer textarea {
-  padding: 10px;
-  width: 100%;
-  border: 2px solid #ccc;
-  border-radius: 10px;
-  background-color: #f9f9f9;
-  color: #333;
-  outline: none;
-}
-
-.inputContainer textarea:focus {
-  border-color: #2b2b2b;
-}
-
-.inputContainer select {
-  padding: 10px;
-  width: 100%;
-  border: 2px solid #ccc;
-  border-radius: 10px;
-  background-color: #f9f9f9;
-  color: #333;
-  outline: none;
-}
-
-.inputContainer select:focus {
-  border-color: #2b2b2b;
-}
-
-#acceptOrderModal {
-  width: 100%;
-  margin: 0;
-  font-size: 1rem;
-  font-weight: 600;
 }
 </style>
