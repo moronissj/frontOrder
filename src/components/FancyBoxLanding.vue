@@ -54,7 +54,6 @@ export default {
           image:
             "https://www.shutterstock.com/image-photo/chinese-fast-food-buffet-restaurant-600nw-650073913.jpg",
         },
-        // Agrega más buffets según sea necesario
       ],
     };
   },
@@ -74,7 +73,7 @@ export default {
 
 .header h1 {
   margin: 0;
-  font-size: 1.75rem; /* Tamaño de fuente ajustable */
+  font-size: 1.75rem;
 }
 
 .buffet-container {
@@ -88,23 +87,23 @@ export default {
 .buffet-list {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center; /* Centrar los elementos para mejor visualización */
+  justify-content: center;
 }
 
 .buffet-item {
-  flex: 1 0 300px; /* Básico para flexibilidad pero con un mínimo */
+  flex: 1 0 300px;
   margin: 10px;
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 5px;
   display: flex;
   flex-direction: column;
-  align-items: center; /* Centra el contenido de cada elemento */
+  align-items: center;
 }
 
 img {
-  max-width: 100%; /* Hace las imágenes responsivas */
-  height: auto; /* Mantiene la relación de aspecto */
+  max-width: 100%;
+  height: auto;
 }
 
 .price {
@@ -112,20 +111,19 @@ img {
   color: #ff7f0e;
 }
 
-/* Media queries para ajustes específicos en varios tamaños de pantalla */
 @media (max-width: 768px) {
   .buffet-item {
-    flex: 1 0 45%; /* Aumenta el tamaño en tablets para mostrar dos columnas */
+    flex: 1 0 45%;
   }
 }
 
 @media (max-width: 480px) {
   .buffet-item {
-    flex: 1 0 100%; /* Ocupa todo el ancho en dispositivos móviles */
+    flex: 1 0 100%;
   }
 
   .header h1 {
-    font-size: 1.5rem; /* Reduce el tamaño de fuente para adaptarse a pantallas más pequeñas */
+    font-size: 1.5rem;
   }
 }
 </style>

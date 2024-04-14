@@ -13,7 +13,7 @@
             <b-nav-item href="/user-services">Servicios</b-nav-item>
             <b-nav-item href="/user-packages">Paquetes</b-nav-item>
             <b-nav-item href="/user-combos">Combos</b-nav-item>
-            <b-nav-item href="/user-orders">Mis pedidos</b-nav-item>
+            <b-nav-item href="/my-orders">Mis pedidos</b-nav-item>
           </b-navbar-nav>
           <b-navbar-nav>
             <b-nav-item-dropdown right>
