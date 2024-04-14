@@ -14,7 +14,7 @@
             <b-form @submit.prevent="handleSubmit(onSubmit)">
               <b-form-group
                 id="input-group-1"
-                label="Usuario:"
+                label="Correo:"
                 label-for="input-1"
                 style="margin-bottom: 15px"
               >
