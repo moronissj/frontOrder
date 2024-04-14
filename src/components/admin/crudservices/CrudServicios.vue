@@ -381,7 +381,6 @@ export default {
                 },
               })
               .then((response) => {
-                console.log(response);
                 this.$swal({
                   title: "Eliminado",
                   text: "El servicio ha sido eliminado con exito",
@@ -390,7 +389,6 @@ export default {
                 this.fetchServices();
               })
               .catch((error) => {
-                console.log(error);
                 if (error.response.data.status === 409) {
                   this.$swal({
                     title: "No se puede eliminar",

@@ -33,6 +33,8 @@ import ComboInfo from "../components/client/ordersCombos/ComboInfo.vue";
 import WorkerProfile from "../components/worker/profileworker/WorkerProfile.vue";
 import UserProfile from "../components/client/profileuser/UserProfile.vue";
 import ClientOrders from "../components/client/orders/ClientOrders.vue";
+import SeeReviews from "../components/SeeReviews.vue";
+import MyReviews from "../components/client/MyReviews.vue";
 
 const routes = [
   {
@@ -44,6 +46,11 @@ const routes = [
     name: "signup",
     path: "/signup",
     component: RegisterClient,
+  },
+  {
+    name: "reviews",
+    path: "/reviews",
+    component: SeeReviews,
   },
   {
     name: "not-found",
@@ -64,6 +71,12 @@ const routes = [
     name: "client-home",
     path: "/client-home",
     component: LandingClient,
+    meta: { role: "COMMON_USER" },
+  },
+  {
+    name: "my-reviews",
+    path: "/my-reviews",
+    component: MyReviews,
     meta: { role: "COMMON_USER" },
   },
   {
@@ -238,6 +251,7 @@ router.beforeEach((to, from, next) => {
     "/unauthorized",
     "/token-confirmation",
     "/not-found",
+    "/reviews",
   ];
   const authRequired = !publicPages.includes(to.path);
   const loggedIn = localStorage.getItem("token");

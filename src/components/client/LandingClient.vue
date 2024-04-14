@@ -92,12 +92,10 @@
 <script>
 import NavbarClient from "./NavbarClient.vue";
 import Footer from "../Footer.vue";
-import Rating from "../Ratings.vue";
 export default {
   components: {
     NavbarClient,
     Footer,
-    Rating,
   },
   data() {
     return {};
