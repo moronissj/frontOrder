@@ -2,18 +2,18 @@
   <div>
     <b-button
       size="sm"
-      v-b-modal="`adminEditProfileModal_${admin.adminId}`"
+      v-b-modal="`userEditProfileModal_${user.commonUserId}`"
       @click="fillForm"
       variant="warning"
       >Editar</b-button
     >
     <b-modal
-      :id="`adminEditProfileModal_${admin.adminId}`"
-      title="Editar Administrador"
+      :id="`userEditProfileModal_${user.commonUserId}`"
+      title="Editar información del perfil"
       hide-footer
     >
       <template #modal-header="{ close }">
-        <h5 class="form-title">Editar Administrador</h5>
+        <h5 class="form-title">Editar Usuario</h5>
         <b-button
           size="sm"
           class="button-close-form"
@@ -24,14 +24,14 @@
         </b-button>
       </template>
       <ValidationObserver v-slot="{ handleSubmit }">
-        <b-form @submit.prevent="handleSubmit(sendPutEditAdmin)">
+        <b-form @submit.prevent="handleSubmit(sendPutEditUser)">
           <div class="row">
             <div class="col col-sm-12 col-md-6">
               <b-form-group
                 id="input-group-1"
-                class="input-label-container"
                 label="Nombre:"
                 label-for="input-1"
+                class="input-label-container"
               >
                 <ValidationProvider
                   rules="required|valid-name-part"
@@ -40,49 +40,7 @@
                   <b-form-input
                     id="input-1"
                     type="text"
-                    v-model="form.adminName"
-                    :class="{ invalid: errors[0] }"
-                  ></b-form-input>
-                  <span class="errors">{{ errors[0] }}</span>
-                </ValidationProvider>
-              </b-form-group>
-            </div>
-            <div class="col col-sm-12 col-md-6">
-              <b-form-group
-                id="input-group-2"
-                class="input-label-container"
-                label="Apellido Paterno:"
-                label-for="input-2"
-              >
-                <ValidationProvider
-                  rules="required|valid-name-part"
-                  v-slot="{ errors }"
-                >
-                  <b-form-input
-                    id="input-2"
-                    type="text"
-                    v-model="form.adminFirstLastName"
-                    :class="{ invalid: errors[0] }"
-                  ></b-form-input>
-                  <span class="errors">{{ errors[0] }}</span>
-                </ValidationProvider>
-              </b-form-group>
-            </div>
-            <div class="col col-sm-12 col-md-6">
-              <b-form-group
-                id="input-group-3"
-                class="input-label-container"
-                label="Apellido Materno:"
-                label-for="input-3"
-              >
-                <ValidationProvider
-                  rules="required|valid-name-part"
-                  v-slot="{ errors }"
-                >
-                  <b-form-input
-                    id="input-3"
-                    type="text"
-                    v-model="form.adminSecondLastName"
+                    v-model="form.userName"
                     :class="{ invalid: errors[0] }"
                   ></b-form-input>
                   <span class="errors">{{ errors[0] }}</span>
@@ -92,16 +50,58 @@
 
             <div class="col col-sm-12 col-md-6">
               <b-form-group
-                id="input-group-4"
+                id="input-group-2"
+                label="Apellido Paterno:"
+                label-for="input-2"
                 class="input-label-container"
-                label="Celular:"
-                label-for="input-4"
+              >
+                <ValidationProvider
+                  rules="required|valid-name-part"
+                  v-slot="{ errors }"
+                >
+                  <b-form-input
+                    id="input-2"
+                    type="text"
+                    v-model="form.userFirstLastName"
+                    :class="{ invalid: errors[0] }"
+                  ></b-form-input>
+                  <span class="errors">{{ errors[0] }}</span>
+                </ValidationProvider>
+              </b-form-group>
+            </div>
+            <div class="col col-sm-12 col-md-6">
+              <b-form-group
+                id="input-group-3"
+                label="Apellido Materno:"
+                label-for="input-3"
+                class="input-label-container"
+              >
+                <ValidationProvider
+                  rules="required|valid-name-part"
+                  v-slot="{ errors }"
+                >
+                  <b-form-input
+                    id="input-3"
+                    type="text"
+                    v-model="form.userSecondLastName"
+                    :class="{ invalid: errors[0] }"
+                  ></b-form-input>
+                  <span class="errors">{{ errors[0] }}</span>
+                </ValidationProvider>
+              </b-form-group>
+            </div>
+            <div class="col col-sm-12 col-md-6">
+              <b-form-group
+                id="input-group-6"
+                label="Teléfono del usuario:"
+                label-for="input-6"
+                class="input-label-container"
               >
                 <ValidationProvider rules="required|tel" v-slot="{ errors }">
                   <b-form-input
-                    id="input-4"
+                    id="input-6"
                     type="tel"
-                    v-model="form.adminCellphone"
+                    v-model="form.userCellphone"
                     :class="{ invalid: errors[0] }"
                   ></b-form-input>
                   <span class="errors">{{ errors[0] }}</span>
@@ -153,9 +153,9 @@ extend("valid-name-part", {
 });
 
 export default {
-  name: "AdminEditProfileModal",
+  name: "UserEditProfileModal",
   props: {
-    admin: {
+    user: {
       type: Object,
       required: true,
     },
@@ -164,35 +164,28 @@ export default {
     return {
       key: "",
       form: {
-        adminName: "",
-        adminFirstLastName: "",
-        adminSecondLastName: "",
-        adminEmail: "",
-        adminCellphone: "",
-        adminSecurityNumber: null,
-        adminSalary: null,
+        userName: "",
+        userFirstLastName: "",
+        userSecondLastName: "",
+        userCellphone: "",
       },
     };
   },
   methods: {
     fillForm() {
-      this.form.adminName = this.admin.adminName;
-      this.form.adminFirstLastName = this.admin.adminFirstLastName;
-      this.form.adminSecondLastName = this.admin.adminSecondLastName;
-      this.form.adminCellphone = this.admin.adminCellphone;
-      this.form.adminSecurityNumber = this.admin.adminSecurityNumber;
-      this.form.adminSalary = this.admin.adminSalary;
+      this.form.userName = this.user.userName;
+      this.form.userFirstLastName = this.user.userFirstLastName;
+      this.form.userSecondLastName = this.user.userSecondLastName;
+      this.form.userCellphone = this.user.userCellphone;
     },
-    sendPutEditAdmin() {
+    sendPutEditUser() {
       this.key = useSecret();
       const serializedData = JSON.stringify({
-        adminId: this.admin.adminId,
-        adminName: this.form.adminName,
-        adminFirstLastName: this.form.adminFirstLastName,
-        adminSecondLastName: this.form.adminSecondLastName,
-        adminCellphone: this.form.adminCellphone,
-        adminSecurityNumber: this.form.adminSecurityNumber,
-        adminSalary: this.form.adminSalary,
+        commonUserId: this.user.commonUserId,
+        userName: this.form.userName,
+        userFirstLastName: this.form.userFirstLastName,
+        userSecondLastName: this.form.userSecondLastName,
+        userCellphone: this.form.userCellphone,
       });
 
       const encryptedData = this.$encryptionService.encryptData(
@@ -207,7 +200,7 @@ export default {
 
       if (token) {
         this.$http
-          .put("/api/accounts/update-admin", formData, {
+          .put("/api/accounts/update-user", formData, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -216,7 +209,7 @@ export default {
             this.$emit("actualizacionExitosa");
             this.$swal({
               title: "Actualizacion exitosa",
-              text: "El Administrador ha sido actualizado con exito",
+              text: "La información ha sido actualizado con exito",
               icon: "success",
             });
             this.closeModal();
@@ -229,19 +222,15 @@ export default {
     closeModal() {
       this.$root.$emit(
         "bv::hide::modal",
-        `adminEditProfileModal_${this.admin.adminId}`
+        `userEditProfileModal_${this.user.commonUserId}`
       );
       this.clearFields();
     },
     clearFields() {
-      this.form.adminName = "";
-      this.form.adminFirstLastName = "";
-      this.form.adminSecondLastName = "";
-      this.form.adminEmail = "";
-      this.form.adminCellphone = "";
-      this.form.adminSecurityNumber = null;
-      this.form.adminSalary = null;
-      this.form.adminRfc = "";
+      this.form.userName = "";
+      this.form.userFirstLastName = "";
+      this.form.userSecondLastName = "";
+      this.form.userCellphone = "";
     },
   },
   mounted() {

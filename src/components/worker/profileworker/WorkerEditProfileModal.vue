@@ -2,18 +2,18 @@
   <div>
     <b-button
       size="sm"
-      v-b-modal="`adminEditProfileModal_${admin.adminId}`"
+      v-b-modal="`workerEditProfileModal_${worker.workerId}`"
       @click="fillForm"
       variant="warning"
       >Editar</b-button
     >
     <b-modal
-      :id="`adminEditProfileModal_${admin.adminId}`"
-      title="Editar Administrador"
+      :id="`workerEditProfileModal_${worker.workerId}`"
+      title="Editar"
       hide-footer
     >
       <template #modal-header="{ close }">
-        <h5 class="form-title">Editar Administrador</h5>
+        <h5 class="form-title">Editar</h5>
         <b-button
           size="sm"
           class="button-close-form"
@@ -24,14 +24,14 @@
         </b-button>
       </template>
       <ValidationObserver v-slot="{ handleSubmit }">
-        <b-form @submit.prevent="handleSubmit(sendPutEditAdmin)">
+        <b-form @submit.prevent="handleSubmit(sendPutEditWorker)">
           <div class="row">
             <div class="col col-sm-12 col-md-6">
               <b-form-group
                 id="input-group-1"
-                class="input-label-container"
                 label="Nombre:"
                 label-for="input-1"
+                class="input-label-container"
               >
                 <ValidationProvider
                   rules="required|valid-name-part"
@@ -40,7 +40,7 @@
                   <b-form-input
                     id="input-1"
                     type="text"
-                    v-model="form.adminName"
+                    v-model="form.workerName"
                     :class="{ invalid: errors[0] }"
                   ></b-form-input>
                   <span class="errors">{{ errors[0] }}</span>
@@ -50,9 +50,9 @@
             <div class="col col-sm-12 col-md-6">
               <b-form-group
                 id="input-group-2"
-                class="input-label-container"
                 label="Apellido Paterno:"
                 label-for="input-2"
+                class="input-label-container"
               >
                 <ValidationProvider
                   rules="required|valid-name-part"
@@ -61,7 +61,7 @@
                   <b-form-input
                     id="input-2"
                     type="text"
-                    v-model="form.adminFirstLastName"
+                    v-model="form.workerFirstLastName"
                     :class="{ invalid: errors[0] }"
                   ></b-form-input>
                   <span class="errors">{{ errors[0] }}</span>
@@ -71,9 +71,9 @@
             <div class="col col-sm-12 col-md-6">
               <b-form-group
                 id="input-group-3"
-                class="input-label-container"
                 label="Apellido Materno:"
                 label-for="input-3"
+                class="input-label-container"
               >
                 <ValidationProvider
                   rules="required|valid-name-part"
@@ -82,26 +82,7 @@
                   <b-form-input
                     id="input-3"
                     type="text"
-                    v-model="form.adminSecondLastName"
-                    :class="{ invalid: errors[0] }"
-                  ></b-form-input>
-                  <span class="errors">{{ errors[0] }}</span>
-                </ValidationProvider>
-              </b-form-group>
-            </div>
-
-            <div class="col col-sm-12 col-md-6">
-              <b-form-group
-                id="input-group-4"
-                class="input-label-container"
-                label="Celular:"
-                label-for="input-4"
-              >
-                <ValidationProvider rules="required|tel" v-slot="{ errors }">
-                  <b-form-input
-                    id="input-4"
-                    type="tel"
-                    v-model="form.adminCellphone"
+                    v-model="form.workerSecondLastName"
                     :class="{ invalid: errors[0] }"
                   ></b-form-input>
                   <span class="errors">{{ errors[0] }}</span>
@@ -134,15 +115,6 @@ extend("required", {
   message: "Este campo es requerido",
 });
 
-extend("tel", {
-  validate: (value) => {
-    if (!/^\d{10}$/.test(value)) return false;
-    return value.startsWith("777") || value.startsWith("52");
-  },
-  message:
-    "El número telefónico debe ser numérico, comenzar con '777' o '52', y tener 10 dígitos.",
-});
-
 extend("valid-name-part", {
   ...regex,
   message: "Este campo solo puede contener letras acentuadas y sin acentuar",
@@ -153,9 +125,9 @@ extend("valid-name-part", {
 });
 
 export default {
-  name: "AdminEditProfileModal",
+  name: "WorkerEditProfileModal",
   props: {
-    admin: {
+    worker: {
       type: Object,
       required: true,
     },
@@ -164,35 +136,25 @@ export default {
     return {
       key: "",
       form: {
-        adminName: "",
-        adminFirstLastName: "",
-        adminSecondLastName: "",
-        adminEmail: "",
-        adminCellphone: "",
-        adminSecurityNumber: null,
-        adminSalary: null,
+        workerName: "",
+        workerFirstLastName: "",
+        workerSecondLastName: "",
       },
     };
   },
   methods: {
     fillForm() {
-      this.form.adminName = this.admin.adminName;
-      this.form.adminFirstLastName = this.admin.adminFirstLastName;
-      this.form.adminSecondLastName = this.admin.adminSecondLastName;
-      this.form.adminCellphone = this.admin.adminCellphone;
-      this.form.adminSecurityNumber = this.admin.adminSecurityNumber;
-      this.form.adminSalary = this.admin.adminSalary;
+      this.form.workerName = this.worker.workerName;
+      this.form.workerFirstLastName = this.worker.workerFirstLastName;
+      this.form.workerSecondLastName = this.worker.workerSecondLastName;
     },
-    sendPutEditAdmin() {
+    sendPutEditWorker() {
       this.key = useSecret();
       const serializedData = JSON.stringify({
-        adminId: this.admin.adminId,
-        adminName: this.form.adminName,
-        adminFirstLastName: this.form.adminFirstLastName,
-        adminSecondLastName: this.form.adminSecondLastName,
-        adminCellphone: this.form.adminCellphone,
-        adminSecurityNumber: this.form.adminSecurityNumber,
-        adminSalary: this.form.adminSalary,
+        workerId: this.worker.workerId,
+        workerName: this.form.workerName,
+        workerFirstLastName: this.form.workerFirstLastName,
+        workerSecondLastName: this.form.workerSecondLastName,
       });
 
       const encryptedData = this.$encryptionService.encryptData(
@@ -207,7 +169,7 @@ export default {
 
       if (token) {
         this.$http
-          .put("/api/accounts/update-admin", formData, {
+          .put("/api/accounts/update-worker", formData, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -216,7 +178,7 @@ export default {
             this.$emit("actualizacionExitosa");
             this.$swal({
               title: "Actualizacion exitosa",
-              text: "El Administrador ha sido actualizado con exito",
+              text: "La información ha sido actualizado con exito",
               icon: "success",
             });
             this.closeModal();
@@ -229,19 +191,14 @@ export default {
     closeModal() {
       this.$root.$emit(
         "bv::hide::modal",
-        `adminEditProfileModal_${this.admin.adminId}`
+        `workerEditProfileModal_${this.worker.workerId}`
       );
       this.clearFields();
     },
     clearFields() {
-      this.form.adminName = "";
-      this.form.adminFirstLastName = "";
-      this.form.adminSecondLastName = "";
-      this.form.adminEmail = "";
-      this.form.adminCellphone = "";
-      this.form.adminSecurityNumber = null;
-      this.form.adminSalary = null;
-      this.form.adminRfc = "";
+      this.form.workerName = "";
+      this.form.workerFirstLastName = "";
+      this.form.workerSecondLastName = "";
     },
   },
   mounted() {

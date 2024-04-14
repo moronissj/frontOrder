@@ -31,18 +31,20 @@
                   class="profile-image"
                 />
                 <div>
-                  <!-- <AdminPhotoModal
-                    :key="'modalEditPhoto_' + profileInfo.workerId"
-                    :admin="profileInfo"
-                    @photoUpdated="fetchUserProfileInfo"
-                    style="margin-bottom: 40px"
-                  /> -->
+                  <div>
+                    <WorkerPhotoModal
+                      :key="'modalEditPhoto_' + profileInfo.workerId"
+                      :worker="profileInfo"
+                      @photoUpdated="fetchUserProfileInfo"
+                      style="margin-bottom: 40px"
+                    />
+                  </div>
                 </div>
 
                 <h3 class="profile-name">
                   {{ profileInfo.workerName }}
                   {{ profileInfo.workerFirstLastName }}
-                  {{ profileInfo.workerSecurityNumber }}
+                  {{ profileInfo.workerSecondLastName }}
                 </h3>
                 <p class="profile-title">Trabajador</p>
               </div>
@@ -67,23 +69,16 @@
                 <p>
                   <strong>Teléfono:</strong> {{ profileInfo.workerCellphone }}
                 </p>
-                <!-- <p>
-                  <strong>NSS:</strong>
-                  {{ profileInfo.workerSecurityNumber }}
-                </p>
                 <p>
-                  <strong>Salario:</strong>
-                  {{ profileInfo.workerSalary }}
-                </p> -->
+                  <strong>Estado cuenta:</strong>
+                  {{ profileInfo.accountStatus }}
+                </p>
                 <div>
-                  <!-- <AdminEditProfileModal
-                    :key="'modalEdicion_' + profileInfo.adminId"
-                    :admin="profileInfo"
+                  <WorkerEditProfileModal
+                    :key="'modalEdicion_' + profileInfo.workerId"
+                    :worker="profileInfo"
                     @actualizacionExitosa="fetchUserProfileInfo"
-                  /> -->
-                  <!-- <b-button variant="danger" size="sm"
-                      >Eliminar cuenta</b-button
-                    > -->
+                  />
                 </div>
               </div>
             </div>
@@ -96,16 +91,16 @@
 
 <script>
 import NavbarWorker from "../NavbarWorker.vue";
-//   import AdminEditProfileModal from "./AdminEditProfileModal.vue";
-//   import AdminPhotoModal from "./AdminPhotoModal.vue";
+import WorkerEditProfileModal from "./WorkerEditProfileModal.vue";
+import WorkerPhotoModal from "./WorkerPhotoModal.vue";
 import { useSecret } from "@/stores/key";
 
 export default {
   name: "WorkerProfile",
   components: {
     NavbarWorker,
-    //   AdminEditProfileModal,
-    //   AdminPhotoModal,
+    WorkerEditProfileModal,
+    WorkerPhotoModal,
   },
   data() {
     return {
@@ -127,8 +122,7 @@ export default {
             },
           })
           .then((response) => {
-            console.log(response.data);
-            this.profileInfo = response.data;
+            this.profileInfo = this.decryptWorkerData(response.data);
           })
           .catch((error) => {
             console.error(
@@ -138,28 +132,27 @@ export default {
           });
       }
     },
-    //   decryptAdminData(item) {
-    //     const fieldsToDecrypt = [
-    //       "adminId",
-    //       "adminName",
-    //       "adminFirstLastName",
-    //       "adminSecondLastName",
-    //       "adminEmail",
-    //       "adminCellphone",
-    //       "adminSecurityNumber",
-    //       "adminSalary",
-    //       "adminProfilePicUrl",
-    //     ];
+    decryptWorkerData(item) {
+      const fieldsToDecrypt = [
+        "workerId",
+        "workerName",
+        "workerFirstLastName",
+        "workerSecondLastName",
+        "workerEmail",
+        "workerCellphone",
+        "accountStatus",
+        "workerProfilePicUrl",
+      ];
 
-    //     fieldsToDecrypt.forEach((field) => {
-    //       item[field] = this.$encryptionService.decryptData(
-    //         item[field],
-    //         this.key
-    //       );
-    //     });
+      fieldsToDecrypt.forEach((field) => {
+        item[field] = this.$encryptionService.decryptData(
+          item[field],
+          this.key
+        );
+      });
 
-    //     return item;
-    //   },
+      return item;
+    },
   },
   mounted() {
     const secretStore = useSecret();

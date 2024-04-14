@@ -2,18 +2,18 @@
   <div>
     <b-button
       size="sm"
-      v-b-modal="`adminEditProfilePicModal_${admin.adminId}`"
+      v-b-modal="`userEditProfilePicModal_${user.commonUserId}`"
       variant="warning"
       @click="clearFields"
       >Editar</b-button
     >
     <b-modal
-      :id="`adminEditProfilePicModal_${admin.adminId}`"
-      title="Cambiar Foto Administrador"
+      :id="`userEditProfilePicModal_${user.commonUserId}`"
+      title="Cambiar Foto"
       hide-footer
     >
       <template #modal-header="{ close }">
-        <h5 class="form-title">Cambiar foto</h5>
+        <h5 class="form-title">Cambiar Foto</h5>
         <b-button
           size="sm"
           class="button-close-form"
@@ -24,7 +24,7 @@
         </b-button>
       </template>
       <ValidationObserver v-slot="{ handleSubmit }">
-        <b-form @submit.prevent="handleSubmit(sendPutEditProfilePicAdmin)">
+        <b-form @submit.prevent="handleSubmit(sendPutEditProfilePicUser)">
           <b-form-group
             id="input-group-1"
             label="Foto Nueva:"
@@ -95,9 +95,9 @@ extend("size", {
 });
 
 export default {
-  name: "AdminPhotoModal",
+  name: "UserPhotoModal",
   props: {
-    admin: {
+    user: {
       type: Object,
       required: true,
     },
@@ -111,11 +111,11 @@ export default {
     };
   },
   methods: {
-    sendPutEditProfilePicAdmin() {
+    sendPutEditProfilePicUser() {
       this.key = useSecret();
 
       const serializedData = JSON.stringify({
-        adminId: this.admin.adminId,
+        commonUserId: this.user.commonUserId,
       });
 
       const encryptedData = this.$encryptionService.encryptData(
@@ -134,7 +134,7 @@ export default {
 
       if (token) {
         this.$http
-          .post("/api/accounts/update-admin/profile-pic", formData, {
+          .post("/api/accounts/update-user/profile-pic", formData, {
             headers: {
               Authorization: `Bearer ${token}`,
               "Content-Type": "multipart/form-data",
@@ -168,7 +168,7 @@ export default {
     closeModal() {
       this.$root.$emit(
         "bv::hide::modal",
-        `adminEditProfilePicModal_${this.admin.adminId}`
+        `userEditProfilePicModal_${this.user.commonUserId}`
       );
       this.clearFields();
     },
