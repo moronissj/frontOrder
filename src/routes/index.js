@@ -30,9 +30,10 @@ import CancelView from "../components/client/orders/CancelView.vue";
 import UserAllPackages from "../components/client/UserAllPackages.vue";
 import UserAllCombos from "../components/client/UserAllCombos.vue";
 import ComboInfo from "../components/client/ordersCombos/ComboInfo.vue";
-import ClientOrders from "../components/client/ClientOrders.vue";
 import WorkerProfile from "../components/worker/profileworker/WorkerProfile.vue";
 import UserProfile from "../components/client/profileuser/UserProfile.vue";
+import ClientOrders from "../components/client/orders/ClientOrders.vue";
+
 const routes = [
   {
     name: "home",
@@ -144,6 +145,12 @@ const routes = [
     meta: { role: "COMMON_USER" },
   },
   {
+    name: "my-orders",
+    path: "/my-orders",
+    component: ClientOrders,
+    meta: { role: "COMMON_USER" },
+  },
+  {
     name: "user-packages",
     path: "/user-packages",
     component: UserAllPackages,
@@ -210,12 +217,6 @@ const routes = [
         next("/");
       }
     },
-  },
-  {
-    name: "my-orders",
-    path: "/my-orders",
-    component: ClientOrders,
-    meta: { role: "COMMON_USER" },
   },
   {
     path: "/cancel",

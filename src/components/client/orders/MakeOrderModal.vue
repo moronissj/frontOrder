@@ -1,69 +1,99 @@
 <template>
   <div style="margin-left: auto">
-    <b-button v-b-modal.modal-1 variant="outline-primary" style="width: 25%"
+    <b-button
+      v-b-modal.modal-1
+      @click="clearFields"
+      variant="outline-success"
+      style="width: 25%"
       >Hacer Pedido</b-button
     >
     <b-modal id="modal-1" title="Información de Pedido" hide-footer>
       <template #modal-header="{ close }">
-        <h5 style="color: #ae0505; margin-left: 25%">Información de Pedido</h5>
-        <b-button size="sm" variant="outline-danger" @click="close()">
+        <h5 class="form-title">Información de Pedido</h5>
+        <b-button
+          size="sm"
+          class="button-close-form"
+          variant="outline-danger"
+          @click="close()"
+        >
           X
         </b-button>
       </template>
       <ValidationObserver v-slot="{ handleSubmit }">
         <b-form @submit.prevent="handleSubmit(onSubmit)">
-          <b-form-group
-            id="input-group-1"
-            label="Direccion del evento:"
-            label-for="input-1"
-          >
-            <ValidationProvider rules="required|valid-text" v-slot="{ errors }">
-              <b-form-input
-                id="input-1"
-                type="text"
-                v-model="form.orderPlace"
-                :class="{ invalid: errors[0] }"
-              ></b-form-input>
-              <span class="errors">{{ errors[0] }}</span>
-            </ValidationProvider>
-          </b-form-group>
+          <div class="row">
+            <div class="col col-sm-12 col-md-12">
+              <b-form-group
+                id="input-group-1"
+                label="Detalles del evento:"
+                class="input-label-container"
+                label-for="input-1"
+              >
+                <ValidationProvider
+                  rules="required|valid-text"
+                  v-slot="{ errors }"
+                >
+                  <b-form-input
+                    id="input-1"
+                    type="text"
+                    v-model="form.orderPlace"
+                    :class="{ invalid: errors[0] }"
+                  ></b-form-input>
+                  <span class="errors">{{ errors[0] }}</span>
+                </ValidationProvider>
+              </b-form-group>
+            </div>
 
-          <b-form-group
-            id="input-group-2"
-            label="Fecha de la orden:"
-            label-for="input-2"
-          >
-            <ValidationProvider rules="required|futureDate" v-slot="{ errors }">
-              <b-form-input
-                id="input-2"
-                type="date"
-                v-model="form.orderDate"
-                :class="{ invalid: errors[0] }"
-              ></b-form-input>
-              <span class="errors">{{ errors[0] }}</span>
-            </ValidationProvider>
-          </b-form-group>
-
-          <b-form-group
-            id="input-group-3"
-            label="Hora de comienzo:"
-            label-for="input-3"
-          >
-            <ValidationProvider rules="required" v-slot="{ errors }">
-              <b-form-input
-                id="input-3"
-                type="time"
-                v-model="form.orderTime"
-                :class="{ invalid: errors[0] }"
-              ></b-form-input>
-              <span class="errors">{{ errors[0] }}</span>
-            </ValidationProvider>
-          </b-form-group>
+            <div class="col col-sm-12 col-md-6">
+              <b-form-group
+                id="input-group-2"
+                label="Fecha de la orden:"
+                class="input-label-container"
+                label-for="input-2"
+              >
+                <ValidationProvider
+                  rules="required|futureDate"
+                  v-slot="{ errors }"
+                >
+                  <b-form-input
+                    id="input-2"
+                    type="date"
+                    v-model="form.orderDate"
+                    :class="{ invalid: errors[0] }"
+                  ></b-form-input>
+                  <span class="errors">{{ errors[0] }}</span>
+                </ValidationProvider>
+              </b-form-group>
+            </div>
+            <div class="col col-sm-12 col-md-6">
+              <b-form-group
+                id="input-group-3"
+                label="Hora de comienzo:"
+                class="input-label-container"
+                label-for="input-3"
+              >
+                <ValidationProvider rules="required" v-slot="{ errors }">
+                  <b-form-input
+                    id="input-3"
+                    type="time"
+                    v-model="form.orderTime"
+                    :class="{ invalid: errors[0] }"
+                  ></b-form-input>
+                  <span class="errors">{{ errors[0] }}</span>
+                </ValidationProvider>
+              </b-form-group>
+            </div>
+          </div>
           <br />
-          <b-button type="submit" variant="primary">Registrar orden</b-button>
-          <button type="button" @click="closeModal" id="botonCancelar">
-            Cancelar
-          </button>
+
+          <div class="buttonsContainer">
+            <b-button type="submit" class="register-btn" variant="success"
+              >Registrar</b-button
+            >
+            <b-button @click="closeModal" class="close-btn" id="botonCancelar">
+              Cancelar
+            </b-button>
+          </div>
         </b-form>
       </ValidationObserver>
     </b-modal>
@@ -72,7 +102,7 @@
 
 <script>
 import { extend } from "vee-validate";
-import { required } from "vee-validate/dist/rules";
+import { required, regex } from "vee-validate/dist/rules";
 
 extend("required", {
   ...required,
@@ -87,6 +117,15 @@ extend("futureDate", {
     return inputDate.setHours(0, 0, 0, 0) > currentDate.setHours(0, 0, 0, 0);
   },
   message: "La fecha debe ser mayor que la fecha actual.",
+});
+
+extend("valid-text", {
+  ...regex,
+  message: "Este campo solo puede contener letras, paréntesis, puntos y comas.",
+  validate: (value) => {
+    const pattern = /^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ().,\s]*$/;
+    return pattern.test(value);
+  },
 });
 
 export default {
@@ -151,9 +190,10 @@ export default {
       this.clearFields();
     },
     clearFields() {
-      this.orderDate = null;
-      this.orderPlace = null;
-      this.orderTime = null;
+      console.log("pressed");
+      this.form.orderDate = "";
+      this.form.orderPlace = "";
+      this.form.orderTime = "";
     },
   },
   mounted() {
@@ -168,8 +208,6 @@ export default {
   width: 100%;
   display: flex;
   justify-content: space-evenly;
-  min-width: auto;
-  max-height: auto;
 }
 
 .buttonsContainer button {
@@ -177,24 +215,22 @@ export default {
   padding: 10px 20px;
   border-radius: 10px;
   border: none;
+  font-size: 0.8rem;
   margin-bottom: 10px;
   margin-top: 10px;
   transition: width 0.3s;
-  min-width: auto;
-  max-height: auto;
 }
 
 .buttonsContainer button:hover {
   width: 35%;
-  min-width: auto;
-  max-height: auto;
 }
 
-#botonEnviar {
-  background-color: rgb(32, 184, 40);
-  color: white;
-  min-width: auto;
-  max-height: auto;
+.register-btn {
+  margin: 0;
+}
+
+.close-btn {
+  margin: 0;
 }
 
 .invalid {
@@ -206,85 +242,22 @@ export default {
   color: red;
 }
 
-#botonCancelar {
-  background-color: rgb(240, 51, 51);
-  color: white;
-  min-width: auto;
-  max-height: auto;
+.button-close-form {
+  width: 10%;
+  margin: 0;
+  margin-left: auto;
 }
 
-#form {
-  background-color: rgb(255, 255, 255);
-  width: 100%;
-  padding: 10px;
-  min-width: auto;
-  max-height: auto;
+.form-title {
+  font-size: 1.5rem;
 }
 
-.fieldContainer {
-  width: 100%;
-  margin-bottom: 20px;
-  min-width: auto;
-  max-height: auto;
+.input-label-container {
+  margin-bottom: 15px;
 }
 
-.labelContainer {
-  margin-bottom: 10px;
-  min-width: auto;
-  max-height: auto;
-}
-
-.inputContainer {
-  min-width: auto;
-  max-height: auto;
-}
-
-.inputContainer input {
-  padding: 10px;
-  min-width: auto;
-  max-height: auto;
-  border: 2px solid #ae0505;
-  border-radius: 10px;
-  background-color: #f9f9f9;
-  color: #333;
-  outline: none;
-}
-
-.inputContainer input:focus {
-  border-color: #2b2b2b;
-}
-
-.inputContainer textarea {
-  padding: 10px;
-  min-width: auto;
-  max-height: auto;
-  border: 2px solid #ccc;
-  border-radius: 10px;
-  background-color: #f9f9f9;
-  color: #333;
-  outline: none;
-}
-
-.inputContainer textarea:focus {
-  border-color: #2b2b2b;
-  min-width: auto;
-  max-height: auto;
-}
-
-.inputContainer select {
-  padding: 10px;
-  min-width: auto;
-  max-height: auto;
-  border: 2px solid #ccc;
-  border-radius: 10px;
-  background-color: #f9f9f9;
-  color: #333;
-  outline: none;
-}
-
-.inputContainer select:focus {
-  border-color: #2b2b2b;
-  min-width: auto;
-  max-height: auto;
+.input-group-text {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
 }
 </style>
