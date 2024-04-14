@@ -2,18 +2,18 @@
   <div>
     <b-button
       size="sm"
-      v-b-modal="`adminEditProfilePicModal_${admin.adminId}`"
+      v-b-modal="`workerEditProfilePicModal_${worker.workerId}`"
       variant="warning"
       @click="clearFields"
       >Editar</b-button
     >
     <b-modal
-      :id="`adminEditProfilePicModal_${admin.adminId}`"
-      title="Cambiar Foto Administrador"
+      :id="`workerEditProfilePicModal_${worker.workerId}`"
+      title="Cambiar Foto"
       hide-footer
     >
       <template #modal-header="{ close }">
-        <h5 class="form-title">Cambiar foto</h5>
+        <h5 class="form-title">Cambiar Foto</h5>
         <b-button
           size="sm"
           class="button-close-form"
@@ -24,7 +24,7 @@
         </b-button>
       </template>
       <ValidationObserver v-slot="{ handleSubmit }">
-        <b-form @submit.prevent="handleSubmit(sendPutEditProfilePicAdmin)">
+        <b-form @submit.prevent="handleSubmit(sendPutEditProfilePicWorker)">
           <b-form-group
             id="input-group-1"
             label="Foto Nueva:"
@@ -95,27 +95,27 @@ extend("size", {
 });
 
 export default {
-  name: "AdminPhotoModal",
+  name: "WorkerPhotoModal",
   props: {
-    admin: {
+    worker: {
       type: Object,
       required: true,
     },
+    imagePreviewUrl: null,
   },
   data() {
     return {
       form: {
         profilePic: null,
       },
-      imagePreviewUrl: null,
     };
   },
   methods: {
-    sendPutEditProfilePicAdmin() {
+    sendPutEditProfilePicWorker() {
       this.key = useSecret();
 
       const serializedData = JSON.stringify({
-        adminId: this.admin.adminId,
+        workerId: this.worker.workerId,
       });
 
       const encryptedData = this.$encryptionService.encryptData(
@@ -134,7 +134,7 @@ export default {
 
       if (token) {
         this.$http
-          .post("/api/accounts/update-admin/profile-pic", formData, {
+          .post("/api/accounts/update-worker/profile-pic", formData, {
             headers: {
               Authorization: `Bearer ${token}`,
               "Content-Type": "multipart/form-data",
@@ -168,13 +168,12 @@ export default {
     closeModal() {
       this.$root.$emit(
         "bv::hide::modal",
-        `adminEditProfilePicModal_${this.admin.adminId}`
+        `workerEditProfilePicModal_${this.worker.workerId}`
       );
       this.clearFields();
     },
     clearFields() {
       this.form.profilePic = null;
-      this.imagePreviewUrl = null;
     },
   },
   mounted() {

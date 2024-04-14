@@ -1,6 +1,6 @@
 <template>
   <div style="height: 100%">
-    <NavbarAdmin></NavbarAdmin>
+    <NavbarClient></NavbarClient>
     <div
       class="container"
       style="
@@ -26,25 +26,25 @@
             >
               <div class="profile-header">
                 <img
-                  :src="profileInfo.adminProfilePicUrl"
+                  :src="profileInfo.userProfilePicUrl"
                   alt="pic"
                   class="profile-image"
                 />
                 <div>
-                  <AdminPhotoModal
-                    :key="'modalEditPhoto_' + profileInfo.adminId"
-                    :admin="profileInfo"
+                  <UserPhotoModal
+                    :key="'modalEditPhoto_' + profileInfo.commonUserId"
+                    :user="profileInfo"
                     @photoUpdated="fetchUserProfileInfo"
                     style="margin-bottom: 40px"
                   />
                 </div>
 
                 <h3 class="profile-name">
-                  {{ profileInfo.adminName }}
-                  {{ profileInfo.adminFirstLastName }}
-                  {{ profileInfo.adminSecondLastName }}
+                  {{ profileInfo.userName }}
+                  {{ profileInfo.userFirstLastName }}
+                  {{ profileInfo.userSecondLastName }}
                 </h3>
-                <p class="profile-title">Administrador</p>
+                <p class="profile-title">Usuario</p>
               </div>
             </div>
           </div>
@@ -63,22 +63,14 @@
               <div class="content">
                 <h1 class="info-title">Información</h1>
                 <hr />
-                <p><strong>Email:</strong> {{ profileInfo.adminEmail }}</p>
+                <p><strong>Email:</strong> {{ profileInfo.userEmail }}</p>
                 <p>
-                  <strong>Teléfono:</strong> {{ profileInfo.adminCellphone }}
-                </p>
-                <p>
-                  <strong>Número de seguridad:</strong>
-                  {{ profileInfo.adminSecurityNumber }}
-                </p>
-                <p>
-                  <strong>Salario:</strong>
-                  {{ profileInfo.adminSalary }}
+                  <strong>Teléfono:</strong> {{ profileInfo.userCellphone }}
                 </p>
                 <div>
-                  <AdminEditProfileModal
-                    :key="'modalEdicion_' + profileInfo.adminId"
-                    :admin="profileInfo"
+                  <UserEditProfileModal
+                    :key="'modalEdicion_' + profileInfo.commonUserId"
+                    :user="profileInfo"
                     @actualizacionExitosa="fetchUserProfileInfo"
                   />
                 </div>
@@ -92,17 +84,17 @@
 </template>
 
 <script>
-import NavbarAdmin from "../NavbarAdmin.vue";
-import AdminEditProfileModal from "./AdminEditProfileModal.vue";
-import AdminPhotoModal from "./AdminPhotoModal.vue";
+import NavbarClient from "../NavbarClient.vue";
 import { useSecret } from "@/stores/key";
+import UserPhotoModal from "./UserPhotoModal.vue";
+import UserEditProfileModal from "./UserEditProfileModal.vue";
 
 export default {
-  name: "AdminProfile",
+  name: "UserProfile",
   components: {
-    NavbarAdmin,
-    AdminEditProfileModal,
-    AdminPhotoModal,
+    NavbarClient,
+    UserPhotoModal,
+    UserEditProfileModal,
   },
   data() {
     return {
@@ -124,7 +116,7 @@ export default {
             },
           })
           .then((response) => {
-            this.profileInfo = this.decryptAdminData(response.data);
+            this.profileInfo = this.decryptUserData(response.data);
           })
           .catch((error) => {
             console.error(
@@ -134,17 +126,15 @@ export default {
           });
       }
     },
-    decryptAdminData(item) {
+    decryptUserData(item) {
       const fieldsToDecrypt = [
-        "adminId",
-        "adminName",
-        "adminFirstLastName",
-        "adminSecondLastName",
-        "adminEmail",
-        "adminCellphone",
-        "adminSecurityNumber",
-        "adminSalary",
-        "adminProfilePicUrl",
+        "commonUserId",
+        "userName",
+        "userFirstLastName",
+        "userSecondLastName",
+        "userEmail",
+        "userCellphone",
+        "userProfilePicUrl",
       ];
 
       fieldsToDecrypt.forEach((field) => {

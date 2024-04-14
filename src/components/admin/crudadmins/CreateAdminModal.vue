@@ -159,7 +159,7 @@
             <div class="col col-sm-12 col-md-6">
               <b-form-group
                 id="input-group-6"
-                label="Telefono:"
+                label="Celular:"
                 label-for="input-6"
                 class="input-label-container"
               >
@@ -303,7 +303,7 @@ extend("tel", {
     return value.startsWith("777") || value.startsWith("52");
   },
   message:
-    "El teléfono debe ser numérico, comenzar con '777' o '52', y tener 10 dígitos.",
+    "El número telefónico debe ser numérico, comenzar con '777' o '52', y tener 10 dígitos.",
 });
 
 extend("valid-name-part", {
