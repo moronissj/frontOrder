@@ -54,7 +54,7 @@
                 class="input-label-container"
               >
                 <ValidationProvider
-                  rules="required|reviewPattern"
+                  rules="required|review-pattern|text-length"
                   v-slot="{ errors }"
                 >
                   <b-form-textarea
@@ -70,9 +70,15 @@
           </div>
 
           <div class="buttonsContainer">
-            <b-button type="submit" class="register-btn" variant="success"
-              >Calificar</b-button
+            <b-button
+              type="submit"
+              class="register-btn"
+              variant="success"
+              :disabled="isLoading"
             >
+              <b-spinner small v-if="isLoading"></b-spinner>
+              {{ isLoading ? "Cargando..." : "Calificar" }}
+            </b-button>
             <b-button @click="closeModal" class="close-btn" id="botonCancelar">
               Cancelar
             </b-button>
@@ -101,13 +107,26 @@ extend("range", {
   message: "La calificación debe estar entre 0 y 5",
 });
 
-extend("reviewPattern", {
+extend("review-pattern", {
   validate(value) {
     const pattern = /^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ0-9.,;¿?¡!\s()]*$/;
     return pattern.test(value);
   },
   message:
     "El comentario solo puede contener letras, puntos, comas, caracteres acentuados, números, signos de interrogación, admiración, paréntesis y punto y coma.",
+});
+
+extend("text-length", {
+  validate: (value) => {
+    if (!value || value.length < 50) {
+      return "La descripción debe contener al menos 50 caracteres.";
+    }
+    if (value.length > 500) {
+      return "La descripción debe contener máximo 500 caracteres.";
+    }
+    return true;
+  },
+  message: "La descripción debe contener entre 50 y 500 caracteres.",
 });
 
 export default {
@@ -128,6 +147,8 @@ export default {
   },
   data() {
     return {
+      isLoading: false,
+
       key: "",
       form: {
         reviewDescription: "",
@@ -148,6 +169,8 @@ export default {
   },
   methods: {
     sendReview() {
+      this.isLoading = true;
+
       this.key = useSecret();
       const serializedData = JSON.stringify({
         orderId: this.order.orderId,
@@ -203,6 +226,9 @@ export default {
                 icon: "success",
               });
             }
+          })
+          .finally(() => {
+            this.isLoading = false;
           });
       }
     },

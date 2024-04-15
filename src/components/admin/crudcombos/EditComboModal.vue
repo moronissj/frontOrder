@@ -2,6 +2,8 @@
   <div>
     <b-button
       class="table-button"
+      v-b-tooltip.hover.top
+      title="Editar"
       size="sm"
       v-b-modal="`editComboModal_${combo.comboId}`"
       @click="fillForm"
@@ -9,6 +11,7 @@
       ><b-icon icon="pencil-square" scale="1"></b-icon
     ></b-button>
     <b-modal
+      no-close-on-backdrop
       :id="`editComboModal_${combo.comboId}`"
       title="Editar Combo"
       hide-footer

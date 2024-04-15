@@ -6,27 +6,37 @@
         <img src="../../../assets/buffe.PNG" alt="nose" />
       </div>
       <ValidationObserver v-slot="{ handleSubmit }">
-        <b-form
-          @submit.prevent="handleSubmit(sendPostConfirmAccountWorkerWithToken)"
-        >
-          <b-form-group id="input-group-1" label="Token:" label-for="input-1">
-            <ValidationProvider rules="required|token" v-slot="{ errors }">
-              <b-form-input
-                id="input-1"
-                type="text"
-                v-model="token"
-                :class="{ invalid: errors[0] }"
-              ></b-form-input>
-              <span class="errors">{{ errors[0] }}</span>
-            </ValidationProvider>
-          </b-form-group>
+        <div style="height: 100%; width: 100%; margin-top: 100px">
+          <h1 style="font-size: 2rem; margin-bottom: 20px">
+            Confirmación de cuenta de trabajador
+          </h1>
+          <b-form
+            @submit.prevent="
+              handleSubmit(sendPostConfirmAccountWorkerWithToken)
+            "
+          >
+            <b-form-group id="input-group-1" label="Token:" label-for="input-1">
+              <ValidationProvider rules="required|token" v-slot="{ errors }">
+                <b-form-input
+                  id="input-1"
+                  type="text"
+                  v-model="token"
+                  :class="{ invalid: errors[0] }"
+                ></b-form-input>
+                <span class="errors">{{ errors[0] }}</span>
+              </ValidationProvider>
+            </b-form-group>
 
-          <div class="buttonsContainer">
-            <b-button type="submit" variant="primary"
-              >Confirmar Cuenta</b-button
-            >
-          </div>
-        </b-form>
+            <div class="buttonsContainer">
+              <b-button
+                type="submit"
+                style="margin-top: 20px; border: none"
+                variant="primary"
+                >Confirmar Cuenta</b-button
+              >
+            </div>
+          </b-form>
+        </div>
       </ValidationObserver>
     </div>
   </div>
@@ -75,6 +85,12 @@ export default {
         })
         .catch((error) => {
           if (error.response.data === "Invalid or expired confirmation token") {
+            this.$swal({
+              title: "Token no valido",
+              text: "El token no es valido o ha expirado, comprueba de nuevo",
+              icon: "error",
+            });
+          } else if (error.response.status === 500) {
             this.$swal({
               title: "Token no valido",
               text: "El token no es valido o ha expirado, comprueba de nuevo",

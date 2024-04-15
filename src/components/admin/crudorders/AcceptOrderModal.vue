@@ -8,6 +8,7 @@
       ><b-icon icon="check2" scale="1.2"></b-icon
     ></b-button>
     <b-modal
+      no-close-on-backdrop
       :id="`acceptOrderModal_${id}`"
       title="Aceptacion de orden"
       hide-footer
@@ -49,9 +50,15 @@
         </b-form-group>
 
         <div class="buttonsContainer">
-          <b-button type="submit" class="register-btn" variant="success"
-            >Registrar</b-button
+          <b-button
+            type="submit"
+            class="register-btn"
+            variant="success"
+            :disabled="isLoading"
           >
+            <b-spinner small v-if="isLoading"></b-spinner>
+            {{ isLoading ? "Cargando..." : "Registrar" }}
+          </b-button>
           <b-button @click="closeModal" class="close-btn" id="botonCancelar">
             Cancelar
           </b-button>
@@ -74,6 +81,7 @@ export default {
   },
   data() {
     return {
+      isLoading: false,
       key: "",
       workers: [],
       workerOptions: [],
@@ -85,6 +93,8 @@ export default {
   },
   methods: {
     sendOrderConfirmation() {
+      this.isLoading = true;
+
       this.key = useSecret();
       const serializedData = JSON.stringify({
         orderId: this.form.orderId,
@@ -128,6 +138,9 @@ export default {
                 icon: "warning",
               });
             }
+          })
+          .finally(() => {
+            this.isLoading = false;
           });
       }
     },

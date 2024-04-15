@@ -110,7 +110,7 @@
                 <b-button
                   @click="markAsServed(row.item.orderId)"
                   class="table-button"
-                  variant="danger"
+                  variant="primary"
                   size="sm"
                 >
                   <b-icon icon="emoji-smile" scale="1"></b-icon
@@ -336,6 +336,16 @@ export default {
         confirmButtonText: "Si, declinar",
       }).then((result) => {
         if (result.isConfirmed) {
+          this.$swal({
+            title: "Declinando",
+            html: "Por favor espera mientras se declina la orden...",
+            didOpen: () => {
+              this.$swal.showLoading();
+            },
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            allowEnterKey: false,
+          });
           const serializedData = JSON.stringify({
             orderId: id,
           });
@@ -356,6 +366,8 @@ export default {
                 },
               })
               .then((response) => {
+                this.$swal.close();
+
                 this.$emit("registroExitoso");
                 this.$swal({
                   title: "Declinación realizada",
@@ -365,6 +377,8 @@ export default {
                 this.fetchOrders();
               })
               .catch((error) => {
+                this.$swal.close();
+
                 if (
                   error.response.data.message ===
                   "El pago ya ha sido capturado, no es posible cancelar"
@@ -403,6 +417,16 @@ export default {
         confirmButtonText: "Si, completada",
       }).then((result) => {
         if (result.isConfirmed) {
+          this.$swal({
+            title: "Marcando",
+            html: "Por favor espera mientras se marcan como completada...",
+            didOpen: () => {
+              this.$swal.showLoading();
+            },
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            allowEnterKey: false,
+          });
           const serializedData = JSON.stringify({
             orderId: id,
           });
@@ -420,6 +444,7 @@ export default {
                 },
               })
               .then((response) => {
+                this.$swal.close();
                 this.$emit("registroExitoso");
                 this.$swal({
                   title: "Order marcada",
@@ -429,6 +454,7 @@ export default {
                 this.fetchOrders();
               })
               .catch((error) => {
+                this.$swal.close();
                 this.$swal({
                   title: "Error",
                   text: `${error.response.data.message}`,

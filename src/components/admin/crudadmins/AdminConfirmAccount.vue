@@ -6,27 +6,35 @@
         <img src="../../../assets/buffe.PNG" alt="nose" />
       </div>
       <ValidationObserver v-slot="{ handleSubmit }">
-        <b-form
-          @submit.prevent="handleSubmit(sendPostConfirmAccountAdminWithToken)"
-        >
-          <b-form-group id="input-group-1" label="Token:" label-for="input-1">
-            <ValidationProvider rules="required|token" v-slot="{ errors }">
-              <b-form-input
-                id="input-1"
-                type="text"
-                v-model="token"
-                :class="{ invalid: errors[0] }"
-              ></b-form-input>
-              <span class="errors">{{ errors[0] }}</span>
-            </ValidationProvider>
-          </b-form-group>
+        <div style="height: 100%; width: 100%; margin-top: 100px">
+          <h1 style="font-size: 2rem; margin-bottom: 20px">
+            Confirmación de cuenta Administrador
+          </h1>
+          <b-form
+            @submit.prevent="handleSubmit(sendPostConfirmAccountAdminWithToken)"
+          >
+            <b-form-group id="input-group-1" label="Token:" label-for="input-1">
+              <ValidationProvider rules="required|token" v-slot="{ errors }">
+                <b-form-input
+                  id="input-1"
+                  type="text"
+                  v-model="token"
+                  :class="{ invalid: errors[0] }"
+                ></b-form-input>
+                <span class="errors">{{ errors[0] }}</span>
+              </ValidationProvider>
+            </b-form-group>
 
-          <div class="buttonsContainer">
-            <b-button type="submit" variant="primary"
-              >Confirmar Cuenta</b-button
-            >
-          </div>
-        </b-form>
+            <div class="buttonsContainer">
+              <b-button
+                type="submit"
+                style="margin-top: 20px; border: none"
+                variant="primary"
+                >Confirmar cuenta</b-button
+              >
+            </div>
+          </b-form>
+        </div>
       </ValidationObserver>
     </div>
   </div>
@@ -80,6 +88,12 @@ export default {
               text: "El token no es valido o ha expirado, comprueba de nuevo",
               icon: "error",
             });
+          } else if (error.response.status === 500) {
+            this.$swal({
+              title: "Token no valido",
+              text: "El token no es valido o ha expirado, comprueba de nuevo",
+              icon: "error",
+            });
           } else {
             console.error(error);
           }
@@ -104,7 +118,6 @@ li {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  /* Ensures app fills the viewport height */
   justify-content: center;
   align-items: center;
 }
@@ -114,7 +127,6 @@ li {
   grid-template-columns: 1fr 1fr;
   margin: 7.5vh 15%;
   box-shadow: 10px 5px 5px rgba(109, 109, 109, 0.5);
-  /* Consistent box-shadow formatting */
   border-radius: 20px;
   height: 75vh;
 }
@@ -124,14 +136,12 @@ h2 {
   margin-top: 1.5vh;
   margin-bottom: 1.5vh;
   text-align: center;
-  /* Center text within heading */
 }
 
 label {
   font-family: "Montserrat", sans-serif;
   font-size: 1.2rem;
   text-align: center;
-  /* Align labels to the center */
   margin-bottom: 2vh;
 }
 
@@ -139,9 +149,7 @@ label {
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* Centrar los elementos hijos horizontalmente */
   justify-content: center;
-  /* Centrar los elementos hijos verticalmente */
   padding: 2vh;
 }
 
@@ -155,7 +163,6 @@ input {
   border-radius: 20px;
   margin-bottom: 1.5vh;
   border: 3px solid #ae0505;
-  /* Consistent border color formatting */
 }
 
 .btn {
@@ -180,7 +187,6 @@ img {
 }
 
 @media (max-width: 800px) {
-  /* Ajusta 600px al punto de ruptura deseado */
   label {
     font-size: 0.9rem;
   }

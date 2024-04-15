@@ -90,6 +90,8 @@
             <template #cell(actions)="row">
               <div class="actions-container">
                 <b-button
+                  v-b-tooltip.hover.top
+                  title="Ver más detalles"
                   class="table-button plus-button-table"
                   size="sm"
                   variant="info"
@@ -102,7 +104,13 @@
                   :combo="row.item"
                   @actualizacionExitosa="fetchCombo"
                 ></EditComboModal>
-                <b-button class="table-button" variant="warning" size="sm">
+                <b-button
+                  class="table-button"
+                  v-b-tooltip.hover.top
+                  title="Estado"
+                  variant="warning"
+                  size="sm"
+                >
                   <b-icon icon="circle" scale=".7"></b-icon
                 ></b-button>
 
