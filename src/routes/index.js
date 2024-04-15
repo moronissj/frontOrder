@@ -34,6 +34,7 @@ import UserProfile from "../components/client/profileuser/UserProfile.vue";
 import ClientOrders from "../components/client/orders/ClientOrders.vue";
 import SeeReviews from "../components/SeeReviews.vue";
 import MyReviews from "../components/client/MyReviews.vue";
+import Unauthorized from "../components/Unauthorized.vue";
 
 const routes = [
   {
@@ -65,6 +66,11 @@ const routes = [
     name: "token-confirmation",
     path: "/token-confirmation",
     component: VistaToken,
+  },
+  {
+    name: "unauthorized",
+    path: "/unauthorized",
+    component: Unauthorized,
   },
   {
     name: "client-home",
@@ -229,6 +235,10 @@ const routes = [
         next("/");
       }
     },
+  },
+  {
+    path: "*",
+    redirect: "/not-found",
   },
 ];
 

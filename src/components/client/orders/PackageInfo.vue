@@ -5,7 +5,9 @@
       <div class="row" style="margin-top: 50px">
         <div class="col-6">
           <h1>{{ aPackage.packageName }}</h1>
-          <p>Descripción: {{ aPackage.packageDescription }}</p>
+          <div style="text-align: justify">
+            <p>Descripción: {{ aPackage.packageDescription }}</p>
+          </div>
           <p>Servicio: {{ service }}</p>
           <p>Horas designadas: {{ aPackage.designatedHours }}</p>
           <p>
@@ -40,12 +42,10 @@
         </div>
       </div>
     </div>
-    <Footer />
   </div>
 </template>
 
 <script>
-import Footer from "../../Footer.vue";
 import MakeOrderModal from "./MakeOrderModal.vue";
 import NavbarClient from "../NavbarClient.vue";
 import Fancybox from "../../Fancybox.vue";
@@ -53,7 +53,6 @@ import Fancybox from "../../Fancybox.vue";
 export default {
   name: "PackageInfo",
   components: {
-    Footer,
     MakeOrderModal,
     NavbarClient,
     Fancybox,
