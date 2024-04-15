@@ -34,7 +34,7 @@
                 label-for="input-1"
               >
                 <ValidationProvider
-                  rules="required|valid-name-part"
+                  rules="required|valid-name-part|max-length-name"
                   v-slot="{ errors }"
                 >
                   <b-form-input
@@ -55,7 +55,7 @@
                 label-for="input-2"
               >
                 <ValidationProvider
-                  rules="required|valid-name-part"
+                  rules="required|valid-name-part|max-length-name"
                   v-slot="{ errors }"
                 >
                   <b-form-input
@@ -76,7 +76,7 @@
                 label-for="input-3"
               >
                 <ValidationProvider
-                  rules="required|valid-name-part"
+                  rules="required|valid-name-part|max-length-name"
                   v-slot="{ errors }"
                 >
                   <b-form-input
@@ -111,9 +111,15 @@
           </div>
 
           <div class="buttonsContainer">
-            <b-button type="submit" class="register-btn" variant="success"
-              >Actualizar</b-button
+            <b-button
+              type="submit"
+              class="register-btn"
+              variant="success"
+              :disabled="isLoading"
             >
+              <b-spinner small v-if="isLoading"></b-spinner>
+              {{ isLoading ? "Cargando..." : "Actualizar" }}
+            </b-button>
             <b-button @click="closeModal" class="close-btn" id="botonCancelar">
               Cancelar
             </b-button>
@@ -128,6 +134,16 @@
 import { useSecret } from "@/stores/key";
 import { extend } from "vee-validate";
 import { required, regex } from "vee-validate/dist/rules";
+
+extend("max-length-name", {
+  validate: (value) => {
+    if (!value || value.length > 20) {
+      return "El nombre debe tener máximo 20 caracteres.";
+    }
+    return true;
+  },
+  message: "El nombre debe tener máximo 20 caracteres.",
+});
 
 extend("required", {
   ...required,
@@ -162,6 +178,7 @@ export default {
   },
   data() {
     return {
+      isLoading: false,
       key: "",
       form: {
         adminName: "",
@@ -184,6 +201,7 @@ export default {
       this.form.adminSalary = this.admin.adminSalary;
     },
     sendPutEditAdmin() {
+      this.isLoading = true;
       this.key = useSecret();
       const serializedData = JSON.stringify({
         adminId: this.admin.adminId,
@@ -223,6 +241,9 @@ export default {
           })
           .catch((error) => {
             console.log(error);
+          })
+          .finally(() => {
+            this.isLoading = false;
           });
       }
     },

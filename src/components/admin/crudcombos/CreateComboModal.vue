@@ -206,6 +206,16 @@ extend("required", {
   message: "Este campo es requerido",
 });
 
+extend("max-length-name", {
+  validate: (value) => {
+    if (!value || value.length > 20) {
+      return "El nombre debe tener máximo 20 caracteres.";
+    }
+    return true;
+  },
+  message: "El nombre debe tener máximo 20 caracteres.",
+});
+
 extend("max-value", {
   validate(value, { max }) {
     return Number(value) <= max;
@@ -242,6 +252,29 @@ extend("valid-text", {
     const pattern = /^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ.,\s]*$/;
     return pattern.test(value);
   },
+});
+
+extend("valid-text-description", {
+  ...regex,
+  message:
+    "El campo descripción solo puede contener letras, números, puntos, comas, paréntesis, signos de exclamación, signos de interrogación y caracteres acentuados",
+  validate: (value) => {
+    const pattern = /^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ0-9;.,\s()!?]*$/;
+    return pattern.test(value);
+  },
+});
+
+extend("description-length", {
+  validate: (value) => {
+    if (!value || value.length < 50) {
+      return "La descripción debe contener al menos 50 caracteres.";
+    }
+    if (value.length > 500) {
+      return "La descripción debe contener máximo 500 caracteres.";
+    }
+    return true;
+  },
+  message: "La descripción debe contener entre 50 y 500 caracteres.",
 });
 
 extend("size", {

@@ -55,9 +55,15 @@
           </b-form-group>
 
           <div class="buttonsContainer">
-            <b-button type="submit" class="register-btn" variant="success"
-              >Cambiar Foto</b-button
+            <b-button
+              type="submit"
+              class="register-btn"
+              variant="success"
+              :disabled="isLoading"
             >
+              <b-spinner small v-if="isLoading"></b-spinner>
+              {{ isLoading ? "Cargando..." : "Actualizar" }}
+            </b-button>
             <b-button @click="closeModal" class="close-btn" id="botonCancelar">
               Cancelar
             </b-button>
@@ -104,6 +110,7 @@ export default {
   },
   data() {
     return {
+      isLoading: false,
       form: {
         profilePic: null,
       },
@@ -112,6 +119,8 @@ export default {
   },
   methods: {
     sendPutEditProfilePicAdmin() {
+      this.isLoading = true;
+
       this.key = useSecret();
 
       const serializedData = JSON.stringify({
@@ -151,6 +160,9 @@ export default {
           })
           .catch((error) => {
             console.log(error);
+          })
+          .finally(() => {
+            this.isLoading = false;
           });
       }
     },
