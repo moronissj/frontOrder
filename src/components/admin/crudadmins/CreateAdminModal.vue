@@ -8,7 +8,12 @@
       >Agregar Administrador
       <b-icon id="plusIcon" icon="plus" scale="1.5"></b-icon
     ></b-button>
-    <b-modal id="modal-1" title="Agregar Administrador" hide-footer>
+    <b-modal
+      no-close-on-backdrop
+      id="modal-1"
+      title="Agregar Administrador"
+      hide-footer
+    >
       <template #modal-header="{ close }">
         <h5 class="form-title">Agregar Administrador</h5>
         <b-button

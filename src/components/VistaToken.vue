@@ -1,32 +1,64 @@
 <template>
   <div class="app">
     <NavBar />
-
     <div class="content">
       <div class="image-container">
         <img src="../assets/buffe.PNG" alt="nose" />
       </div>
+      <ValidationObserver v-slot="{ handleSubmit }">
+        <div
+          style="height: 100%; margin-left: 30px; width: 90%; margin-top: 100px"
+        >
+          <h1 style="font-size: 2rem; margin-bottom: 20px">
+            Confirmación de cuenta
+          </h1>
+          <b-form
+            @submit.prevent="handleSubmit(sendPostConfirmAccountWithToken)"
+          >
+            <b-form-group id="input-group-1" label="Token:" label-for="input-1">
+              <ValidationProvider rules="required|token" v-slot="{ errors }">
+                <b-form-input
+                  id="input-1"
+                  type="text"
+                  v-model="token"
+                  required
+                ></b-form-input>
+                <span class="errors">{{ errors[0] }}</span>
+              </ValidationProvider>
+            </b-form-group>
 
-      <b-form @submit.prevent="sendPostConfirmAccountWithToken">
-        <b-form-group id="input-group-1" label="Token:" label-for="input-1">
-          <b-form-input
-            id="input-1"
-            type="text"
-            v-model="token"
-            required
-          ></b-form-input>
-        </b-form-group>
-
-        <div class="buttonsContainer">
-          <b-button type="submit" variant="primary">Confirmar Cuenta</b-button>
+            <div class="buttonsContainer">
+              <b-button
+                type="submit"
+                style="margin-top: 20px; border: none"
+                variant="primary"
+                >Confirmar cuenta</b-button
+              >
+            </div>
+          </b-form>
         </div>
-      </b-form>
+      </ValidationObserver>
     </div>
   </div>
 </template>
 
 <script>
 import NavBar from "./NavBar.vue";
+import { extend } from "vee-validate";
+import { required } from "vee-validate/dist/rules";
+
+extend("required", {
+  ...required,
+  message: "Este campo es requerido",
+});
+
+extend("token", {
+  validate: (value) => {
+    return /^\d{6}$/.test(value);
+  },
+  message: "El token debe ser de 6 digitos, y no contener letras.",
+});
+
 export default {
   name: "VistaToken",
   components: {
@@ -76,7 +108,6 @@ li {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  /* Ensures app fills the viewport height */
   justify-content: center;
   align-items: center;
 }
@@ -86,7 +117,6 @@ li {
   grid-template-columns: 1fr 1fr;
   margin: 7.5vh 15%;
   box-shadow: 10px 5px 5px rgba(109, 109, 109, 0.5);
-  /* Consistent box-shadow formatting */
   border-radius: 20px;
   height: 75vh;
 }
@@ -96,14 +126,12 @@ h2 {
   margin-top: 1.5vh;
   margin-bottom: 1.5vh;
   text-align: center;
-  /* Center text within heading */
 }
 
 label {
   font-family: "Montserrat", sans-serif;
   font-size: 1.2rem;
   text-align: center;
-  /* Align labels to the center */
   margin-bottom: 2vh;
 }
 
@@ -111,9 +139,7 @@ label {
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* Centrar los elementos hijos horizontalmente */
   justify-content: center;
-  /* Centrar los elementos hijos verticalmente */
   padding: 2vh;
 }
 
@@ -127,7 +153,6 @@ input {
   border-radius: 20px;
   margin-bottom: 1.5vh;
   border: 3px solid #ae0505;
-  /* Consistent border color formatting */
 }
 
 .btn {
@@ -152,7 +177,6 @@ img {
 }
 
 @media (max-width: 800px) {
-  /* Ajusta 600px al punto de ruptura deseado */
   label {
     font-size: 0.9rem;
   }
@@ -172,5 +196,14 @@ img {
   img {
     width: 100%;
   }
+}
+
+.invalid {
+  border-color: red !important;
+  background-color: rgb(255, 255, 255) !important;
+}
+
+.errors {
+  color: red;
 }
 </style>

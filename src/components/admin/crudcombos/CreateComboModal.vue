@@ -7,7 +7,12 @@
       variant="success"
       >Agregar Combo <b-icon id="plusIcon" icon="plus" scale="1.5"></b-icon
     ></b-button>
-    <b-modal id="modal-1" title="Agregar Combo" hide-footer>
+    <b-modal
+      id="modal-1"
+      no-close-on-backdrop
+      title="Agregar Combo"
+      hide-footer
+    >
       <template #modal-header="{ close }">
         <h5 class="form-title">Agregar Combo</h5>
         <b-button

@@ -8,6 +8,7 @@
       ><b-icon icon="check2" scale="1.2"></b-icon
     ></b-button>
     <b-modal
+      no-close-on-backdrop
       :id="`acceptOrderModal_${id}`"
       title="Aceptacion de orden"
       hide-footer

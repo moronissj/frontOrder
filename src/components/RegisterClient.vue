@@ -16,117 +16,159 @@
               <h1 class="info-title">Registro</h1>
               <ValidationObserver v-slot="{ handleSubmit }">
                 <b-form @submit.prevent="handleSubmit(sendPostCreateAdmin)">
-                  <b-form-group
-                    id="input-group-1"
-                    class="b-group"
-                    label="Nombre:"
-                    label-for="input-1"
-                  >
-                    <ValidationProvider rules="required" v-slot="{ errors }">
-                      <b-form-input
-                        id="input-1"
-                        type="text"
-                        v-model="form.userName"
-                        :class="{ invalid: errors[0] }"
-                      ></b-form-input>
-                      <span class="errors">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                  </b-form-group>
+                  <div class="row">
+                    <div class="col-6">
+                      <b-form-group
+                        id="input-group-1"
+                        class="b-group"
+                        label="Nombre:"
+                        label-for="input-1"
+                      >
+                        <ValidationProvider
+                          rules="required"
+                          v-slot="{ errors }"
+                        >
+                          <b-form-input
+                            id="input-1"
+                            type="text"
+                            v-model="form.userName"
+                            :class="{ invalid: errors[0] }"
+                          ></b-form-input>
+                          <span class="errors">{{ errors[0] }}</span>
+                        </ValidationProvider>
+                      </b-form-group>
+                    </div>
+                    <div class="col-6">
+                      <b-form-group
+                        id="input-group-2"
+                        class="b-group"
+                        label="Apellido paterno:"
+                        label-for="input-2"
+                      >
+                        <ValidationProvider
+                          rules="required"
+                          v-slot="{ errors }"
+                        >
+                          <b-form-input
+                            id="input-2"
+                            v-model="form.userFirstLastName"
+                            type="text"
+                            :class="{ invalid: errors[0] }"
+                          ></b-form-input>
+                          <span class="errors">{{ errors[0] }}</span>
+                        </ValidationProvider>
+                      </b-form-group>
+                    </div>
+                    <div class="col-6">
+                      <b-form-group
+                        id="input-group-3"
+                        class="b-group"
+                        label="Apellido materno:"
+                        label-for="input-3"
+                      >
+                        <ValidationProvider
+                          rules="required"
+                          v-slot="{ errors }"
+                        >
+                          <b-form-input
+                            id="input-3"
+                            v-model="form.userSecondLastName"
+                            type="text"
+                            :class="{ invalid: errors[0] }"
+                          ></b-form-input>
+                          <span class="errors">{{ errors[0] }}</span>
+                        </ValidationProvider>
+                      </b-form-group>
+                    </div>
+                    <div class="col-6">
+                      <b-form-group
+                        id="input-group-4"
+                        class="b-group"
+                        label="Celular:"
+                        label-for="input-4"
+                      >
+                        <ValidationProvider
+                          rules="required|phone"
+                          v-slot="{ errors }"
+                        >
+                          <b-form-input
+                            id="input-4"
+                            v-model="form.userCellphone"
+                            type="tel"
+                            :class="{ invalid: errors[0] }"
+                          ></b-form-input>
+                          <span class="errors">{{ errors[0] }}</span>
+                        </ValidationProvider>
+                      </b-form-group>
+                    </div>
+                    <div class="col-6">
+                      <b-form-group
+                        id="input-group-5"
+                        class="b-group"
+                        label="Correo electrónico:"
+                        label-for="input-5"
+                      >
+                        <ValidationProvider
+                          rules="required|email"
+                          v-slot="{ errors }"
+                        >
+                          <b-form-input
+                            id="input-5"
+                            v-model="form.userEmail"
+                            type="email"
+                            :class="{ invalid: errors[0] }"
+                          ></b-form-input>
+                          <span class="errors">{{ errors[0] }}</span>
+                        </ValidationProvider>
+                      </b-form-group>
+                    </div>
 
-                  <b-form-group
-                    id="input-group-2"
-                    class="b-group"
-                    label="Apellido paterno:"
-                    label-for="input-2"
-                  >
-                    <ValidationProvider rules="required" v-slot="{ errors }">
-                      <b-form-input
-                        id="input-2"
-                        v-model="form.userFirstLastName"
-                        type="text"
-                        :class="{ invalid: errors[0] }"
-                      ></b-form-input>
-                      <span class="errors">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                  </b-form-group>
+                    <div class="col-6">
+                      <b-form-group
+                        id="input-group-6"
+                        class="b-group"
+                        label="Contraseña:"
+                        label-for="input-6"
+                      >
+                        <ValidationProvider
+                          rules="required|password|password-match:@confirm"
+                          v-slot="{ errors }"
+                        >
+                          <b-form-input
+                            id="input-6"
+                            v-model="form.userPassword"
+                            type="password"
+                            :class="{ invalid: errors[0] }"
+                          ></b-form-input>
+                          <span class="errors">{{ errors[0] }}</span>
+                        </ValidationProvider>
+                      </b-form-group>
+                    </div>
 
-                  <b-form-group
-                    id="input-group-3"
-                    class="b-group"
-                    label="Apellido paterno:"
-                    label-for="input-3"
-                  >
-                    <ValidationProvider rules="required" v-slot="{ errors }">
-                      <b-form-input
-                        id="input-3"
-                        v-model="form.userSecondLastName"
-                        type="text"
-                        :class="{ invalid: errors[0] }"
-                      ></b-form-input>
-                      <span class="errors">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                  </b-form-group>
-
-                  <b-form-group
-                    id="input-group-4"
-                    class="b-group"
-                    label="Celular:"
-                    label-for="input-4"
-                  >
-                    <ValidationProvider
-                      rules="required|phone"
-                      v-slot="{ errors }"
-                    >
-                      <b-form-input
-                        id="input-4"
-                        v-model="form.userCellphone"
-                        type="tel"
-                        :class="{ invalid: errors[0] }"
-                      ></b-form-input>
-                      <span class="errors">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                  </b-form-group>
-
-                  <b-form-group
-                    id="input-group-5"
-                    class="b-group"
-                    label="Correo Electronico:"
-                    label-for="input-5"
-                  >
-                    <ValidationProvider
-                      rules="required|email"
-                      v-slot="{ errors }"
-                    >
-                      <b-form-input
-                        id="input-5"
-                        v-model="form.userEmail"
-                        type="email"
-                        :class="{ invalid: errors[0] }"
-                      ></b-form-input>
-                      <span class="errors">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                  </b-form-group>
-
-                  <b-form-group
-                    id="input-group-6"
-                    class="b-group"
-                    label="Contraseña:"
-                    label-for="input-6"
-                  >
-                    <ValidationProvider
-                      rules="required|password"
-                      v-slot="{ errors }"
-                    >
-                      <b-form-input
-                        id="input-6"
-                        v-model="form.userPassword"
-                        type="password"
-                        :class="{ invalid: errors[0] }"
-                      ></b-form-input>
-                      <span class="errors">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                  </b-form-group>
-                  <b-button type="submit" variant="primary">Ingresar</b-button>
+                    <div class="col-6">
+                      <b-form-group
+                        id="input-group-7"
+                        class="b-group"
+                        label="Confirmar contraseña:"
+                        label-for="input-7"
+                      >
+                        <ValidationProvider
+                          rules="required"
+                          name="confirm"
+                          v-slot="{ errors }"
+                        >
+                          <b-form-input
+                            id="input-6"
+                            v-model="confirmation"
+                            type="password"
+                            :class="{ invalid: errors[0] }"
+                          ></b-form-input>
+                          <span class="errors">{{ errors[0] }}</span>
+                        </ValidationProvider>
+                      </b-form-group>
+                    </div>
+                  </div>
+                  <b-button type="submit">Registrarme</b-button>
                 </b-form>
               </ValidationObserver>
             </div>
@@ -190,6 +232,7 @@ export default {
     return {
       key: "",
       backErrors: [],
+      confirmation: "",
       form: {
         userName: "",
         userFirstLastName: "",
@@ -261,10 +304,6 @@ export default {
             console.error("Error al crear el administrador:", error);
           }
         });
-    },
-    handleFiles(event) {
-      const file = event.target.files[0];
-      this.form.userProfilePic = file;
     },
   },
   mounted() {
@@ -354,6 +393,18 @@ li {
 input {
   border: solid 3px #ea0505;
   border-radius: 20px;
+}
+
+.btn {
+  background-color: #2d2a2a;
+  color: white;
+  border: none;
+  font-weight: 400;
+}
+
+.btn:hover {
+  background-color: #ae0505;
+  color: white;
 }
 
 @media (max-width: 800px) {

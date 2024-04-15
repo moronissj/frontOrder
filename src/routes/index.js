@@ -26,7 +26,6 @@ import NotFoundPage from "../components/NotFoundPage.vue";
 import AdminConfirmAccount from "../components/admin/crudadmins/AdminConfirmAccount.vue";
 import WorkerConfirmAccount from "../components/admin/crudworkers/WorkerConfirmAccount.vue";
 import SuccessView from "../components/client/orders/SuccessView.vue";
-import CancelView from "../components/client/orders/CancelView.vue";
 import UserAllPackages from "../components/client/UserAllPackages.vue";
 import UserAllCombos from "../components/client/UserAllCombos.vue";
 import ComboInfo from "../components/client/ordersCombos/ComboInfo.vue";
@@ -230,11 +229,6 @@ const routes = [
         next("/");
       }
     },
-  },
-  {
-    path: "/cancel",
-    name: "Cancel",
-    component: CancelView,
   },
 ];
 

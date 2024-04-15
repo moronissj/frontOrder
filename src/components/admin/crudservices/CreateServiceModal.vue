@@ -7,7 +7,12 @@
       variant="success"
       >Agregar Servicio <b-icon id="plusIcon" icon="plus" scale="1.5"></b-icon
     ></b-button>
-    <b-modal id="modal-1" title="Agregar Servicio" hide-footer>
+    <b-modal
+      no-close-on-backdrop
+      id="modal-1"
+      title="Agregar Servicio"
+      hide-footer
+    >
       <template #modal-header="{ close }">
         <h5 class="form-title">Agregar Servicio</h5>
         <b-button

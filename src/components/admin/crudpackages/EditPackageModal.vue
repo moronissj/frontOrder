@@ -11,6 +11,7 @@
       ><b-icon icon="pencil-square" scale="1"></b-icon
     ></b-button>
     <b-modal
+      no-close-on-backdrop
       :id="`editPackageModal_${aPackage.packageId}`"
       title="Editar Paquete"
       hide-footer

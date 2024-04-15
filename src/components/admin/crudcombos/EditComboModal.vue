@@ -11,6 +11,7 @@
       ><b-icon icon="pencil-square" scale="1"></b-icon
     ></b-button>
     <b-modal
+      no-close-on-backdrop
       :id="`editComboModal_${combo.comboId}`"
       title="Editar Combo"
       hide-footer

@@ -30,7 +30,7 @@
                 label-for="input-1"
               >
                 <ValidationProvider
-                  rules="required|valid-text"
+                  rules="required|valid-text|text-length"
                   v-slot="{ errors }"
                 >
                   <b-form-input
@@ -52,7 +52,7 @@
                 label-for="input-2"
               >
                 <ValidationProvider
-                  rules="required|futureDate"
+                  rules="required|future-date"
                   v-slot="{ errors }"
                 >
                   <b-form-input
@@ -87,9 +87,15 @@
           <br />
 
           <div class="buttonsContainer">
-            <b-button type="submit" class="register-btn" variant="success"
-              >Registrar</b-button
+            <b-button
+              type="submit"
+              class="register-btn"
+              variant="success"
+              :disabled="isLoading"
             >
+              <b-spinner small v-if="isLoading"></b-spinner>
+              {{ isLoading ? "Cargando..." : "Registrar" }}
+            </b-button>
             <b-button @click="closeModal" class="close-btn" id="botonCancelar">
               Cancelar
             </b-button>
@@ -109,7 +115,7 @@ extend("required", {
   message: "Este campo es requerido",
 });
 
-extend("futureDate", {
+extend("future-date", {
   params: ["refDate"],
   validate(value, { refDate }) {
     const currentDate = refDate ? new Date(refDate) : new Date();
@@ -121,11 +127,25 @@ extend("futureDate", {
 
 extend("valid-text", {
   ...regex,
-  message: "Este campo solo puede contener letras, paréntesis, puntos y comas.",
+  message:
+    "El campo solo puede contener letras, números, puntos, comas, paréntesis, signos de exclamación, signos de interrogación y caracteres acentuados",
   validate: (value) => {
-    const pattern = /^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ().,\s]*$/;
+    const pattern = /^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ0-9;.,\s()!?]*$/;
     return pattern.test(value);
   },
+});
+
+extend("text-length", {
+  validate: (value) => {
+    if (!value || value.length < 50) {
+      return "La descripción debe contener al menos 50 caracteres.";
+    }
+    if (value.length > 500) {
+      return "La descripción debe contener máximo 500 caracteres.";
+    }
+    return true;
+  },
+  message: "La descripción debe contener entre 50 y 500 caracteres.",
 });
 
 export default {
@@ -138,6 +158,7 @@ export default {
   },
   data() {
     return {
+      isLoading: false,
       form: {
         orderDate: null,
         orderPlace: "",
@@ -151,6 +172,8 @@ export default {
       this.initiatePayment();
     },
     initiatePayment() {
+      this.isLoading = true;
+
       const paymentData = {
         orderName: this.aPackage.packageName,
         orderDescription: this.aPackage.packageDescription,
@@ -183,6 +206,9 @@ export default {
         })
         .catch((error) => {
           console.error("Error al iniciar la sesión de pago:", error);
+        })
+        .finally(() => {
+          this.isLoading = false;
         });
     },
     closeModal() {
