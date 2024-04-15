@@ -35,7 +35,7 @@
                 class="input-label-container"
               >
                 <ValidationProvider
-                  rules="required|valid-name-part"
+                  rules="required|valid-name-part|max-length-name"
                   v-slot="{ errors }"
                 >
                   <b-form-input
@@ -57,7 +57,7 @@
                 class="input-label-container"
               >
                 <ValidationProvider
-                  rules="required|valid-name-part"
+                  rules="required|valid-name-part|max-length-name"
                   v-slot="{ errors }"
                 >
                   <b-form-input
@@ -78,7 +78,7 @@
                 class="input-label-container"
               >
                 <ValidationProvider
-                  rules="required|valid-name-part"
+                  rules="required|valid-name-part|max-length-name"
                   v-slot="{ errors }"
                 >
                   <b-form-input
@@ -106,6 +106,7 @@
                     id="input-6"
                     type="tel"
                     v-model="form.workerCellphone"
+                    disabled
                     :class="{ invalid: errors[0] }"
                   ></b-form-input>
                   <span class="errors">{{ errors[0] }}</span>
@@ -125,6 +126,7 @@
                     id="input-7"
                     type="number"
                     v-model="form.workerSecurityNumber"
+                    disabled
                     :class="{ invalid: errors[0] }"
                   ></b-form-input>
                   <span class="errors">{{ errors[0] }}</span>
@@ -146,6 +148,7 @@
                     id="input-8"
                     type="number"
                     v-model="form.workerSalary"
+                    disabled
                     :class="{ invalid: errors[0] }"
                   ></b-form-input>
                   <span class="errors">{{ errors[0] }}</span>
@@ -159,11 +162,12 @@
                 label-for="input-9"
                 class="input-label-container"
               >
-                <ValidationProvider rules="required|rfc" v-slot="{ errors }">
+                <ValidationProvider rules="required" v-slot="{ errors }">
                   <b-form-input
                     id="input-9"
                     type="text"
                     v-model="form.workerRfc"
+                    disabled
                     :class="{ invalid: errors[0] }"
                   ></b-form-input>
                   <span class="errors">{{ errors[0] }}</span>
@@ -173,9 +177,15 @@
           </div>
 
           <div class="buttonsContainer">
-            <b-button type="submit" class="register-btn" variant="primary"
-              >Actualizar</b-button
+            <b-button
+              type="submit"
+              class="register-btn"
+              variant="success"
+              :disabled="isLoading"
             >
+              <b-spinner small v-if="isLoading"></b-spinner>
+              {{ isLoading ? "Cargando..." : "Actualizar" }}
+            </b-button>
             <b-button @click="closeModal" class="close-btn" id="botonCancelar">
               Cancelar
             </b-button>
@@ -196,20 +206,14 @@ extend("required", {
   message: "Este campo es requerido",
 });
 
-extend("tel", {
+extend("max-length-name", {
   validate: (value) => {
-    if (!/^\d{10}$/.test(value)) return false;
-    return value.startsWith("777") || value.startsWith("52");
+    if (!value || value.length > 20) {
+      return "El nombre debe tener máximo 20 caracteres.";
+    }
+    return true;
   },
-  message:
-    "El teléfono debe ser numérico, comenzar con '777' o '52', y tener 10 dígitos.",
-});
-
-extend("nss", {
-  validate: (value) => {
-    return /^\d{11}$/.test(value);
-  },
-  message: "El número de seguridad social debe contener 11 digitos.",
+  message: "El nombre debe tener máximo 20 caracteres.",
 });
 
 extend("max_value", {
@@ -229,12 +233,6 @@ extend("valid-name-part", {
   },
 });
 
-extend("rfc", {
-  ...regex,
-  message: "El RFC debe tener un formato válido como XXXX00000DDD",
-  validate: (value) => /^[A-Z]{4}\d{5}[A-Z0-9]{3}$/.test(value),
-});
-
 export default {
   name: "EditWorkerModal",
   props: {
@@ -246,6 +244,7 @@ export default {
   data() {
     return {
       key: "",
+      isLoading: false,
       form: {
         workerName: "",
         workerFirstLastName: "",
@@ -268,6 +267,8 @@ export default {
       this.form.workerRfc = this.worker.workerRfc;
     },
     sendPutEditWorker() {
+      this.isLoading = true;
+
       const token = localStorage.getItem("token");
 
       const serializedDataEdit = JSON.stringify({
@@ -315,6 +316,9 @@ export default {
             } else {
               console.error("Error al actualizar el administrador:", error);
             }
+          })
+          .finally(() => {
+            this.isLoading = false;
           });
       }
     },

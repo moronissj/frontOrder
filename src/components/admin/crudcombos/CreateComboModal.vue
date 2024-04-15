@@ -27,7 +27,10 @@
             label-for="input-1"
             class="input-label-container"
           >
-            <ValidationProvider rules="required|valid-text" v-slot="{ errors }">
+            <ValidationProvider
+              rules="required|valid-text|max-length-name"
+              v-slot="{ errors }"
+            >
               <b-form-input
                 id="input-1"
                 type="text"
@@ -44,7 +47,10 @@
             label-for="input-2"
             class="input-label-container"
           >
-            <ValidationProvider rules="required|valid-text" v-slot="{ errors }">
+            <ValidationProvider
+              rules="required|valid-text-description|description-length"
+              v-slot="{ errors }"
+            >
               <b-form-textarea
                 id="input-2"
                 v-model="form.comboDescription"
@@ -64,7 +70,7 @@
                 class="input-label-container"
               >
                 <ValidationProvider
-                  rules="required|positiveNumber"
+                  rules="required|positive-number|max-value:20000"
                   v-slot="{ errors }"
                 >
                   <b-form-input
@@ -85,7 +91,7 @@
                 class="input-label-container"
               >
                 <ValidationProvider
-                  rules="required|positiveNumber"
+                  rules="required|positive-number|max-value:8"
                   v-slot="{ errors }"
                 >
                   <b-form-input
@@ -106,7 +112,7 @@
                 class="input-label-container"
               >
                 <ValidationProvider
-                  rules="required|positiveNumber"
+                  rules="required|positive-number|max-value:15"
                   v-slot="{ errors }"
                 >
                   <b-form-input
@@ -171,9 +177,15 @@
           </b-form-group>
 
           <div class="buttonsContainer">
-            <b-button type="submit" class="register-btn" variant="success"
-              >Registrar</b-button
+            <b-button
+              type="submit"
+              class="register-btn"
+              variant="success"
+              :disabled="isLoading"
             >
+              <b-spinner small v-if="isLoading"></b-spinner>
+              {{ isLoading ? "Cargando..." : "Registrar" }}
+            </b-button>
             <b-button @click="closeModal" class="close-btn" id="botonCancelar">
               Cancelar
             </b-button>
@@ -194,6 +206,14 @@ extend("required", {
   message: "Este campo es requerido",
 });
 
+extend("max-value", {
+  validate(value, { max }) {
+    return Number(value) <= max;
+  },
+  message: "Este campo no debe ser superior a {max}",
+  params: ["max"],
+});
+
 extend("ext", {
   ...ext,
   message: "El archivo debe ser una imagen png o jpg",
@@ -201,7 +221,7 @@ extend("ext", {
 
 extend("numeric", numeric);
 
-extend("positiveNumber", {
+extend("positive-number", {
   ...numeric,
   message:
     "El campo debe ser un número positivo mayor que cero y no puede contener caracteres especiales como e, +, -",
@@ -239,6 +259,7 @@ export default {
   name: "CreateComboModal",
   data() {
     return {
+      isLoading: false,
       packages: [],
       packageOptions: [],
       backErrors: [],
@@ -257,6 +278,8 @@ export default {
   },
   methods: {
     sendPostCreateCombo() {
+      this.isLoading = true;
+
       this.key = useSecret();
 
       const serializedData = JSON.stringify({
@@ -324,6 +347,9 @@ export default {
             } else {
               console.error("Error al crear el administrador:", error);
             }
+          })
+          .finally(() => {
+            this.isLoading = false;
           });
       }
     },
@@ -350,6 +376,7 @@ export default {
       this.form.comboWorkersNumber = "";
       this.form.comboImg = null;
       this.form.packageIds = [];
+      this.imagePreviewUrl = "";
     },
     fetchPackages() {
       const secretStore = useSecret();

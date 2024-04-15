@@ -28,7 +28,10 @@
             label-for="input-1"
             class="input-label-container"
           >
-            <ValidationProvider rules="required|valid-name" v-slot="{ errors }">
+            <ValidationProvider
+              rules="required|valid-name|max-length-name"
+              v-slot="{ errors }"
+            >
               <b-form-input
                 id="input-1"
                 type="text"
@@ -46,7 +49,7 @@
             class="input-label-container"
           >
             <ValidationProvider
-              rules="required|minLength|valid-text-entry"
+              rules="required|description-length|valid-text-description"
               v-slot="{ errors }"
             >
               <b-form-textarea
@@ -66,7 +69,7 @@
             class="input-label-container"
           >
             <ValidationProvider
-              rules="required|minLengthQuote|valid-text-entry"
+              rules="required|quote-length|valid-text-entry"
               v-slot="{ errors }"
             >
               <b-form-input
@@ -109,9 +112,15 @@
           </b-form-group>
 
           <div class="buttonsContainer">
-            <b-button type="submit" class="register-btn" variant="success"
-              >Registrar</b-button
+            <b-button
+              type="submit"
+              class="register-btn"
+              variant="success"
+              :disabled="isLoading"
             >
+              <b-spinner small v-if="isLoading"></b-spinner>
+              {{ isLoading ? "Cargando..." : "Registrar" }}
+            </b-button>
             <b-button @click="closeModal" class="close-btn" id="botonCancelar">
               Cancelar
             </b-button>
@@ -137,12 +146,12 @@ extend("valid-name", {
   },
 });
 
-extend("valid-text-entry", {
+extend("valid-text-description", {
   ...regex,
   message:
-    "El campo descripción solo puede contener letras, puntos, comas, paréntesis, signos de exclamación, signos de interrogación y caracteres acentuados",
+    "El campo descripción solo puede contener letras, números, puntos, comas, paréntesis, signos de exclamación, signos de interrogación y caracteres acentuados",
   validate: (value) => {
-    const pattern = /^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ.,\s()!?]*$/;
+    const pattern = /^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ0-9;.,\s()!?]*$/;
     return pattern.test(value);
   },
 });
@@ -168,30 +177,47 @@ extend("size", {
   message: "El archivo debe ser menor o igual a {size} MB.",
 });
 
-extend("minLength", {
+extend("description-length", {
   validate: (value) => {
     if (!value || value.length < 50) {
       return "La descripción debe contener al menos 50 caracteres.";
     }
+    if (value.length > 500) {
+      return "La descripción debe contener máximo 500 caracteres.";
+    }
     return true;
   },
-  message: "La descripción debe contener al menos 50 caracteres.",
+  message: "La descripción debe contener entre 50 y 500 caracteres.",
 });
 
-extend("minLengthQuote", {
+extend("max-length-name", {
+  validate: (value) => {
+    if (!value || value.length > 20) {
+      return "El nombre debe tener máximo 20 caracteres.";
+    }
+    return true;
+  },
+  message: "El nombre debe tener máximo 20 caracteres.",
+});
+
+extend("quote-length", {
   validate: (value) => {
     if (!value || value.length < 10) {
       return "La frase debe contener al menos 10 caracteres.";
     }
+    if (value.length > 60) {
+      return "La frase debe contener máximo 60 caracteres.";
+    }
     return true;
   },
-  message: "La frase debe contener al menos 10 caracteres.",
+  message: "La frase debe contener entre 10 y 60 caracteres.",
 });
 
 export default {
   name: "CreateServiceModal",
   data() {
     return {
+      isLoading: false,
       key: "",
       form: {
         serviceName: "",
@@ -204,6 +230,7 @@ export default {
   },
   methods: {
     sendPostCreateService() {
+      this.isLoading = true;
       const serializedData = JSON.stringify({
         serviceName: this.form.serviceName,
         serviceDescription: this.form.serviceDescription,
@@ -269,6 +296,9 @@ export default {
                 icon: "error",
               });
             }
+          })
+          .finally(() => {
+            this.isLoading = false;
           });
       }
     },

@@ -108,6 +108,8 @@
 
                 <b-button
                   draggable="true"
+                  v-b-tooltip.hover.top
+                  title="Eliminar"
                   @dragstart="handleDragStart($event, row.item)"
                   class="table-button"
                   variant="danger"
@@ -278,6 +280,16 @@ export default {
         confirmButtonText: "Si, eliminar",
       }).then((result) => {
         if (result.isConfirmed) {
+          this.$swal({
+            title: "Eliminando combo",
+            html: "Por favor espera mientras se elimina el combo...",
+            didOpen: () => {
+              this.$swal.showLoading();
+            },
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            allowEnterKey: false,
+          });
           const serializedData = JSON.stringify({
             comboId: id,
           });
@@ -297,6 +309,7 @@ export default {
                 },
               })
               .then((response) => {
+                this.$swal.close();
                 this.$swal({
                   title: "Eliminado",
                   text: "El Combo ha sido eliminado con éxito",
@@ -305,7 +318,7 @@ export default {
                 this.fetchCombo();
               })
               .catch((error) => {
-                console.log(error.response);
+                this.$swal.close();
                 if (error.response.data.status === 400) {
                   this.$swal({
                     title: "No se puede eliminar",

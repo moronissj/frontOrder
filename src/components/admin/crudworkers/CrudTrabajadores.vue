@@ -124,6 +124,8 @@
                 </b-button>
 
                 <b-button
+                  v-b-tooltip.hover.top
+                  title="Eliminar"
                   class="table-button"
                   draggable="true"
                   @dragstart="handleDragStart($event, row.item)"
@@ -377,6 +379,16 @@ export default {
         confirmButtonText: "Si, eliminar",
       }).then((result) => {
         if (result.isConfirmed) {
+          this.$swal({
+            title: "Eliminando servicio",
+            html: "Por favor espera mientras se elimina el servicio...",
+            didOpen: () => {
+              this.$swal.showLoading();
+            },
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            allowEnterKey: false,
+          });
           const serializedData = JSON.stringify({
             workerId: id,
           });
@@ -397,6 +409,7 @@ export default {
                 },
               })
               .then((response) => {
+                this.$swal.close();
                 this.$swal({
                   title: "Eliminado",
                   text: "La cuenta del trabajador ha sido eliminada con exito",
@@ -405,6 +418,7 @@ export default {
                 this.fetchWorkers();
               })
               .catch((error) => {
+                this.$swal.close();
                 const message = error.response.data.message;
                 this.$swal({
                   title: "No se puede eliminar",

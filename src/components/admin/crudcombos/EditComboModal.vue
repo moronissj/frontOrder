@@ -32,7 +32,10 @@
             label-for="input-1"
             class="input-label-container"
           >
-            <ValidationProvider rules="required|valid-text" v-slot="{ errors }">
+            <ValidationProvider
+              rules="required|valid-name|max-length-name"
+              v-slot="{ errors }"
+            >
               <b-form-input
                 id="input-1"
                 type="text"
@@ -49,7 +52,10 @@
             label-for="input-2"
             class="input-label-container"
           >
-            <ValidationProvider rules="required|valid-text" v-slot="{ errors }">
+            <ValidationProvider
+              rules="required|valid-text-description|description-length"
+              v-slot="{ errors }"
+            >
               <b-form-textarea
                 id="input-2"
                 v-model="form.comboDescription"
@@ -69,7 +75,7 @@
                 class="input-label-container"
               >
                 <ValidationProvider
-                  rules="required|positiveNumber"
+                  rules="required|positive-number|max-value:20000"
                   v-slot="{ errors }"
                 >
                   <b-form-input
@@ -90,7 +96,7 @@
                 class="input-label-container"
               >
                 <ValidationProvider
-                  rules="required|positiveNumber"
+                  rules="required|positive-number|max-value:8"
                   v-slot="{ errors }"
                 >
                   <b-form-input
@@ -111,7 +117,7 @@
                 class="input-label-container"
               >
                 <ValidationProvider
-                  rules="required|positiveNumber"
+                  rules="required|positive-number|max-value:15"
                   v-slot="{ errors }"
                 >
                   <b-form-input
@@ -127,8 +133,14 @@
           </div>
 
           <div class="buttonsContainer">
-            <b-button type="submit" class="register-btn" variant="primary"
-              >Actualizar
+            <b-button
+              type="submit"
+              class="register-btn"
+              variant="success"
+              :disabled="isLoading"
+            >
+              <b-spinner small v-if="isLoading"></b-spinner>
+              {{ isLoading ? "Cargando..." : "Actualizar" }}
             </b-button>
             <b-button @click="closeModal" class="close-btn" id="botonCancelar">
               Cancelar
@@ -150,9 +162,19 @@ extend("required", {
   message: "Este campo es requerido",
 });
 
+extend("valid-name", {
+  ...regex,
+  message:
+    "El campo nombre solo puede contener letras, puntos, comas, y caracteres acentuados",
+  validate: (value) => {
+    const pattern = /^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ.,\s]*$/;
+    return pattern.test(value);
+  },
+});
+
 extend("numeric", numeric);
 
-extend("positiveNumber", {
+extend("positive-number", {
   ...numeric,
   message:
     "El campo debe ser un número positivo mayor que cero y no puede contener caracteres especiales como e, +, -",
@@ -165,14 +187,45 @@ extend("positiveNumber", {
   },
 });
 
-extend("valid-text", {
+extend("max-value", {
+  validate(value, { max }) {
+    return Number(value) <= max;
+  },
+  message: "Este campo no debe ser superior a {max}",
+  params: ["max"],
+});
+
+extend("valid-text-description", {
   ...regex,
   message:
-    "Este campo solo puede contener letras acentuadas, sin acentuar, puntos y comas",
+    "El campo descripción solo puede contener letras, números, puntos, comas, paréntesis, signos de exclamación, signos de interrogación y caracteres acentuados",
   validate: (value) => {
-    const pattern = /^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ.,\s]*$/;
+    const pattern = /^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ0-9;.,\s()!?]*$/;
     return pattern.test(value);
   },
+});
+
+extend("description-length", {
+  validate: (value) => {
+    if (!value || value.length < 50) {
+      return "La descripción debe contener al menos 50 caracteres.";
+    }
+    if (value.length > 500) {
+      return "La descripción debe contener máximo 500 caracteres.";
+    }
+    return true;
+  },
+  message: "La descripción debe contener entre 50 y 500 caracteres.",
+});
+
+extend("max-length-name", {
+  validate: (value) => {
+    if (!value || value.length > 20) {
+      return "El nombre debe tener máximo 20 caracteres.";
+    }
+    return true;
+  },
+  message: "El nombre debe tener máximo 20 caracteres.",
 });
 
 export default {
@@ -185,6 +238,7 @@ export default {
   },
   data() {
     return {
+      isLoading: false,
       form: {
         comboName: "",
         comboDescription: "",
@@ -203,6 +257,8 @@ export default {
       this.form.comboWorkersNumber = this.combo.comboWorkersNumber;
     },
     sendPutEditCombo() {
+      this.isLoading = true;
+
       this.key = useSecret();
 
       const serializedData = JSON.stringify({
@@ -255,6 +311,9 @@ export default {
             } else {
               console.error("Error al actualizar el paquete:", error);
             }
+          })
+          .finally(() => {
+            this.isLoading = false;
           });
       }
     },

@@ -92,6 +92,8 @@
             <template #cell(actions)="row">
               <div class="actions-container">
                 <b-button
+                  v-b-tooltip.hover.top
+                  title="Ver más detalles"
                   class="table-button plus-button-table"
                   size="sm"
                   variant="info"
@@ -104,10 +106,18 @@
                   :aPackage="row.item"
                   @actualizacionExitosa="fetchPackages"
                 ></EditPackageModal>
-                <b-button class="table-button" variant="warning" size="sm">
+                <b-button
+                  class="table-button"
+                  v-b-tooltip.hover.top
+                  title="Estado"
+                  variant="warning"
+                  size="sm"
+                >
                   <b-icon icon="circle" scale=".7"></b-icon
                 ></b-button>
                 <b-button
+                  v-b-tooltip.hover.top
+                  title="Eliminar"
                   draggable="true"
                   @dragstart="handleDragStart($event, row.item)"
                   class="table-button"
@@ -259,6 +269,16 @@ export default {
         confirmButtonText: "Si, eliminar",
       }).then((result) => {
         if (result.isConfirmed) {
+          this.$swal({
+            title: "Eliminando paquete",
+            html: "Por favor espera mientras se elimina el paquete...",
+            didOpen: () => {
+              this.$swal.showLoading();
+            },
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            allowEnterKey: false,
+          });
           const serializedData = JSON.stringify({
             packageId: id,
           });
@@ -277,6 +297,8 @@ export default {
                 },
               })
               .then((response) => {
+                this.$swal.close();
+
                 this.$swal({
                   title: "Eliminado",
                   text: "El paquete ha sido eliminado con exito",
@@ -285,6 +307,8 @@ export default {
                 this.fetchPackages();
               })
               .catch((error) => {
+                this.$swal.close();
+
                 if (error.response.data.status === 400) {
                   this.$swal({
                     title: "No se puede eliminar",
