@@ -2,10 +2,13 @@
   <div>
     <NavbarClient />
     <div class="container">
-      <div class="row" style="margin-top: 50px">
+      <div class="row" style="margin-top: 50px; margin-bottom: 50px">
         <div class="col-6">
           <h1>{{ combo.comboName }}</h1>
-          <p>Descripción: {{ combo.comboDescription }}</p>
+          <div style="text-align: justify">
+            <p>Descripción: {{ combo.comboDescription }}</p>
+          </div>
+
           <p>Duración: {{ combo.comboDesignatedHours }}</p>
           <p>
             Número de trabajadores del combo: {{ combo.comboWorkersNumber }}
@@ -33,12 +36,10 @@
         </div>
       </div>
     </div>
-    <Footer />
   </div>
 </template>
 
 <script>
-import Footer from "../../Footer.vue";
 import MakeOrderComboModal from "./MakeOrderComboModal.vue";
 import NavbarClient from "../NavbarClient.vue";
 import Fancybox from "../../Fancybox.vue";
@@ -46,7 +47,6 @@ import Fancybox from "../../Fancybox.vue";
 export default {
   name: "ComboInfo",
   components: {
-    Footer,
     MakeOrderComboModal,
     NavbarClient,
     Fancybox,

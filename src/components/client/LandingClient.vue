@@ -1,8 +1,6 @@
 <template>
   <div>
     <NavbarClient />
-
-    <!-- Spinner de carga -->
     <div v-if="isLoading" class="spinner-fullscreen">
       <div
         class="spinner-border text-primary"
@@ -41,41 +39,7 @@
                 />
               </div>
               <div>
-                <a href="/admin-services">
-                  <b-button size="lg">Ver más</b-button>
-                </a>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4 col-12">
-            <div class="card service-card" id="black">
-              <h3>Administradores</h3>
-              <div class="img-container">
-                <img
-                  src="../../assets/administradoresIcon.png"
-                  alt=""
-                  class="iconService"
-                />
-              </div>
-              <div>
-                <a href="/admin-administrators">
-                  <b-button size="lg">Ver más</b-button>
-                </a>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4 col-12">
-            <div class="card service-card">
-              <h3>Trabajadores</h3>
-              <div class="img-container">
-                <img
-                  src="../../assets/trabajadoresIcon.png"
-                  alt=""
-                  class="iconService"
-                />
-              </div>
-              <div>
-                <a href="/admin-workers">
+                <a href="/user-services">
                   <b-button size="lg">Ver más</b-button>
                 </a>
               </div>
@@ -84,7 +48,6 @@
         </div>
       </div>
     </div>
-
     <Footer />
   </div>
 </template>
