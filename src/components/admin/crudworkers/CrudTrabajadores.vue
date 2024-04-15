@@ -93,6 +93,8 @@
               <div class="actions-container">
                 <b-button
                   class="table-button plus-button-table"
+                  v-b-tooltip.hover.top
+                  title="Ver más detalles"
                   size="sm"
                   variant="info"
                   @click="row.toggleDetails"
@@ -106,6 +108,8 @@
                 ></EditWorkerModal>
 
                 <b-button
+                  v-b-tooltip.hover.top
+                  title="Estado"
                   class="table-button status-button"
                   variant="light"
                   size="sm"

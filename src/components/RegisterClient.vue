@@ -126,29 +126,6 @@
                       <span class="errors">{{ errors[0] }}</span>
                     </ValidationProvider>
                   </b-form-group>
-
-                  <b-form-group
-                    id="input-group-8"
-                    label="Foto de perfil:"
-                    label-for="input-8"
-                  >
-                    <ValidationProvider
-                      rules="required|ext:png,jpg"
-                      v-slot="{ errors }"
-                    >
-                      <b-form-file
-                        id="input-8"
-                        v-model="form.userProfilePic"
-                        accept="image/*"
-                        @change="handleFiles"
-                        placeholder="Seleccione una imagen"
-                        :class="{ invalid: errors[0] }"
-                      ></b-form-file>
-                      <span class="errors">{{ errors[0] }}</span>
-                    </ValidationProvider>
-                  </b-form-group>
-
-                  <br />
                   <b-button type="submit" variant="primary">Ingresar</b-button>
                 </b-form>
               </ValidationObserver>
@@ -169,11 +146,6 @@ import { required, ext } from "vee-validate/dist/rules";
 extend("required", {
   ...required,
   message: "Este campo es requerido",
-});
-
-extend("ext", {
-  ...ext,
-  message: "La imagen debe ser un png o un jpg",
 });
 
 extend("email", {
@@ -225,7 +197,6 @@ export default {
         userEmail: "",
         userPassword: "",
         userCellphone: "",
-        userProfilePic: null,
       },
     };
   },
@@ -250,10 +221,6 @@ export default {
 
       let formData = new FormData();
       formData.append("data", encryptedData);
-      if (this.form.userProfilePic) {
-        formData.append("userProfilePic", this.form.userProfilePic);
-      }
-
       this.$http
         .post("/api/accounts/create-common", formData)
         .then((response) => {

@@ -2,6 +2,8 @@
   <div>
     <b-button
       class="table-button"
+      v-b-tooltip.hover.top
+      title="Editar"
       size="sm"
       v-b-modal="`editComboModal_${combo.comboId}`"
       @click="fillForm"
