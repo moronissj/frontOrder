@@ -2,6 +2,8 @@
   <div>
     <b-button
       class="table-button"
+      v-b-tooltip.hover.top
+      title="Editar"
       size="sm"
       v-b-modal="`editServiceModal_${service.serviceId}`"
       @click="fillForm"
@@ -51,7 +53,7 @@
             class="input-label-container"
           >
             <ValidationProvider
-              rules="required|minLength|valid-text-entry"
+              rules="required|description-length|valid-text-description"
               v-slot="{ errors }"
             >
               <b-form-textarea
@@ -70,7 +72,7 @@
             class="input-label-container"
           >
             <ValidationProvider
-              rules="required|minLengthQuote|valid-text-entry"
+              rules="required|min-length-quote|valid-text-entry"
               v-slot="{ errors }"
             >
               <b-form-input
@@ -84,9 +86,15 @@
           </b-form-group>
 
           <div class="buttonsContainer">
-            <b-button type="submit" class="register-btn" variant="primary"
-              >Actualizar</b-button
+            <b-button
+              type="submit"
+              class="register-btn"
+              variant="success"
+              :disabled="isLoading"
             >
+              <b-spinner small v-if="isLoading"></b-spinner>
+              {{ isLoading ? "Cargando..." : "Actualizar" }}
+            </b-button>
             <b-button @click="closeModal" class="close-btn" id="botonCancelar">
               Cancelar
             </b-button>
@@ -112,6 +120,16 @@ extend("valid-name", {
   },
 });
 
+extend("valid-text-description", {
+  ...regex,
+  message:
+    "El campo descripción solo puede contener letras, números, puntos, comas, paréntesis, signos de exclamación, signos de interrogación y caracteres acentuados",
+  validate: (value) => {
+    const pattern = /^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ0-9;.,\s()!?]*$/;
+    return pattern.test(value);
+  },
+});
+
 extend("valid-text-entry", {
   ...regex,
   message:
@@ -127,17 +145,20 @@ extend("required", {
   message: "Este campo es requerido",
 });
 
-extend("minLength", {
+extend("description-length", {
   validate: (value) => {
     if (!value || value.length < 50) {
       return "La descripción debe contener al menos 50 caracteres.";
     }
+    if (value.length > 500) {
+      return "La descripción debe contener máximo 500 caracteres.";
+    }
     return true;
   },
-  message: "La descripción debe contener al menos 50 caracteres.",
+  message: "La descripción debe contener entre 50 y 500 caracteres.",
 });
 
-extend("minLengthQuote", {
+extend("min-length-quote", {
   validate: (value) => {
     if (!value || value.length < 10) {
       return "La frase debe contener al menos 10 caracteres.";
@@ -157,6 +178,7 @@ export default {
   },
   data() {
     return {
+      isLoading: false,
       key: "",
       form: {
         serviceName: "",
@@ -172,6 +194,7 @@ export default {
       this.form.serviceQuote = this.service.serviceQuote;
     },
     sendPutEditService() {
+      this.isLoading = true;
       console.log(this.form.serviceDescription);
       const serializedData = JSON.stringify({
         serviceId: this.service.serviceId,
@@ -183,7 +206,6 @@ export default {
         serializedData,
         this.key
       );
-      console.log(encryptedData);
       let formData = new FormData();
       formData.append("data", encryptedData);
 
@@ -216,6 +238,9 @@ export default {
             } else {
               console.error("Error al actualizar el servicio:", error);
             }
+          })
+          .finally(() => {
+            this.isLoading = false;
           });
       }
     },

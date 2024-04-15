@@ -32,7 +32,7 @@
                 label-for="input-1"
               >
                 <ValidationProvider
-                  rules="required|valid-name-part"
+                  rules="required|valid-name-part|max-length-name"
                   v-slot="{ errors }"
                 >
                   <b-form-input
@@ -53,7 +53,7 @@
                 label-for="input-2"
               >
                 <ValidationProvider
-                  rules="required|valid-name-part"
+                  rules="required|valid-name-part|max-length-name"
                   v-slot="{ errors }"
                 >
                   <b-form-input
@@ -74,7 +74,7 @@
                 label-for="input-3"
               >
                 <ValidationProvider
-                  rules="required|valid-name-part"
+                  rules="required|valid-name-part|max-length-name"
                   v-slot="{ errors }"
                 >
                   <b-form-input
@@ -201,7 +201,7 @@
                 class="input-label-container"
               >
                 <ValidationProvider
-                  rules="required|max_value:50000"
+                  rules="required|max-value:50000"
                   v-slot="{ errors }"
                 >
                   <b-input-group prepend="$">
@@ -248,9 +248,15 @@
           </b-form-group>
 
           <div class="buttonsContainer">
-            <b-button type="submit" class="register-btn" variant="success"
-              >Registrar</b-button
+            <b-button
+              type="submit"
+              class="register-btn"
+              variant="success"
+              :disabled="isLoading"
             >
+              <b-spinner small v-if="isLoading"></b-spinner>
+              {{ isLoading ? "Cargando..." : "Registrar" }}
+            </b-button>
             <b-button @click="closeModal" class="close-btn" id="botonCancelar">
               Cancelar
             </b-button>
@@ -265,6 +271,16 @@
 import { useSecret } from "@/stores/key";
 import { extend } from "vee-validate";
 import { required, ext, email, regex } from "vee-validate/dist/rules";
+
+extend("max-length-name", {
+  validate: (value) => {
+    if (!value || value.length > 20) {
+      return "El nombre debe tener máximo 20 caracteres.";
+    }
+    return true;
+  },
+  message: "El nombre debe tener máximo 20 caracteres.",
+});
 
 extend("required", {
   ...required,
@@ -333,7 +349,7 @@ extend("size", {
   message: "El archivo debe ser menor o igual a {size} MB.",
 });
 
-extend("max_value", {
+extend("max-value", {
   validate(value, { max }) {
     return Number(value) <= max;
   },
@@ -345,6 +361,7 @@ export default {
   name: "CreateAdminModal",
   data() {
     return {
+      isLoading: false,
       key: "",
       confirmation: "",
       backErrors: [],
@@ -364,6 +381,7 @@ export default {
   },
   methods: {
     sendPostCreateAdmin() {
+      this.isLoading = true;
       const serializedData = JSON.stringify({
         adminName: this.form.adminName,
         adminFirstLastName: this.form.adminFirstLastName,
@@ -431,6 +449,9 @@ export default {
             } else {
               console.error("Error al crear el administrador:", error);
             }
+          })
+          .finally(() => {
+            this.isLoading = false;
           });
       }
     },
@@ -461,6 +482,7 @@ export default {
       this.form.adminProfilePic = null;
       this.confirmation = "";
       this.imagePreviewUrl = null;
+      this.confirmation = "";
     },
   },
   mounted() {

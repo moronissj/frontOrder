@@ -3,6 +3,8 @@
     <b-button
       class="table-button"
       size="sm"
+      v-b-tooltip.hover.top
+      title="Editar"
       v-b-modal="`editPackageModal_${aPackage.packageId}`"
       @click="fillForm"
       variant="primary"
@@ -32,7 +34,10 @@
             label-for="input-1"
             class="input-label-container"
           >
-            <ValidationProvider rules="required|valid-text" v-slot="{ errors }">
+            <ValidationProvider
+              rules="required|valid-text|max-length-name"
+              v-slot="{ errors }"
+            >
               <b-form-input
                 id="input-1"
                 type="text"
@@ -49,7 +54,10 @@
             label-for="input-2"
             class="input-label-container"
           >
-            <ValidationProvider rules="required|valid-text" v-slot="{ errors }">
+            <ValidationProvider
+              rules="required|description-length|valid-text-description"
+              v-slot="{ errors }"
+            >
               <b-form-textarea
                 id="input-2"
                 v-model="form.packageDescription"
@@ -69,7 +77,7 @@
                 class="input-label-container"
               >
                 <ValidationProvider
-                  rules="required|positiveNumber"
+                  rules="required|positive-number|max-value:15000"
                   v-slot="{ errors }"
                 >
                   <b-form-input
@@ -91,7 +99,7 @@
                 class="input-label-container"
               >
                 <ValidationProvider
-                  rules="required|positiveNumber"
+                  rules="required|positive-number|max-value:8"
                   v-slot="{ errors }"
                 >
                   <b-form-input
@@ -112,7 +120,7 @@
                 class="input-label-container"
               >
                 <ValidationProvider
-                  rules="required|positiveNumber"
+                  rules="required|positive-number|max-value:15"
                   v-slot="{ errors }"
                 >
                   <b-form-input
@@ -149,8 +157,14 @@
           </div>
 
           <div class="buttonsContainer">
-            <b-button type="submit" class="register-btn" variant="primary"
-              >Actualizar
+            <b-button
+              type="submit"
+              class="register-btn"
+              variant="success"
+              :disabled="isLoading"
+            >
+              <b-spinner small v-if="isLoading"></b-spinner>
+              {{ isLoading ? "Cargando..." : "Actualizar" }}
             </b-button>
             <b-button @click="closeModal" class="close-btn" id="botonCancelar">
               Cancelar
@@ -172,9 +186,17 @@ extend("required", {
   message: "Este campo es requerido",
 });
 
+extend("max-value", {
+  validate(value, { max }) {
+    return Number(value) <= max;
+  },
+  message: "Este campo no debe ser superior a {max}",
+  params: ["max"],
+});
+
 extend("numeric", numeric);
 
-extend("positiveNumber", {
+extend("positive-number", {
   ...numeric,
   message:
     "El campo debe ser un número positivo mayor que cero y no puede contener caracteres especiales como e, +, -",
@@ -197,6 +219,39 @@ extend("valid-text", {
   },
 });
 
+extend("valid-text-description", {
+  ...regex,
+  message:
+    "El campo descripción solo puede contener letras, números, puntos, comas, paréntesis, signos de exclamación, signos de interrogación y caracteres acentuados",
+  validate: (value) => {
+    const pattern = /^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ0-9;.,\s()!?]*$/;
+    return pattern.test(value);
+  },
+});
+
+extend("description-length", {
+  validate: (value) => {
+    if (!value || value.length < 50) {
+      return "La descripción debe contener al menos 50 caracteres.";
+    }
+    if (value.length > 500) {
+      return "La descripción debe contener máximo 500 caracteres.";
+    }
+    return true;
+  },
+  message: "La descripción debe contener entre 50 y 500 caracteres.",
+});
+
+extend("max-length-name", {
+  validate: (value) => {
+    if (!value || value.length > 20) {
+      return "El nombre debe tener máximo 20 caracteres.";
+    }
+    return true;
+  },
+  message: "El nombre debe tener máximo 20 caracteres.",
+});
+
 export default {
   name: "EditPackageModal",
   props: {
@@ -207,6 +262,7 @@ export default {
   },
   data() {
     return {
+      isLoading: false,
       services: [],
       backErrors: [],
       key: "",
@@ -231,6 +287,8 @@ export default {
       this.form.categoryId = this.aPackage.categoryId;
     },
     sendPutEditPackage() {
+      this.isLoading = true;
+
       this.key = useSecret();
       const serializedData = JSON.stringify({
         packageId: this.aPackage.packageId,
@@ -279,6 +337,9 @@ export default {
             } else {
               console.error("Error al actualizar el paquete:", error);
             }
+          })
+          .finally(() => {
+            this.isLoading = false;
           });
       }
     },

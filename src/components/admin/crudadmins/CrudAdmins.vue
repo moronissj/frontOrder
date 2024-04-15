@@ -90,6 +90,8 @@
             <template #cell(actions)="row">
               <div class="actions-container">
                 <b-button
+                  v-b-tooltip.hover.top
+                  title="Ver más detalles"
                   class="table-button plus-button-table"
                   size="sm"
                   variant="info"
@@ -106,6 +108,8 @@
                 <b-button
                   class="table-button status-button"
                   variant="light"
+                  v-b-tooltip.hover.top
+                  title="Estado"
                   size="sm"
                   @click="goToConfirmAdminAccount(row.item.accountStatus)"
                   :disabled="row.item.accountStatus === 'Confirmada'"
@@ -122,6 +126,8 @@
                 </b-button>
 
                 <b-button
+                  v-b-tooltip.hover.top
+                  title="Eliminar"
                   draggable="true"
                   @dragstart="handleDragStart($event, row.item)"
                   class="table-button"
@@ -373,6 +379,16 @@ export default {
         confirmButtonText: "Si, eliminar",
       }).then((result) => {
         if (result.isConfirmed) {
+          this.$swal({
+            title: "Eliminando administrador",
+            html: "Por favor espera mientras se elimina el administrador...",
+            didOpen: () => {
+              this.$swal.showLoading();
+            },
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            allowEnterKey: false,
+          });
           const serializedData = JSON.stringify({
             adminId: id,
           });
@@ -393,6 +409,7 @@ export default {
                 },
               })
               .then((response) => {
+                this.$swal.close();
                 this.$swal({
                   title: "Eliminado",
                   text: "La cuenta de administrador ha sido eliminada con exito",
@@ -401,7 +418,12 @@ export default {
                 this.fetchAdmins();
               })
               .catch((error) => {
-                console.error(error);
+                this.$swal.close();
+                this.$swal({
+                  title: "Error",
+                  text: "Ocurrio un error al intentar eliminar el administrador",
+                  icon: "error",
+                });
               });
           }
         }

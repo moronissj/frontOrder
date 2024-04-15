@@ -27,7 +27,10 @@
             label-for="input-1"
             class="input-label-container"
           >
-            <ValidationProvider rules="required|valid-text" v-slot="{ errors }">
+            <ValidationProvider
+              rules="required|valid-name|max-length-name"
+              v-slot="{ errors }"
+            >
               <b-form-input
                 id="input-1"
                 type="text"
@@ -44,7 +47,10 @@
             label-for="input-2"
             class="input-label-container"
           >
-            <ValidationProvider rules="required|valid-text" v-slot="{ errors }">
+            <ValidationProvider
+              rules="required|description-length|valid-text-description"
+              v-slot="{ errors }"
+            >
               <b-form-textarea
                 id="input-2"
                 v-model="form.packageDescription"
@@ -62,7 +68,7 @@
             class="input-label-container"
           >
             <ValidationProvider
-              rules="required|positiveNumber"
+              rules="required|positive-number|max-value:15000"
               v-slot="{ errors }"
             >
               <b-form-input
@@ -82,7 +88,7 @@
             class="input-label-container"
           >
             <ValidationProvider
-              rules="required|positiveNumber"
+              rules="required|positive-number|max-value:8"
               v-slot="{ errors }"
             >
               <b-form-input
@@ -102,7 +108,7 @@
             class="input-label-container"
           >
             <ValidationProvider
-              rules="required|positiveNumber"
+              rules="required|positive-number|max-value:15"
               v-slot="{ errors }"
             >
               <b-form-input
@@ -142,7 +148,7 @@
             class="input-label-container"
           >
             <ValidationProvider
-              rules="required|ext:jpg,png|totalSizeImages"
+              rules="required|ext:jpg,png|total-size-images"
               v-slot="{ errors }"
             >
               <b-form-file
@@ -159,9 +165,15 @@
           </b-form-group>
 
           <div class="buttonsContainer">
-            <b-button type="submit" class="register-btn" variant="success"
-              >Registrar</b-button
+            <b-button
+              type="submit"
+              class="register-btn"
+              variant="success"
+              :disabled="isLoading"
             >
+              <b-spinner small v-if="isLoading"></b-spinner>
+              {{ isLoading ? "Cargando..." : "Registrar" }}
+            </b-button>
             <b-button @click="closeModal" class="close-btn" id="botonCancelar">
               Cancelar
             </b-button>
@@ -177,6 +189,57 @@ import { useSecret } from "@/stores/key";
 import { extend } from "vee-validate";
 import { required, ext, numeric, regex } from "vee-validate/dist/rules";
 
+extend("valid-text-description", {
+  ...regex,
+  message:
+    "El campo descripción solo puede contener letras, números, puntos, comas, paréntesis, signos de exclamación, signos de interrogación y caracteres acentuados",
+  validate: (value) => {
+    const pattern = /^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ0-9;.,\s()!?]*$/;
+    return pattern.test(value);
+  },
+});
+
+extend("max-value", {
+  validate(value, { max }) {
+    return Number(value) <= max;
+  },
+  message: "Este campo no debe ser superior a {max}",
+  params: ["max"],
+});
+
+extend("description-length", {
+  validate: (value) => {
+    if (!value || value.length < 50) {
+      return "La descripción debe contener al menos 50 caracteres.";
+    }
+    if (value.length > 500) {
+      return "La descripción debe contener máximo 500 caracteres.";
+    }
+    return true;
+  },
+  message: "La descripción debe contener entre 50 y 500 caracteres.",
+});
+
+extend("valid-name", {
+  ...regex,
+  message:
+    "El campo nombre solo puede contener letras, puntos, comas, y caracteres acentuados",
+  validate: (value) => {
+    const pattern = /^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ.,\s]*$/;
+    return pattern.test(value);
+  },
+});
+
+extend("max-length-name", {
+  validate: (value) => {
+    if (!value || value.length > 20) {
+      return "El nombre debe tener máximo 20 caracteres.";
+    }
+    return true;
+  },
+  message: "El nombre debe tener máximo 20 caracteres.",
+});
+
 extend("required", {
   ...required,
   message: "Este campo es requerido",
@@ -184,7 +247,7 @@ extend("required", {
 
 extend("numeric", numeric);
 
-extend("positiveNumber", {
+extend("positive-number", {
   ...numeric,
   message:
     "El campo debe ser un número positivo mayor que cero y no puede contener caracteres especiales como e, +, -",
@@ -197,22 +260,12 @@ extend("positiveNumber", {
   },
 });
 
-extend("valid-text", {
-  ...regex,
-  message:
-    "Este campo solo puede contener letras acentuadas, sin acentuar, puntos y comas",
-  validate: (value) => {
-    const pattern = /^[a-zA-ZñÑáéíóúÁÉÍÓÚüÜ.,\s]*$/;
-    return pattern.test(value);
-  },
-});
-
 extend("ext", {
   ...ext,
   message: "El archivo debe ser una imagen png o jpg",
 });
 
-extend("totalSizeImages", {
+extend("total-size-images", {
   validate(files) {
     if (!files.length) return true;
 
@@ -231,6 +284,7 @@ export default {
   name: "CreatePackageModal",
   data() {
     return {
+      isLoading: false,
       services: [],
       backErrors: [],
       key: "",
@@ -247,6 +301,8 @@ export default {
   },
   methods: {
     sendPostCreatePackage() {
+      this.isLoading = true;
+
       this.key = useSecret();
 
       const serializedData = JSON.stringify({
@@ -313,6 +369,9 @@ export default {
             } else {
               console.error("Error al crear el servicio:", error);
             }
+          })
+          .finally(() => {
+            this.isLoading = false;
           });
       }
     },
