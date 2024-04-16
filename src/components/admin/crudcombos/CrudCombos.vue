@@ -104,15 +104,6 @@
                   :combo="row.item"
                   @actualizacionExitosa="fetchCombo"
                 ></EditComboModal>
-                <b-button
-                  class="table-button"
-                  v-b-tooltip.hover.top
-                  title="Estado"
-                  variant="warning"
-                  size="sm"
-                >
-                  <b-icon icon="circle" scale=".7"></b-icon
-                ></b-button>
 
                 <b-button
                   draggable="true"
@@ -219,14 +210,10 @@ export default {
           sortDirection: "desc",
         },
         {
-          key: "isActive",
-          label: "Estado del Combo",
-          formatter: (value, key, item) => {
-            return value ? "En servicio" : "Bloqueado";
-          },
+          key: "comboPrice",
+          label: "Precio del combo",
           sortable: true,
-          sortByFormatted: true,
-          filterByFormatted: true,
+          sortDirection: "desc",
         },
         { key: "actions", label: "Acciones" },
       ],
@@ -350,14 +337,21 @@ export default {
       this.deleteComboOnDrop(comboId);
     },
     fetchCombo() {
-      this.$http
-        .get("/api/combos")
-        .then((response) => {
-          this.items = response.data;
-        })
-        .catch((e) => {
-          console.error("Error en la peticion: ", e);
-        });
+      const tok = localStorage.getItem("token");
+      if (tok) {
+        this.$http
+          .get("/api/combos", {
+            headers: {
+              Authorization: `Bearer ${tok}`,
+            },
+          })
+          .then((response) => {
+            this.items = response.data;
+          })
+          .catch((e) => {
+            console.error("Error en la peticion: ", e);
+          });
+      }
     },
   },
 };

@@ -71,33 +71,42 @@ export default {
     sendPostConfirmAccountAdminWithToken() {
       let formData = new FormData();
       formData.append("token", this.token);
-      this.$http
-        .post("/api/accounts/confirm-admin-account", formData)
-        .then((response) => {
-          this.$swal({
-            title: "Cuenta confirmada",
-            text: "La cuenta ha sido confirmada, puede iniciar sesión",
-            icon: "success",
+      const tok = localStorage.getItem("token");
+      if (tok) {
+        this.$http
+          .post("/api/accounts/confirm-admin-account", formData, {
+            headers: {
+              Authorization: `Bearer ${tok}`,
+            },
+          })
+          .then((response) => {
+            this.$swal({
+              title: "Cuenta confirmada",
+              text: "La cuenta ha sido confirmada, puede iniciar sesión",
+              icon: "success",
+            });
+            this.$router.push("/admin-administrators");
+          })
+          .catch((error) => {
+            if (
+              error.response.data === "Invalid or expired confirmation token"
+            ) {
+              this.$swal({
+                title: "Token no valido",
+                text: "El token no es valido o ha expirado, comprueba de nuevo",
+                icon: "error",
+              });
+            } else if (error.response.status === 500) {
+              this.$swal({
+                title: "Token no valido",
+                text: "El token no es valido o ha expirado, comprueba de nuevo",
+                icon: "error",
+              });
+            } else {
+              console.error(error);
+            }
           });
-          this.$router.push("/admin-administrators");
-        })
-        .catch((error) => {
-          if (error.response.data === "Invalid or expired confirmation token") {
-            this.$swal({
-              title: "Token no valido",
-              text: "El token no es valido o ha expirado, comprueba de nuevo",
-              icon: "error",
-            });
-          } else if (error.response.status === 500) {
-            this.$swal({
-              title: "Token no valido",
-              text: "El token no es valido o ha expirado, comprueba de nuevo",
-              icon: "error",
-            });
-          } else {
-            console.error(error);
-          }
-        });
+      }
     },
   },
 };

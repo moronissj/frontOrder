@@ -32,6 +32,8 @@
 
 <script>
 import NavbarCliente from "./NavbarClient.vue";
+import { useSecret } from "@/stores/key";
+
 export default {
   name: "ServicePackages",
   components: {
@@ -39,21 +41,40 @@ export default {
   },
   data() {
     return {
+      key: "",
       packages: [],
       serviceId: null,
     };
   },
   methods: {
     fetchPackages(id) {
-      this.$http
-        .get(`api/services/${id}/packages`)
-        .then((response) => {
-          this.packages = response.data;
-          console.log(this.packages);
-        })
-        .catch((e) => {
-          console.error("Error en la peticion: ", e);
-        });
+      this.key = useSecret();
+
+      const serializedData = JSON.stringify({
+        serviceId: id,
+      });
+
+      const encryptedData = this.$encryptionService.encryptData(
+        serializedData,
+        this.key
+      );
+
+      const token = localStorage.getItem("token");
+      if (token) {
+        this.$http
+          .post("api/services/packages/from-service", encryptedData, {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then((response) => {
+            this.packages = response.data;
+          })
+          .catch((e) => {
+            console.error("Error en la peticion: ", e);
+          });
+      }
     },
     navigateToUserPackageInfo(packageId) {
       this.$router.push({
@@ -63,6 +84,8 @@ export default {
     },
   },
   mounted() {
+    const secretStore = useSecret();
+    this.key = secretStore.secretKey;
     this.serviceId = this.$route.query.serviceId;
     this.fetchPackages(this.serviceId);
   },

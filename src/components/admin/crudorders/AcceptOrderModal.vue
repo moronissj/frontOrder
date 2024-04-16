@@ -157,7 +157,11 @@ export default {
       const token = localStorage.getItem("token");
       if (token) {
         this.$http
-          .get("/api/accounts/workers")
+          .get("/api/accounts/workers", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
           .then((response) => {
             this.workers = response.data.map((worker) => {
               this.decryptWorkerData(worker);

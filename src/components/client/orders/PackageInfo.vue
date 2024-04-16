@@ -49,6 +49,7 @@
 import MakeOrderModal from "./MakeOrderModal.vue";
 import NavbarClient from "../NavbarClient.vue";
 import Fancybox from "../../Fancybox.vue";
+import { useSecret } from "@/stores/key";
 
 export default {
   name: "PackageInfo",
@@ -66,23 +67,44 @@ export default {
     };
   },
   methods: {
-    fetchPackageInfo(packageId) {
-      this.$http
-        .get(`/api/packages/package-info-users/${packageId}`)
-        .then((response) => {
-          this.aPackage = response.data;
-          this.images = [];
-          this.service = this.aPackage.categoryName;
-          if (response.data.images && response.data.images.length > 0) {
-            this.images = response.data.images.map((image) => image.imageUrl);
-          }
-        })
-        .catch((e) => {
-          console.error("Error en la peticion: ", e);
-        });
+    fetchPackageInfo(id) {
+      this.key = useSecret();
+
+      const serializedData = JSON.stringify({
+        packageId: id,
+      });
+
+      const encryptedData = this.$encryptionService.encryptData(
+        serializedData,
+        this.key
+      );
+
+      const token = localStorage.getItem("token");
+      if (token) {
+        this.$http
+          .post("/api/packages/package-info-users", encryptedData, {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then((response) => {
+            this.aPackage = response.data;
+            this.images = [];
+            this.service = this.aPackage.categoryName;
+            if (response.data.images && response.data.images.length > 0) {
+              this.images = response.data.images.map((image) => image.imageUrl);
+            }
+          })
+          .catch((e) => {
+            console.error("Error en la peticion: ", e);
+          });
+      }
     },
   },
   mounted() {
+    const secretStore = useSecret();
+    this.key = secretStore.secretKey;
     this.packageId = this.$route.query.packageId;
     this.fetchPackageInfo(this.packageId);
   },
