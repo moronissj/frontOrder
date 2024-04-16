@@ -49,8 +49,6 @@ export default {
   },
   methods: {
     fetcCombos() {
-      // const secretStore = useSecret();
-      // this.key = secretStore.secretKey;
       const token = localStorage.getItem("token");
       if (token) {
         this.$http
@@ -61,38 +59,12 @@ export default {
           })
           .then((response) => {
             this.combos = response.data;
-            //   .map((item) =>
-            //     this.decryptPackageData(item)
-            //   );
-            //   this.packages = response.data;
-            //   console.log(this.packages);
           })
           .catch((e) => {
             console.error("Error en la peticion: ", e);
           });
       }
     },
-    //   decryptPackageData(item) {
-    //     const fieldsToDecrypt = [
-    //       "packageId",
-    //       "packageName",
-    //       "packageDescription",
-    //       "packagePrice",
-    //       "packageState",
-    //       "designatedHours",
-    //       "workersNumber",
-    //       "categoryName",
-    //       "categoryId",
-    //       "categoryId",
-    //     ];
-    //     fieldsToDecrypt.forEach((field) => {
-    //       item[field] = this.$encryptionService.decryptData(
-    //         item[field],
-    //         this.key
-    //       );
-    //     });
-    //     return item;
-    //   },
     navigateToUserComboInfo(comboId) {
       this.$router.push({
         name: "user-combo-info",

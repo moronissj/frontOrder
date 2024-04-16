@@ -107,6 +107,7 @@
                 <ValidationProvider rules="required|tel" v-slot="{ errors }">
                   <b-form-input
                     id="input-4"
+                    disabled
                     type="text"
                     v-model="form.adminCellphone"
                     :class="{ invalid: errors[0] }"
@@ -126,6 +127,7 @@
                 <ValidationProvider rules="required|nss" v-slot="{ errors }">
                   <b-form-input
                     id="input-5"
+                    disabled
                     type="number"
                     v-model="form.adminSecurityNumber"
                     :class="{ invalid: errors[0] }"
@@ -148,6 +150,7 @@
                 >
                   <b-form-input
                     id="input-6"
+                    disabled
                     type="number"
                     v-model="form.adminSalary"
                     :class="{ invalid: errors[0] }"

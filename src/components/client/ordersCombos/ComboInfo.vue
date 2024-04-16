@@ -43,6 +43,7 @@
 import MakeOrderComboModal from "./MakeOrderComboModal.vue";
 import NavbarClient from "../NavbarClient.vue";
 import Fancybox from "../../Fancybox.vue";
+import { useSecret } from "@/stores/key";
 
 export default {
   name: "ComboInfo",
@@ -53,23 +54,44 @@ export default {
   },
   data() {
     return {
+      key: "",
       combo: {},
       comboId: null,
     };
   },
   methods: {
-    fetchCombo(comboId) {
-      this.$http
-        .get(`/api/combos/${comboId}`)
-        .then((response) => {
-          this.combo = response.data;
-        })
-        .catch((e) => {
-          console.error("Error en la peticion: ", e);
-        });
+    fetchCombo(id) {
+      this.key = useSecret();
+
+      const serializedData = JSON.stringify({
+        comboId: id,
+      });
+
+      const encryptedData = this.$encryptionService.encryptData(
+        serializedData,
+        this.key
+      );
+      const token = localStorage.getItem("token");
+      if (token) {
+        this.$http
+          .post("/api/combos/combo-info", encryptedData, {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then((response) => {
+            this.combo = response.data;
+          })
+          .catch((e) => {
+            console.error("Error en la peticion: ", e);
+          });
+      }
     },
   },
   mounted() {
+    const secretStore = useSecret();
+    this.key = secretStore.secretKey;
     this.comboId = this.$route.query.comboId;
     this.fetchCombo(this.comboId);
   },

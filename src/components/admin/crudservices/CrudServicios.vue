@@ -107,15 +107,6 @@
                   :service="row.item"
                   @actualizacionExitosa="fetchServices"
                 ></EditServiceModal>
-                <b-button
-                  class="table-button"
-                  v-b-tooltip.hover.top
-                  title="Estado"
-                  variant="warning"
-                  size="sm"
-                >
-                  <b-icon icon="circle" scale=".7"></b-icon
-                ></b-button>
 
                 <b-button
                   v-b-tooltip.hover.top

@@ -7,7 +7,12 @@
       style="width: 25%"
       >Hacer Pedido</b-button
     >
-    <b-modal id="modal-1" title="Información de Pedido" hide-footer>
+    <b-modal
+      id="modal-1"
+      no-close-on-backdrop
+      title="Información de Pedido"
+      hide-footer
+    >
       <template #modal-header="{ close }">
         <h5 class="form-title">Información de Pedido</h5>
         <b-button
@@ -195,21 +200,28 @@ export default {
       let formData = new FormData();
       formData.append("data", JSON.stringify(paymentData));
 
-      this.$http
-        .post("/api/payments/create-checkout-session", formData)
-        .then((response) => {
-          let rawResponse = JSON.stringify(response.data);
-          let trimmedResponse = rawResponse
-            .replace('"{url=', "")
-            .replace('}"', "");
-          window.location.href = trimmedResponse;
-        })
-        .catch((error) => {
-          console.error("Error al iniciar la sesión de pago:", error);
-        })
-        .finally(() => {
-          this.isLoading = false;
-        });
+      const token = localStorage.getItem("token");
+      if (token) {
+        this.$http
+          .post("/api/payments/create-checkout-session", formData, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then((response) => {
+            let rawResponse = JSON.stringify(response.data);
+            let trimmedResponse = rawResponse
+              .replace('"{url=', "")
+              .replace('}"', "");
+            window.location.href = trimmedResponse;
+          })
+          .catch((error) => {
+            console.error("Error al iniciar la sesión de pago:", error);
+          })
+          .finally(() => {
+            this.isLoading = false;
+          });
+      }
     },
     closeModal() {
       this.$root.$emit("bv::hide::modal", "modal-1");
